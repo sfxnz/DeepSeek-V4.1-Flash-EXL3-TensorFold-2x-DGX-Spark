@@ -427,7 +427,7 @@ mem_gate() {
   (( MEM_GATE_GIB > 0 )) || { log "memory gate off (MEM_GATE_GIB=0)"; return 0; }
   t0="$(date +%s)"
   while :; do
-    avail="$(memavail_gib)"
+    avail="$(memavail_gib /proc/meminfo)"
     if (( avail >= MEM_GATE_GIB )); then log "MemAvailable $avail GiB >= $MEM_GATE_GIB on $(host_short)"; return 0; fi
     (( $(date +%s) - t0 < MEM_GATE_TIMEOUT )) ||
       die "MemAvailable $avail GiB < MEM_GATE_GIB=$MEM_GATE_GIB on $(host_short) after ${MEM_GATE_TIMEOUT}s. Find what holds the memory (free -h, docker ps)."
