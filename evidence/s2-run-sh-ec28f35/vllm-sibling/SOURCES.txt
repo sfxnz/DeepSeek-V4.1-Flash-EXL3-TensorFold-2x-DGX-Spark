@@ -1,0 +1,12 @@
+Copies, unchanged (sha256 below), of the files the README compares against. Different sessions from s2.
+
+- G7_vllm-bench.json, G7_vllm-bench_t0_chat.json, G7_vllm-prefill.json: /home/sfxnz/projects/data/tf-dsv41/goldens (the vLLM oracle session on the same pack, 2026-10-03, MANIFEST.md there; TF tools/bench_openai.py --tokens 64 --reps 5 and tools/prefill_cold.py run against the vLLM recipe's serve; the prefill prompts are G7_prefill_prompts.json, built with TF's corpus logic but counted by vLLM's /tokenize, sha256 61e6d429…)
+- round36-headline.json: /home/sfxnz/projects/ai-lab/recipes/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark/results/2026-09-27-viterbi-adopt/ (the vLLM recipe's round-36 cells, 2 boots, 2026-09-27; git 3de9146)
+- s0-0d91389-bench_openai.json, s0-0d91389-prefill_cold.json: /home/sfxnz/projects/data/tf-dsv41/receipts/final/s65538/ (TensorFold 0d91389 via the dev launcher, 2026-10-04 16:25-16:47Z)
+
+668ce281064589335846735cd29ae80b180787f864949ec4667d52fb3ce37790  G7_vllm-bench.json
+0039fc4d1c42b28c5c8ce597507257245af2919f0fb86eeb4488e3bf76bce6e0  G7_vllm-bench_t0_chat.json
+1ad3e4c2646543fd65f34b7d9f7b6d4cb9aecd81649d44aaf17779270bc5a7c1  G7_vllm-prefill.json
+19497af49adb7827c938a77a942791ab112ed9a3e0e2ac23ddae97f0ce4151d8  round36-headline.json
+de3277affb664cb9bef94eb8fac922af0ead0598ab231ff07b518a81701ef882  s0-0d91389-bench_openai.json
+1bb3c1338c47771f4fbcbb77e2323ea3e90f6203f873fd2b08ec845c67256f29  s0-0d91389-prefill_cold.json

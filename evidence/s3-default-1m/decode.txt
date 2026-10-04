@@ -1,0 +1,108 @@
+two boots bootC, bootD, each: url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=9 concurrency=[1] (per boot and cell); row = median of the per-boot medians, pooled = median over both boots' runs
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "median_decode_tok_s": 46.01793739623909,
+    "median_agg_tok_s": 46.01321208109137,
+    "ttft_s_p50": 0.06720731500536203,
+    "per_boot": {
+      "bootC": {
+        "median_decode_tok_s": 45.74280427865462,
+        "median_agg_tok_s": 45.73738576055889,
+        "ttft_s_p50": 0.06764786201529205,
+        "n": 9,
+        "inter_chunk_ms_p50": 61.09600211493671,
+        "natural_completion_tokens": 74,
+        "post_eos_fraction": 0.63,
+        "file": "bootC/gate/bench-frozen.out"
+      },
+      "bootD": {
+        "median_decode_tok_s": 46.293070513823565,
+        "median_agg_tok_s": 46.289038401623856,
+        "ttft_s_p50": 0.06676676799543202,
+        "n": 9,
+        "inter_chunk_ms_p50": 60.54764287546277,
+        "natural_completion_tokens": 74,
+        "post_eos_fraction": 0.63,
+        "file": "bootD/gate/bench-frozen.out"
+      }
+    },
+    "pooled": {
+      "n": 18,
+      "median_decode_tok_s": 46.065,
+      "median_agg_tok_s": 46.06,
+      "ttft_s_p50": 0.0675
+    }
+  },
+  {
+    "phase": "structured",
+    "concurrency": 1,
+    "median_decode_tok_s": 64.08024236255008,
+    "median_agg_tok_s": 64.07010883850117,
+    "ttft_s_p50": 0.06755328457802534,
+    "per_boot": {
+      "bootC": {
+        "median_decode_tok_s": 63.57638182647976,
+        "median_agg_tok_s": 63.565501991917614,
+        "ttft_s_p50": 0.06816244102083147,
+        "n": 9,
+        "inter_chunk_ms_p50": 61.494596069678664,
+        "natural_completion_tokens": 200,
+        "post_eos_fraction": 0.0,
+        "file": "bootC/gate/bench-frozen.out"
+      },
+      "bootD": {
+        "median_decode_tok_s": 64.58410289862042,
+        "median_agg_tok_s": 64.57471568508474,
+        "ttft_s_p50": 0.06694412813521922,
+        "n": 9,
+        "inter_chunk_ms_p50": 60.72594807483256,
+        "natural_completion_tokens": 200,
+        "post_eos_fraction": 0.0,
+        "file": "bootD/gate/bench-frozen.out"
+      }
+    },
+    "pooled": {
+      "n": 18,
+      "median_decode_tok_s": 64.12,
+      "median_agg_tok_s": 64.11500000000001,
+      "ttft_s_p50": 0.068
+    }
+  },
+  {
+    "phase": "prose_long",
+    "concurrency": 1,
+    "median_decode_tok_s": 34.61579763069066,
+    "median_agg_tok_s": 34.611558782884956,
+    "ttft_s_p50": 0.06780307146254927,
+    "per_boot": {
+      "bootC": {
+        "median_decode_tok_s": 34.37373035972956,
+        "median_agg_tok_s": 34.36988169453303,
+        "ttft_s_p50": 0.06807343498803675,
+        "n": 9,
+        "inter_chunk_ms_p50": 61.70156563166529,
+        "natural_completion_tokens": 200,
+        "post_eos_fraction": 0.0,
+        "file": "bootC/gate/bench-prose-long.out"
+      },
+      "bootD": {
+        "median_decode_tok_s": 34.85786490165176,
+        "median_agg_tok_s": 34.853235871236876,
+        "ttft_s_p50": 0.06753270793706179,
+        "n": 9,
+        "inter_chunk_ms_p50": 61.01712503004819,
+        "natural_completion_tokens": 200,
+        "post_eos_fraction": 0.0,
+        "file": "bootD/gate/bench-prose-long.out"
+      }
+    },
+    "pooled": {
+      "n": 18,
+      "median_decode_tok_s": 34.555,
+      "median_agg_tok_s": 34.545,
+      "ttft_s_p50": 0.068
+    }
+  }
+]

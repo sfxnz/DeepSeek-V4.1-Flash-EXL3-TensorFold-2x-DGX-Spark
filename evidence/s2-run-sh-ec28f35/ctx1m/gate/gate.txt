@@ -1,0 +1,6 @@
+finished_at=2026-10-04T19:30:11.391Z
+smoke-chat=0
+smoke-count=0
+bench-frozen=0
+bench-prose-long=0
+GATE=PASS

@@ -1,0 +1,18 @@
+{"start": "2026-10-04T19:30:26Z", "length": 131072, "depth": 0.1, "doc_tokens": 130148}
+{"length": 131072, "depth": 0.1, "prompt_tokens": 130171, "cached": 0, "completion_tokens": 8, "prefill_s": 214.2864652229473, "prefill_tok_s": 607.5, "wall_s": 214.6, "found": true, "code": "WTX-1399-XZ", "answer": "WTX-1399-XZ", "token_sha": "739fc8686da3", "end": "2026-10-04T19:34:01Z"}
+{"cell": "131072@0.1", "rc": 0, "from": "2026-10-04T19:30:26Z", "to": "2026-10-04T19:34:01Z", "min_avail_mib_head": 25389, "min_avail_mib_worker": 27320}
+{"start": "2026-10-04T19:34:02Z", "length": 131072, "depth": 0.5, "doc_tokens": 130516}
+{"length": 131072, "depth": 0.5, "prompt_tokens": 130541, "cached": 0, "completion_tokens": 8, "prefill_s": 215.10745194205083, "prefill_tok_s": 606.9, "wall_s": 215.5, "found": true, "code": "LCR-9176-JK", "answer": "LCR-9176-JK", "token_sha": "4f68d14925d4", "end": "2026-10-04T19:37:38Z"}
+{"cell": "131072@0.5", "rc": 0, "from": "2026-10-04T19:34:01Z", "to": "2026-10-04T19:37:38Z", "min_avail_mib_head": 25233, "min_avail_mib_worker": 28095}
+{"start": "2026-10-04T19:37:39Z", "length": 131072, "depth": 0.9, "doc_tokens": 129051}
+{"length": 131072, "depth": 0.9, "prompt_tokens": 129076, "cached": 0, "completion_tokens": 8, "prefill_s": 212.81064868206158, "prefill_tok_s": 606.5, "wall_s": 213.2, "found": true, "code": "WVK-8120-BN", "answer": "WVK-8120-BN", "token_sha": "5d2911e85249", "end": "2026-10-04T19:41:12Z"}
+{"cell": "131072@0.9", "rc": 0, "from": "2026-10-04T19:37:38Z", "to": "2026-10-04T19:41:12Z", "min_avail_mib_head": 25398, "min_avail_mib_worker": 28073}
+{"start": "2026-10-04T19:41:13Z", "length": 262144, "depth": 0.5, "doc_tokens": 257932}
+{"length": 262144, "depth": 0.5, "prompt_tokens": 257955, "cached": 0, "completion_tokens": 8, "prefill_s": 439.8120748179499, "prefill_tok_s": 586.5, "wall_s": 440.4, "found": true, "code": "VDH-7805-LC", "answer": "VDH-7805-LC", "token_sha": "f47b0202e133", "end": "2026-10-04T19:48:34Z"}
+{"cell": "262144@0.5", "rc": 0, "from": "2026-10-04T19:41:12Z", "to": "2026-10-04T19:48:34Z", "min_avail_mib_head": 25147, "min_avail_mib_worker": 27687}
+{"start": "2026-10-04T19:48:36Z", "length": 524288, "depth": 0.5, "doc_tokens": 523658}
+{"length": 524288, "depth": 0.5, "prompt_tokens": 523681, "cached": 0, "completion_tokens": 8, "prefill_s": 946.8931745779701, "prefill_tok_s": 553.1, "wall_s": 948.1, "found": true, "code": "HPW-8184-LC", "answer": "HPW-8184-LC", "token_sha": "64b508f06ade", "end": "2026-10-04T20:04:24Z"}
+{"cell": "524288@0.5", "rc": 0, "from": "2026-10-04T19:48:34Z", "to": "2026-10-04T20:04:24Z", "min_avail_mib_head": 23920, "min_avail_mib_worker": 27327}
+{"start": "2026-10-04T20:04:28Z", "length": 1040000, "depth": 0.5, "doc_tokens": 1039503}
+{"length": 1040000, "depth": 0.5, "prompt_tokens": 1039528, "cached": 0, "completion_tokens": 8, "prefill_s": 2077.757631998975, "prefill_tok_s": 500.3, "wall_s": 2080.0, "found": true, "code": "CZP-3128-QL", "answer": "CZP-3128-QL", "token_sha": "4dfbacf6d86b", "end": "2026-10-04T20:39:08Z"}
+{"cell": "1040000@0.5", "rc": 0, "from": "2026-10-04T20:04:24Z", "to": "2026-10-04T20:39:08Z", "min_avail_mib_head": 22635, "min_avail_mib_worker": 27326}

@@ -1,0 +1,44 @@
+# Derived README numbers, s3-default-1m. Inputs are files in this directory or ../s2-run-sh-ec28f35.
+
+## Server sampling default: rank 0's `serving` line (gate/startup.txt)
+bootC: sampling: 'top_p 1.0'; context: 1048576
+bootD: sampling: 'top_p 1.0'; context: 1048576
+
+## Sampled cells: <boot>/sampled-<label>.txt SAMPLED median_decode_tok_s; row = median of the per-boot medians
+nofields: request sends {}; bootC 36.76 (ttft 0.069, same text True), bootD 37.1 (ttft 0.071, same text True) -> 36.93 = 36.9
+top_p1: request sends {"temperature": 1.0, "top_p": 1.0}; bootC 37.03 (ttft 0.07, same text True), bootD 37.27 (ttft 0.07, same text True) -> 37.15 = 37.2
+top_k20: request sends {"temperature": 1.0, "top_k": 20}; bootC 37.12 (ttft 0.069, same text True), bootD 37.63 (ttft 0.069, same text True) -> 37.38 = 37.4
+top_p095: request sends {"temperature": 1.0, "top_p": 0.95}; bootC 15.23 (ttft 0.113, same text True), bootD 15.72 (ttft 0.102, same text True) -> 15.48 = 15.5
+bootC: nofields reply head == top_p1 reply head: True
+bootD: nofields reply head == top_p1 reply head: True
+nofields / top_p1 = 0.994; top_p095 / nofields = 0.419
+s2 for comparison (bootA / bootB): default 15.31 / 15.39; top_p1 36.47 / 37.37; top_k20 35.75 / 36.01
+
+## Exactness: bootD/pairs.jsonl (bootC's run stopped on a client parse error before any request: bootC/pairs-client-error.txt)
+bootD: checks 6 of 6 equal; nofields prompt0 drafted sha 7d1dc35680a6 52.3 tok/s; nofields prompt0 draft:false sha 7d1dc35680a6 26.5 tok/s; nofields prompt1 drafted sha 22480b3cd4c8 45.12 tok/s; nofields prompt1 draft:false sha 22480b3cd4c8 26.39 tok/s; nofields prompt2 drafted sha 65f2c13cd1dc 48.76 tok/s; nofields prompt2 draft:false sha 65f2c13cd1dc 26.57 tok/s
+
+## Gaps against vLLM: 100 * (1 - this / vLLM)
+bench_decode prose: 46.0179 (decode.txt) vs 50.6902 (round36-headline.json cells.V.bench_prose_c1_tok_s) -> 9.2% lower
+bench_decode structured: 64.0802 (decode.txt) vs 84.2790 (round36-headline.json cells.V.structured_c1_tok_s) -> 24.0% lower
+bench_decode prose_long: 34.6158 (decode.txt) vs 43.7957 (round36-headline.json cells.V.prose_long_c1_tok_s) -> 21.0% lower
+bench_openai fibonacci-raw t=1: 41.2238 (s2 bootA/bench_openai.json) vs 47.3166 (vllm-sibling/G7_vllm-bench*.json) -> 12.9% lower
+bench_openai gpu-chat-no-think t=1: 37.0621 (s2 bootA/bench_openai.json) vs 44.3167 (vllm-sibling/G7_vllm-bench*.json) -> 16.4% lower
+bench_openai gpu-chat-no-think t=0: 41.2124 (s2 bootA/bench_openai.json) vs 43.1358 (vllm-sibling/G7_vllm-bench*.json) -> 4.5% lower
+decode range: 4.5-24.0% lower
+prefill_cold 2048: 526.0 (bootD/prefill_cold.json; s2 bootA 499.4) vs 777.8 (G7_vllm-prefill.json) -> 32.4% lower
+prefill_cold 8192: 551.7 (bootD/prefill_cold.json; s2 bootA 527.2) vs 769.4 (G7_vllm-prefill.json) -> 28.3% lower
+prefill_cold 16384: 561.3 (bootD/prefill_cold.json; s2 bootA 549.0) vs 771.8 (G7_vllm-prefill.json) -> 27.3% lower
+prefill_cold 32768: 563.5 (bootD/prefill_cold.json; s2 bootA 533.9) vs 777.2 (G7_vllm-prefill.json) -> 27.5% lower
+prefill_cold 65536: 570.6 (bootD/prefill_cold.json; s2 bootA 537.2) vs 773.6 (G7_vllm-prefill.json) -> 26.2% lower
+prompt tok/s range: 26.2-32.4% lower
+
+## Quiet prefill_cold: bootD/rank0-full.log, the done lines after pairs_default's last request
+done lines after pairs=16, prefill_cold requests=16, prompt sizes equal: True, cached total=0
+
+## Durations
+bootC ./run.sh to ready: bootC/run.txt start 2026-10-04T21:11:58Z end 2026-10-04T21:12:50Z = 52 s
+bootD ./run.sh to ready: bootD/run.txt start 2026-10-04T21:20:08Z end 2026-10-04T21:20:59Z = 51 s
+
+## Bench requests with thinking off: <boot>/gate/docker-head.log
+bootC: done lines=32 thinking=False=32
+bootD: done lines=32 thinking=False=32

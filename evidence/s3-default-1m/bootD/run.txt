@@ -1,0 +1,32 @@
+start 2026-10-04T21:20:08Z
+$ ./run.sh   (defaults, no env overrides)
+==> role=head host=spark1
+==> snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c: config and index sha256, 48 shards, 357466041064 bytes, headers ok
+==> Using pinned snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c (config and index sha256, shard count, sizes and headers checked)
+==> snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c: config and index sha256, 48 shards, 357466041064 bytes, headers ok
+==> Image tf-dsv41-flash:0.6.4-ec28f35 (TensorFold ec28f35c7568986666dc996f3c8b01ea59b6d0ca)
+==> Image tf-dsv41-flash:0.6.4-ec28f35 (TensorFold ec28f35c7568986666dc996f3c8b01ea59b6d0ca)
+==> snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c: config and index sha256, 48 shards, 357466041064 bytes, headers ok
+==> Using pinned snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c (config and index sha256, shard count, sizes and headers checked)
+==> HCAs rocep1s0f1,roceP2p1s0f1 ACTIVE on spark1
+==> MemAvailable 113 GiB >= 100 on spark1
+==> Starting rank 1 on spark2 first
+==> role=worker host=spark2
+==> Image tf-dsv41-flash:0.6.4-ec28f35 (TensorFold ec28f35c7568986666dc996f3c8b01ea59b6d0ca)
+==> snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c: config and index sha256, 48 shards, 357466041064 bytes, headers ok
+==> Using pinned snapshot /home/sfxnz/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c (config and index sha256, shard count, sizes and headers checked)
+==> HCAs rocep1s0f1,roceP2p1s0f1 ACTIVE on spark2
+==> MemAvailable 116 GiB >= 100 on spark2
+==> Starting tf-dsv41-flash rank=1 tp=2 ctx=1048576 drafts=3 thinking=0 hca=rocep1s0f1,roceP2p1s0f1
+==> memguard pid=3380669 min_avail=3072MB min_swap_free=2048MB log=/home/sfxnz/.cache/tensorfold-dsv41/run-state/memguard.log
+==> Rank 1 is up and waits for rank 0 at 10.100.8.1:29571.
+==> MemAvailable 113 GiB >= 100 on spark1
+==> Starting tf-dsv41-flash rank=0 tp=2 ctx=1048576 drafts=3 thinking=0 hca=rocep1s0f1,roceP2p1s0f1
+==> memguard pid=1011362 min_avail=3072MB min_swap_free=2048MB log=/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/.run-state/memguard.log
+==> Waiting for http://127.0.0.1:8000/health and /v1/models (up to 1800s)
+==> Ready → http://0.0.0.0:8000/v1  (context=1048576)
+{"object": "list", "data": [{"id": "deepseek-ai/DeepSeek-V4.1-Flash", "object": "model", "owned_by": "tensorfold"}]}
+[tensorfold] CUDA rank 0 startup estimate 79.09 GiB within 98.46 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+==> Stop with: ./stop.sh
+rc=0
+end 2026-10-04T21:20:59Z

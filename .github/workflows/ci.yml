@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: run.sh dry-run with the shipped defaults
+        run: VALIDATE_ONLY=1 ./run.sh
+      - name: run.sh prints both ranks' argv and env
+        run: VALIDATE_ONLY=args ./run.sh
+      - name: run.sh refuses one rank
+        run: |
+          if VALIDATE_ONLY=1 TP=1 ./run.sh 2>err; then
+            echo "run.sh accepted TP=1" >&2
+            exit 1
+          fi
+          grep -F 'two ranks (one per Spark) only' err
+      - name: run.sh refuses a window above the native 1048576
+        run: |
+          if VALIDATE_ONLY=1 CONTEXT=1048577 ./run.sh 2>err; then
+            echo "run.sh accepted CONTEXT=1048577" >&2
+            exit 1
+          fi
+          grep -F 'exceeds the native window 1048576' err
+      - name: run.sh refuses a memory gate below 92 GiB
+        run: |
+          if VALIDATE_ONLY=1 MEM_GATE_GIB=0 ./run.sh 2>err; then
+            echo "run.sh accepted MEM_GATE_GIB=0" >&2
+            exit 1
+          fi
+          grep -F 'is below 92 GiB' err
+      - name: run.sh refuses EXTRA_ARGS that re-set an owned flag
+        run: |
+          if VALIDATE_ONLY=1 EXTRA_ARGS="--context 8192" ./run.sh 2>err; then
+            echo "run.sh accepted EXTRA_ARGS=\"--context 8192\"" >&2
+            exit 1
+          fi
+          grep -F 'which run.sh passes itself' err
+      - name: run.sh refuses EXTRA_ARGS the family ignores
+        run: |
+          if VALIDATE_ONLY=1 EXTRA_ARGS="--parallel 2" ./run.sh 2>err; then
+            echo "run.sh accepted EXTRA_ARGS=\"--parallel 2\"" >&2
+            exit 1
+          fi
+          grep -F 'refuses or ignores it' err
+      - name: run.sh refuses EXTRA_ENV that re-sets an engine knob
+        run: |
+          if VALIDATE_ONLY=1 EXTRA_ENV="TF_DSV41_CACHE_GIB=4" ./run.sh 2>err; then
+            echo "run.sh accepted EXTRA_ENV=\"TF_DSV41_CACHE_GIB=4\"" >&2
+            exit 1
+          fi
+          grep -F 'which run.sh sets itself' err
+      - name: run.sh refuses zero-padded integers
+        run: |
+          if VALIDATE_ONLY=1 MAX_TOKENS=04096 ./run.sh 2>err; then
+            echo "run.sh accepted MAX_TOKENS=04096" >&2
+            exit 1
+          fi
+          grep -F 'not a positive decimal integer' err
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - run: shellcheck -S warning run.sh stop.sh tools/session_gate.sh
+
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml numpy
+      - run: python -m unittest discover -s tests -q

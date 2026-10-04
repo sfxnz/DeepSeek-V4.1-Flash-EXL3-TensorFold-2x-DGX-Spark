@@ -1,0 +1,4 @@
+$ check_snapshot (run.sh) on the head (spark1), the folder the receipts mounted; 2026-10-04T18:09Z
+dir: $HOME/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/2.0bpw-mcg-viterbi-lmhead-mxfp8
+==> snapshot $HOME/.cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/2.0bpw-mcg-viterbi-lmhead-mxfp8: config and index sha256, 48 shards, 357466041064 bytes, headers ok
+rc=0

@@ -1,0 +1,6 @@
+# tools/bench_openai.py at ec28f35c7568986666dc996f3c8b01ea59b6d0ca (worktree /home/sfxnz/projects/code/wt/recipe-engine), host venv, 2026-10-04T19:06:02Z
+{"label": "s2-bootA", "prompt": "fibonacci-raw", "temperature": 1.0, "decode_tps_median": 41.22384783182876, "decode_tps_all": [18.5, 26.56, 41.22, 43.0, 46.65], "ttft_s_median": 0.06902880920097232}
+{"label": "s2-bootA", "prompt": "gpu-chat-no-think", "temperature": 1.0, "decode_tps_median": 37.06208122156603, "decode_tps_all": [42.19, 37.06, 35.53, 36.72, 45.57], "ttft_s_median": 0.06717358785681427}
+{"label": "s2-bootA", "prompt": "fibonacci-raw", "temperature": 0.0, "decode_tps_median": 55.725901671679246, "decode_tps_all": [55.28, 55.96, 55.51, 55.84, 55.73], "ttft_s_median": 0.06950911483727396}
+{"label": "s2-bootA", "prompt": "gpu-chat-no-think", "temperature": 0.0, "decode_tps_median": 41.21244716694363, "decode_tps_all": [41.37, 41.21, 41.27, 41.07, 40.63], "ttft_s_median": 0.07116486295126379}
+rc=0

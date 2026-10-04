@@ -1,0 +1,9 @@
+# TensorFold's runtime deps (pyproject.toml at TF_SHA) at the versions expected in nvcr.io/nvidia/pytorch:26.07-py3
+# (not yet checked against its pip freeze). pip should find each one already installed; docker/Dockerfile fails the
+# build if any installed package changes, so the image is the base plus TensorFold, as the engine receipts ran
+# (evidence/s0-engine-receipts/environment.txt).
+huggingface-hub==1.24.0
+Jinja2==3.1.6
+numpy==2.1.0
+safetensors==0.8.0
+tokenizers==0.23.1

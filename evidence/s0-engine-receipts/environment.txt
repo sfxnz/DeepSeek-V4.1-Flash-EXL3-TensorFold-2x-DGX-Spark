@@ -1,0 +1,9 @@
+PR B tip served and tested: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (branch pr/b; tree 9718691c equals feat/deepseek-v41-cuda), clean detached worktree /home/sfxnz/projects/code/wt/rereceipt, mirrored to the same path on spark2 (tree_check.txt: tracked-file hashes equal)
+PR A tip (BASE): 6d11e5706fc4d1f8f559d41d467dc9302e558ab9 (branch pr/a), on main 6ea5ade
+image: nvcr.io/nvidia/pytorch:26.07-py3@sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c (image id sha256:15b8de8baabe... on both machines)
+torch 2.13.0a0+9186a08b2c.nv26.07, pytest 9.1.1, CUDA 13.3 (forward compat, driver 610.43.02 over kernel driver 580.173.02), TensorFold 0.6.4 + PR A + PR B
+machines: two DGX Sparks (GB10, 128 GB unified memory each), direct CX7 cable (RoCE; NCCL_SOCKET_IFNAME=enp1s0f1np1, NCCL_IB_HCA=rocep1s0f1,roceP2p1s0f1; master 10.100.8.1), rank 1 on spark2
+checkpoint: sfxnz/DeepSeek-V4.1-Flash-EXL3 snapshot 2.0bpw-mcg-viterbi-lmhead-mxfp8 (revision 982b70452f399814f56b46272fd30394ae10d58c), mounted read-only; not re-hashed: Q4 verified every runtime file against the Hub (receipts/q4/revision_check.*) and no file under the snapshot on either machine is newer than that check (find -newer: 0 and 0)
+serve (both ranks, rank 1 first): python -m tensorfold serve MODEL_DIR --tp 2 --rank R --master 10.100.8.1 --master-port 29640 --name deepseek-ai/DeepSeek-V4.1-Flash --no-thinking --no-update-check --context 65538 [rank 0: --host 127.0.0.1 --port 8080]  (dev/final/serve_pair.sh, as Q4)
+clients: host Python 3.12.3 venv (/home/sfxnz/projects/code/.venv-tf)
+scripts: /home/sfxnz/projects/data/tf-dsv41/dev/final/ (copies of dev/q4's with paths renamed; session.sh adds a smoke step first and a top_k cap step after refusals; nll_tf.py imports tests/cuda/dsv41_score.py, where 7032f26 moved cuda/score.py)

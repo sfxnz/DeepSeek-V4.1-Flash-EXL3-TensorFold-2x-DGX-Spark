@@ -1,0 +1,4 @@
+== spark1
+sha256:e78f0ad2efaec570c6ee84aafcfbfbce542ec7de5785e3e847d93c8dc8358673 ec28f35c7568986666dc996f3c8b01ea59b6d0ca https://github.com/sfxnz/TensorFold.git
+== spark2
+sha256:e78f0ad2efaec570c6ee84aafcfbfbce542ec7de5785e3e847d93c8dc8358673 ec28f35c7568986666dc996f3c8b01ea59b6d0ca https://github.com/sfxnz/TensorFold.git

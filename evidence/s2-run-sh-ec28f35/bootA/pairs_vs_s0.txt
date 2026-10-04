@@ -1,0 +1,17 @@
+s0 (0d91389, /home/sfxnz/projects/data/tf-dsv41/receipts/final/s65538/pairs.jsonl): 15 requests; s2 bootA q2 section: 15 requests, same order
+prompt0 t=0.0 top_k=20 drafted       s0 6185c62d4baf s2 6185c62d4baf equal=True  sampling_ms s0 1.927 s2 1.773
+prompt0 t=0.0 top_k=20 draft:false   s0 6185c62d4baf s2 6185c62d4baf equal=True  sampling_ms s0 0.506 s2 0.478
+prompt0 t=1.0 top_k=20 drafted       s0 2e35c52cda08 s2 2e35c52cda08 equal=True  sampling_ms s0 2.292 s2 2.032
+prompt0 t=1.0 top_k=20 draft:false   s0 2e35c52cda08 s2 2e35c52cda08 equal=True  sampling_ms s0 0.737 s2 0.577
+prompt1 t=0.0 top_k=20 drafted       s0 1715d87a4dc0 s2 1715d87a4dc0 equal=True  sampling_ms s0 2.202 s2 1.658
+prompt1 t=0.0 top_k=20 draft:false   s0 1715d87a4dc0 s2 1715d87a4dc0 equal=True  sampling_ms s0 0.59 s2 0.5
+prompt1 t=1.0 top_k=20 drafted       s0 75ad34c67f94 s2 75ad34c67f94 equal=True  sampling_ms s0 2.212 s2 2.362
+prompt1 t=1.0 top_k=20 draft:false   s0 75ad34c67f94 s2 75ad34c67f94 equal=True  sampling_ms s0 0.728 s2 0.578
+prompt2 t=0.0 top_k=20 drafted       s0 d1b27a633415 s2 d1b27a633415 equal=True  sampling_ms s0 1.807 s2 1.667
+prompt2 t=0.0 top_k=20 draft:false   s0 d1b27a633415 s2 d1b27a633415 equal=True  sampling_ms s0 0.613 s2 0.496
+prompt2 t=1.0 top_k=20 drafted       s0 14f0fa7d7629 s2 14f0fa7d7629 equal=True  sampling_ms s0 2.017 s2 2.017
+prompt2 t=1.0 top_k=20 draft:false   s0 14f0fa7d7629 s2 14f0fa7d7629 equal=True  sampling_ms s0 0.746 s2 0.652
+top_k omitted drafted                s0 bd50e30b4d41 s2 bd50e30b4d41 equal=True  sampling_ms s0 70.191 s2 68.226
+top_k omitted draft:false            s0 bd50e30b4d41 s2 bd50e30b4d41 equal=True  sampling_ms s0 16.672 s2 16.686
+top_k omitted resend                 s0 bd50e30b4d41 s2 bd50e30b4d41 equal=True  sampling_ms s0 68.411 s2 67.214
+equal token_sha: 15 of 15

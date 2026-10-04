@@ -1,0 +1,143 @@
+# Source of truth for the values that repeat across run.sh, README.md and CI.
+# Edit here, then `python3 kit/render.py`. CI runs `python3 kit/render.py --check`.
+# Every scalar is used as the string you typed (0.70 stays 0.70). `null` means none.
+# `&name` anchors a value; `*name` reuses it, so a pinned value is written once.
+
+model:
+  id: &model sfxnz/DeepSeek-V4.1-Flash-EXL3
+  revision: &revision 982b70452f399814f56b46272fd30394ae10d58c
+  branch: 2.0bpw-mcg-viterbi-lmhead-mxfp8
+  served_name: &served_name deepseek-ai/DeepSeek-V4.1-Flash
+  family: DeepSeek-V4.1-Flash
+  quant: routed experts EXL3 2 bpw (mcg codebook); everything else DeepSeek's own bytes (FP8 e4m3 with ue8m0 32x32 block scales, LM head MXFP8, DSpark experts MXFP4, Engram tables)
+  # The snapshot run.sh checks on both nodes before a start. From the Hub at this revision
+  # (evidence/s1-snapshot-pins/pins.json: sha256 of the downloaded config.json and index; the index's 48 shards;
+  # their sizes from the file listing, summed).
+  config_sha256: &config_sha256 6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5
+  index_sha256: &index_sha256 91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03
+  shards: &shards 48
+  shard_bytes: &shard_bytes 357466041064
+  license: MIT (DeepSeek-V4.1-Flash model card)
+
+image:
+  base: nvcr.io/nvidia/pytorch:26.07-py3
+  digest: sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
+  local_tag: &image tf-dsv41-flash:0.6.4-ec28f35
+  build: docker/Dockerfile (pip install git+TF_REPO@TF_SHA under docker/constraints.txt; the commit pip installed is checked; no installed package may change, so torch and triton stay the base's)
+
+engine:
+  name: tensorfold
+  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows
+  # The fork branch that carries both PRs on release v0.6.4 (6ea5ade), then the device keyed draw for top_k-off rows
+  # (the same patch as be2cc80 on fork branch cuda-keyed-draw, which sits on 6ea5ade). Bump TF_REPO and TF_SHA
+  # together to an upstream release tag once the family is released there; a bump needs new evidence.
+  repo: &tf_repo https://github.com/sfxnz/TensorFold.git
+  branch: dsv41-recipe-engine
+  commit: &tf_sha ec28f35c7568986666dc996f3c8b01ea59b6d0ca
+  base_release: v0.6.4 (6ea5ade)
+  upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391]
+  family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip, fork branch deepseek-v41-cuda)
+  keyed_draw: be2cc80cda2cfac64a2dac1b514dc8e9a53f9205 (fork branch cuda-keyed-draw; ec28f35 is the same patch on 0d91389)
+
+hardware:
+  shape: 2x DGX Spark (GB10)
+  nnodes: 2
+  tp: &tp 2
+
+serve:
+  # The `# BEGIN generated` block of run.sh, in run.sh order. Each key renders as NAME="${NAME:-value}".
+  # Keys starting TF_DSV41_ are engine knobs: run.sh passes each non-empty one to both ranks as
+  # `docker run -e KEY=VALUE`, from one function. An empty value is not passed (the engine default applies).
+  env:
+    MODEL: *model
+    SERVED_NAME: *served_name
+    IMAGE: *image
+    TF_REPO: *tf_repo
+    TF_SHA: *tf_sha
+    CONTAINER_NAME: tf-dsv41-flash
+    PORT: 8000
+    MASTER_PORT: 29571
+    HEAD_IP: 10.100.8.1
+    WORKER_HOST: spark2
+    IFACE: enp1s0f1np1
+    HCA: rocep1s0f1,roceP2p1s0f1
+    TP: *tp
+    # measured: the native window. s2 booted run.sh at 1048576, ran the frozen ruler there, and found needles at
+    # 130k, 258k, 524k and 1,039,528 prompt tokens, MemAvailable never below 22 GiB on either node
+    # (evidence/s2-run-sh-ec28f35/ctx1m/needles.jsonl, evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv); s3 booted it
+    # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt).
+    CONTEXT: 1048576
+    MTP_DRAFTS: 3
+    MTP_CONFIDENCE: ""
+    THINKING: 0
+    MAX_TOKENS: 4096
+    # --top-p on both ranks: the server's top_p when a request sends none. DeepSeek's model card recommends
+    # temperature 1.0 and top_p "0.95 or 1.0"; at TF_SHA a top_k-off row without a top_p cut (1.0) draws on the
+    # device, a cut (< 1) reads each rank's vocabulary half to the host (evidence/decision.tsv TOPP1).
+    # Temperature is not passed: the engine's default, 1.0, applies.
+    TOP_P: 1.0
+    HF_CACHE: $HOME/.cache/huggingface
+    SNAPSHOT_SHA: *revision
+    CONFIG_SHA256: *config_sha256
+    INDEX_SHA256: *index_sha256
+    SHARDS: *shards
+    SHARD_BYTES: *shard_bytes
+    SKIP_DOWNLOAD: 0
+    TF_CACHE: $HOME/.cache/tensorfold-dsv41
+    ORCHESTRATE: auto
+    OOM_SCORE_ADJ: 1000
+    MEMGUARD: 1
+    MEMGUARD_MIN_AVAIL_MB: 3072
+    MEMGUARD_MIN_SWAP_FREE_MB: 2048
+    MEM_GATE_GIB: 100
+    MEM_GATE_TIMEOUT: 600
+    READY_TIMEOUT: 1800
+    BENCH_ONLY: 0
+    EXTRA_ARGS: ""
+    EXTRA_ENV: ""
+    # -- engine knobs (docs/recipes/deepseek-v4.1-flash.md "Serve"): the kept-prompt arena's GiB (engine default 3)
+    #    and entries (engine default 8). Empty: not passed, the engine default applies on both ranks.
+    TF_DSV41_CACHE_GIB: ""
+    TF_DSV41_CACHE_ENTRIES: ""
+
+readme:
+  # Rows of the README "Defaults" table. {NAME} is replaced by serve.env.NAME.
+  defaults:
+    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
+    - Model: "`{MODEL}` at `{SNAPSHOT_SHA}`, served from the HF cache `{HF_CACHE}` (read-only) on each node"
+    - Snapshot check: "`config.json` sha256 `{CONFIG_SHA256}`, index sha256 `{INDEX_SHA256}`, {SHARDS} shards, {SHARD_BYTES} shard bytes, every shard's header ending at its size"
+    - Ranks: "`--tp {TP}`: rank 1 on `{WORKER_HOST}` first, then rank 0 (HTTP) on the head; rendezvous `{HEAD_IP}:{MASTER_PORT}`"
+    - "`--context`": "{CONTEXT}, the model's native window (tested through run.sh: needles at 130k, 258k, 524k and 1,039,528 prompt tokens, all found)"
+    - Drafting: "`--mtp-drafts {MTP_DRAFTS}` (DSpark drafts a round; 0 decodes one token a round); `--mtp-confidence` not passed"
+    - Thinking: "off (`--no-thinking`, `THINKING={THINKING}`) on both ranks; a request turns it on with `chat_template_kwargs.thinking` or an effort name"
+    - "`--max-tokens`": "{MAX_TOKENS} (the reply cap when a request sets none)"
+    - Sampling: "`--top-p {TOP_P}` on both ranks (the top_p when a request sends none); temperature not passed (the engine's default, 1.0); top-k off (the family's default). DeepSeek's model card: temperature 1.0, top_p 0.95 or 1.0"
+    - NCCL: "`NCCL_IB_HCA={HCA}`, `NCCL_SOCKET_IFNAME={IFACE}`"
+    - Memory: "MemAvailable >= {MEM_GATE_GIB} GiB on each node before a start; memguard {MEMGUARD_MIN_AVAIL_MB} MB RAM and {MEMGUARD_MIN_SWAP_FREE_MB} MB swap"
+    - Kernel cache: "`{TF_CACHE}/<TF_SHA>` on each node, mounted at `/cache/tf`"
+    - API: "`http://<head>:{PORT}/v1`, served as `{SERVED_NAME}`"
+    - Container: "`{CONTAINER_NAME}` on each node"
+
+measured:
+  # The README decode table. One row per (phase, concurrency); a row's three numbers come from one file with a
+  # bench_decode.py `SUMMARY` (one run, or scripts/decode_compute.py's two-boot rows in the same format).
+  # evidence: the file under evidence/ that contains them, or null while there is none.
+  # kit/render.py renders a row with evidence null as "not yet measured on this pair" and refuses a number without
+  # evidence.
+  decode:
+    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed greedy, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s3 bootC and bootD, 2026-10-04: `--context 1048576`, `--top-p 1.0`, 3 drafts a round, no env override); each row is the median of the two per-boot medians (evidence/s3-default-1m/decode.txt, which also gives each boot's and the pooled 18-run medians); TensorFold `ec28f35` at TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS_LONG=9; runs 2 to 9 of each cell resume the kept prompt, so TTFT p50 is a resumed prompt. Also measured: two boots at `--context 65538` (s2 bootA and bootB): prose 45.7, structured 64.2, prose_long 34.4 (evidence/s2-run-sh-ec28f35/decode.txt)"
+    units: {decode: tok/s per stream (median), aggregate: tok/s, ttft_p50: s}
+    rows:
+      - {phase: prose, concurrency: 1, decode: 46.0, aggregate: 46.0, ttft_p50: 0.07, evidence: evidence/s3-default-1m/decode.txt,
+         note: "The prose reply ends at its end token after 74 tokens; ignore_eos decodes the other 126 (post_eos_fraction 0.63)."}
+      - {phase: structured, concurrency: 1, decode: 64.1, aggregate: 64.1, ttft_p50: 0.07, evidence: evidence/s3-default-1m/decode.txt}
+      - {phase: prose_long, concurrency: 1, decode: 34.6, aggregate: 34.6, ttft_p50: 0.07, evidence: evidence/s3-default-1m/decode.txt}
+
+links:
+  model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8
+  base_model: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
+  engine: https://github.com/ashhart/TensorFold
+  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine
+  base_image: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
+  repo: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-TensorFold-2x-DGX-Spark
+  sibling_vllm: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark

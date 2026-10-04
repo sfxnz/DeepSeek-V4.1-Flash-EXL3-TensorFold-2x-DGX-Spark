@@ -1,0 +1,12 @@
+label=default url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 sampling={}
+{"run": 1, "completion_tokens": 200, "ttft_s": 0.13, "decode_tok_s": 15.19, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 2, "completion_tokens": 200, "ttft_s": 0.096, "decode_tok_s": 15.16, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 3, "completion_tokens": 200, "ttft_s": 0.108, "decode_tok_s": 15.67, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 4, "completion_tokens": 200, "ttft_s": 0.124, "decode_tok_s": 15.31, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 5, "completion_tokens": 200, "ttft_s": 0.106, "decode_tok_s": 15.31, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 6, "completion_tokens": 200, "ttft_s": 0.087, "decode_tok_s": 15.58, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 7, "completion_tokens": 200, "ttft_s": 0.112, "decode_tok_s": 14.79, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 8, "completion_tokens": 200, "ttft_s": 0.093, "decode_tok_s": 15.77, "text_head": "Sparse attention helps long-context language models by reduc"}
+{"run": 9, "completion_tokens": 200, "ttft_s": 0.116, "decode_tok_s": 15.59, "text_head": "Sparse attention helps long-context language models by reduc"}
+SAMPLED {"label": "default", "sampling": {}, "runs": 9, "median_decode_tok_s": 15.31, "median_ttft_s": 0.108, "same_text_every_run": true}
+rc=0

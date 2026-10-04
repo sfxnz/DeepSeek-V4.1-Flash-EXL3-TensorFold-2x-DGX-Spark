@@ -1,0 +1,12 @@
+## 2026-10-04T20:57:32Z after the doc and recipe.yaml updates
+$ python3 -m unittest discover -s tests -q
+Ran 89 tests in 4.448s
+
+OK
+$ python3 kit/render.py --strict --check
+rc=0
+$ VALIDATE_ONLY=1 ./run.sh
+==> validate-only image=tf-dsv41-flash:0.6.4-ec28f35 tf=ec28f35c7568986666dc996f3c8b01ea59b6d0ca repo=https://github.com/sfxnz/TensorFold.git snapshot=982b70452f399814f56b46272fd30394ae10d58c tp=2 ctx=1048576 drafts=3 confidence=none thinking=0 max_tokens=4096 hca=rocep1s0f1,roceP2p1s0f1 host=0.0.0.0 mem_gate=100 engine_env=0
+rc=0
+$ shellcheck -S warning run.sh stop.sh tools/session_gate.sh
+rc=0
