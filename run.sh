@@ -11,9 +11,9 @@ HF_HOME_IN_CONTAINER=/cache/huggingface
 # BEGIN generated from recipe.yaml — edit recipe.yaml and run kit/render.py
 MODEL="${MODEL:-sfxnz/DeepSeek-V4.1-Flash-EXL3}"
 SERVED_NAME="${SERVED_NAME:-deepseek-ai/DeepSeek-V4.1-Flash}"
-IMAGE="${IMAGE:-tf-dsv41-flash:0.6.4-ec28f35}"
+IMAGE="${IMAGE:-tf-dsv41-flash:0.6.4-41306d5}"
 TF_REPO="${TF_REPO:-https://github.com/sfxnz/TensorFold.git}"
-TF_SHA="${TF_SHA:-ec28f35c7568986666dc996f3c8b01ea59b6d0ca}"
+TF_SHA="${TF_SHA:-41306d5e2acd5651fc0954609b3a651d2ef61d6e}"
 CONTAINER_NAME="${CONTAINER_NAME:-tf-dsv41-flash}"
 PORT="${PORT:-8000}"
 MASTER_PORT="${MASTER_PORT:-29571}"

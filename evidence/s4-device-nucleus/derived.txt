@@ -1,0 +1,55 @@
+# Derived README numbers, s4-device-nucleus. Inputs are files in this directory, ../s3-default-1m and ../s2-run-sh-ec28f35.
+
+## Engine and server sampling default: gate/serve-argv.txt, rank 0's `serving` line (gate/startup.txt)
+tf-dsv41-flash:0.6.4-41306d5
+sampling: 'top_p 1.0'; context: 1048576
+
+## Ruler, one boot: gate/bench-*.out SUMMARY median_decode_tok_s, against s3's two-boot rows (decode.txt)
+prose: 45.26 (ttft p50 0.075, n 9) vs s3 46.02 (bootC 45.74, bootD 46.29) -> 0.983
+structured: 63.74 (ttft p50 0.068, n 9) vs s3 64.08 (bootC 63.58, bootD 64.58) -> 0.995
+prose_long: 34.18 (ttft p50 0.070, n 9) vs s3 34.62 (bootC 34.37, bootD 34.86) -> 0.987
+
+## Sampled cells: sampled-<label>.txt SAMPLED (one boot), against s3's boots C / D
+nofields: request sends {}; median 36.59 tok/s, ttft 0.072, same text True, token_sha ['4e0fa4daff89']; s3 36.76 / 37.1 tok/s, s3 token_sha (rank0-full.log) bootC ['4e0fa4daff89'] bootD ['4e0fa4daff89']; token_sha equal to s3: True; text head equal to s3: True
+top_p1: request sends {"temperature": 1.0, "top_p": 1.0}; median 36.55 tok/s, ttft 0.072, same text True, token_sha ['4e0fa4daff89']; s3 37.03 / 37.27 tok/s, s3 token_sha (rank0-full.log) bootC ['4e0fa4daff89'] bootD ['4e0fa4daff89']; token_sha equal to s3: True; text head equal to s3: True
+top_k20: request sends {"temperature": 1.0, "top_k": 20}; median 37.04 tok/s, ttft 0.076, same text True, token_sha ['c8313f988d0b']; s3 37.12 / 37.63 tok/s, s3 token_sha (rank0-full.log) bootC ['c8313f988d0b'] bootD ['c8313f988d0b']; token_sha equal to s3: True; text head equal to s3: True
+top_p095: request sends {"temperature": 1.0, "top_p": 0.95}; median 31.76 tok/s, ttft 0.072, same text True, token_sha ['dae740142762']; s3 15.23 / 15.72 tok/s, s3 token_sha (rank0-full.log) bootC ['dae740142762'] bootD ['dae740142762']; token_sha equal to s3: True; text head equal to s3: True
+top_p09: request sends {"temperature": 1.0, "top_p": 0.9}; median 31.76 tok/s, ttft 0.073, same text True, token_sha ['dae740142762']
+top_p095 / nofields = 0.868; top_p09 / nofields = 0.868; top_p095 / s3 top_p095 (median of boots) = 2.05
+
+## Rounds of each sampled reply: rank0-full.log, the 45 `done` lines of the cells (after the ruler's)
+nofields: (sha, rounds, accepted) [('4e0fa4daff89', 86, '113/253')]; median tok/s x rounds / top_p1's rounds = 36.59
+top_p1: (sha, rounds, accepted) [('4e0fa4daff89', 86, '113/253')]; median tok/s x rounds / top_p1's rounds = 36.55
+top_k20: (sha, rounds, accepted) [('c8313f988d0b', 87, '112/260')]; median tok/s x rounds / top_p1's rounds = 37.47
+top_p095: (sha, rounds, accepted) [('dae740142762', 99, '100/293')]; median tok/s x rounds / top_p1's rounds = 36.56
+top_p09: (sha, rounds, accepted) [('dae740142762', 99, '100/293')]; median tok/s x rounds / top_p1's rounds = 36.56
+
+## Exactness: pairs.jsonl checks
+drafted == draft:false: 6 of 6; equal to s2's reply at ec28f35: 6 of 6
+top_p 0.95 prompt0 drafted: sha 2e35c52cda08 48.46 tok/s, accepted 109/147
+top_p 0.95 prompt0 draft:false: sha 2e35c52cda08 25.84 tok/s, accepted 0/0
+top_p 0.95 prompt1 drafted: sha 75ad34c67f94 46.97 tok/s, accepted 106/158
+top_p 0.95 prompt1 draft:false: sha 75ad34c67f94 25.5 tok/s, accepted 0/0
+top_p 0.95 prompt2 drafted: sha 14f0fa7d7629 50.06 tok/s, accepted 109/148
+top_p 0.95 prompt2 draft:false: sha 14f0fa7d7629 23.93 tok/s, accepted 0/0
+top_p 1.0 prompt0 drafted: sha 7d1dc35680a6 48.65 tok/s, accepted 111/144
+top_p 1.0 prompt0 draft:false: sha 7d1dc35680a6 22.28 tok/s, accepted 0/0
+top_p 1.0 prompt1 drafted: sha 22480b3cd4c8 45.2 tok/s, accepted 103/165
+top_p 1.0 prompt1 draft:false: sha 22480b3cd4c8 26.5 tok/s, accepted 0/0
+top_p 1.0 prompt2 drafted: sha 65f2c13cd1dc 48.41 tok/s, accepted 107/154
+top_p 1.0 prompt2 draft:false: sha 65f2c13cd1dc 24.34 tok/s, accepted 0/0
+
+## Before (s2 bootA/pairs.jsonl at ec28f35) and after (pairs.jsonl): drafted, the same request; tok/s, rounds, the sampling stage's ms a round
+top_p 0.95 prompt0: before 24.36 tok/s, 50 rounds, sampling 67.245 ms; after 48.46 tok/s, 50 rounds, sampling 3.778 ms; after / before 1.99
+top_p 0.95 prompt1: before 23.16 tok/s, 53 rounds, sampling 67.806 ms; after 46.97 tok/s, 53 rounds, sampling 3.767 ms; after / before 2.03
+top_p 0.95 prompt2: before 24.78 tok/s, 50 rounds, sampling 68.173 ms; after 50.06 tok/s, 50 rounds, sampling 3.41 ms; after / before 2.02
+top_p 1.0 prompt0: before 52.08 tok/s, 48 rounds, sampling 3.106 ms; after 48.65 tok/s, 48 rounds, sampling 3.041 ms; after / before 0.93
+top_p 1.0 prompt1: before 44.95 tok/s, 56 rounds, sampling 3.131 ms; after 45.2 tok/s, 56 rounds, sampling 3.006 ms; after / before 1.01
+top_p 1.0 prompt2: before 48.57 tok/s, 52 rounds, sampling 2.745 ms; after 48.41 tok/s, 52 rounds, sampling 2.84 ms; after / before 1.00
+
+## Duration
+./run.sh to ready: run.txt start 03:28:01 end 03:31:03 = 182 s
+IMAGE_ONLY=1 ./run.sh: image-only.txt 03:24:23 to 03:27:51 = 208 s
+
+## Bench requests with thinking off: gate/docker-head.log
+done lines=32 thinking=False=32

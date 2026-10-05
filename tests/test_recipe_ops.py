@@ -36,7 +36,7 @@ VERBATIM = {
     "tests/test_smoke_chat.py": "7dbd9d977db194c349e7b12992d986cbf758c203224412c5bc52334ed367d35f",
 }
 TF_REPO = "https://github.com/sfxnz/TensorFold.git"
-TF_SHA = "ec28f35c7568986666dc996f3c8b01ea59b6d0ca"
+TF_SHA = "41306d5e2acd5651fc0954609b3a651d2ef61d6e"
 SNAPSHOT_SHA = "982b70452f399814f56b46272fd30394ae10d58c"
 CONFIG_SHA256 = "6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5"
 INDEX_SHA256 = "91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03"
@@ -223,7 +223,7 @@ class GuardTests(unittest.TestCase):
         self.assertIn("env: TF_DSV41_CACHE_GIB=0\n", _run_sh(validate="args", TF_DSV41_CACHE_GIB="0").stdout)
 
     def test_paths_and_shas(self) -> None:
-        self.refused("not a 40-hex TensorFold commit", TF_SHA="ec28f35")
+        self.refused("not a 40-hex TensorFold commit", TF_SHA="41306d5")
         self.refused("must be an https git URL ending .git", TF_REPO="git@github.com:sfxnz/TensorFold.git")
         self.refused("not a 40-hex snapshot revision", SNAPSHOT_SHA="main")
         self.refused("not a 64-hex sha256", CONFIG_SHA256="6469adab")

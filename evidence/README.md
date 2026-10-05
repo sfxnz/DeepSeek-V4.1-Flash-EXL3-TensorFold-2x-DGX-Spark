@@ -34,6 +34,7 @@ A gate session (`tools/session_gate.sh EVDIR`) writes:
 | [`s1-snapshot-pins`](s1-snapshot-pins/) | the Hub at `982b704` behind `recipe.yaml`'s snapshot pins; `run.sh`'s snapshot check on the folder the receipts served | pins match |
 | [`s2-run-sh-ec28f35`](s2-run-sh-ec28f35/) | engine bumped to `ec28f35`; the image and three serves through `run.sh`: decode table, sampled cells, exactness, prefill, needles to 1,039,528 tokens, quality | measured through `run.sh`; window default 1048576 |
 | [`s3-default-1m`](s3-default-1m/) | `TOP_P=1.0` (`--top-p 1.0` on both ranks); two serves through `run.sh` at the shipped defaults: decode table, sampled cells with and without sampling fields, exactness of the default request, quiet prefill | default top_p 1.0; decode table at 1048576 |
+| [`s4-device-nucleus`](s4-device-nucleus/) | engine bumped to `41306d5` (the device top_p cut); the image and one serve through `run.sh` at the shipped defaults: gate, sampled cells at top_p 1.0, 0.95 and 0.9, exactness at top_p 0.95 and 1.0 | top_p 0.95 and 0.9 on the device, 31.8 tok/s (was 15.5); every reply equal to `ec28f35`'s |
 
 ### s0-engine-receipts (2026-10-04)
 
@@ -137,3 +138,27 @@ Order (UTC): validate 21:11; boot C 21:11:58, ready 21:12:50, gate, cells, stop 
 | `final-validate.txt` | the same checks after the README, `recipe.yaml` and ledger updates |
 
 Not here: `bench_openai` (not rerun: at t=1 it sends top_k 20 and top_p 0.95, so the server's top_p does not reach it; the README keeps s2's), needles, quality and NLL (not rerun; s2's 1048576 boot at the engine default top_p 0.95 holds them).
+
+### s4-device-nucleus (2026-10-05)
+
+**Result.** TensorFold `41306d5` (fork branch `dsv41-recipe-engine2`: `ec28f35`'s tree, which is `44338a2`, plus `41306d5`, the patch of `43ebdce` on branch `cuda-keyed-draw`: a top_p cut found on the device) built into `tf-dsv41-flash:0.6.4-41306d5` by `IMAGE_ONLY=1 ./run.sh` (208 s; pip changed nothing else) and served once by `./run.sh` at the shipped defaults. Gate: `GATE=PASS`; the ruler, one boot: prose 45.26, structured 63.74, prose_long 34.18 tok/s (s3's two-boot rows 46.0 / 64.1 / 34.6; the decode table stays s3's). Sampled cells (one boot, 9 runs, median): no field 36.59, top_p 1.0 36.55, top_k 20 37.04, top_p 0.95 31.76 (s3: 15.23 / 15.72), top_p 0.9 31.76 tok/s. Each cell's reply has the same token hash as the same request in both s3 boots. The top_p 0.95 and 0.9 reply is one text (`dae740142762`) that takes 99 rounds against the top_p 1.0 reply's 86; scaled by rounds the three cells match (36.56 / 36.56 / 36.55). Pairs at temperature 1.0, top_k omitted, seed 1234, 160 tokens, three prompts: drafted == `"draft": false` 6 of 6, each drafted reply equal to s2's reply to the same request at `ec28f35` 6 of 6 (top_p 0.95: the host path then); the sampling stage fell from about 68 ms a round (s2) to 3.4-3.8 ms at top_p 0.95, and those requests decoded at 47.0-50.1 tok/s against 23.2-24.8 in the same rounds (`derived.txt`).
+
+Why: at `ec28f35` a top_k-off row with a top_p cut whose nucleus ran past each rank's 1,024 best candidates read each rank's vocabulary half to the host. The engine commit finds the cut by radix passes over exact int64 masses on the device, so it draws the host rule's tokens.
+
+Setup: as s3 (spark1 head, spark2 worker, both GPUs exclusive, only `conduit` on spark1, no GPU). The bump to `41306d5` in `recipe.yaml`, `docker/Dockerfile`, the render and the test constants was uncommitted during the boot (`gate/git-head.txt` is the previous commit `5cbb262`); `run.sh` already had its committed bytes (its sha256 in `gate/harness.sha256`). `recipe.yaml` changed afterwards in comments and the decode conditions only, so its hash in `gate/harness.sha256` is the pre-edit one. A fresh kernel cache for the new `TF_SHA`: the boot compiled the extensions (182 s to ready, rank 0 `loaded in 169.2s`). `./run.sh` with no env override, through `scripts/boot.sh` (`free -h`, `./run.sh`, the gate with RUNS=9 RUNS_LONG=9, the five cells, the pairs, both ranks' logs, `free -h`, `./stop.sh`). Client tools on the head's host: the recipe's own, `scripts/sampled_cell.py` (s2's, plus each reply's `token_sha` from the stream) and `scripts/pairs_nucleus.py`. Rank 0 logged 89 `POST /v1/chat/completions` and 89 `done` lines: the gate's 32, the cells' 45 and the pairs' 12; nothing else sent inference (the `GET /v1/models` lines are polls).
+
+Order (UTC): validate 02:46; image 03:24:23-03:27:51; boot 03:28:01, ready 03:31:03, gate to 03:33:35, cells, pairs, stop 03:39:12; both GPUs idle at 03:39:30 (`gpus_idle_end.txt`).
+
+| File | What |
+|---|---|
+| `step1-validate.txt` | unit tests, `render --check` and `--strict --check`, `VALIDATE_ONLY=1` and `=args`, shellcheck, after the pin bump |
+| `image-only.txt`, `image-ids.txt` | `IMAGE_ONLY=1 ./run.sh`: the build (pip's commit check, the unchanged-freeze check), the copy; the image ID and labels on both nodes |
+| `run.txt`, `gate/`, `stop.txt`, `free-*.txt`, `rank*-full.log` | `./run.sh` output, `tools/session_gate.sh` (smokes, the frozen ruler, receipts), `./stop.sh`, `free -h` on both nodes, both ranks' full logs |
+| `sampled-{nofields,top_p1,top_k20,top_p095,top_p09}.txt` | `scripts/sampled_cell.py`: s3's four cells and top_p 0.9, 9 runs each, with token hashes |
+| `pairs.jsonl` | `scripts/pairs_nucleus.py`: drafted vs `"draft": false` at top_p 0.95 and 1.0 on s2's three prompts, and each hash against s2's reply at `ec28f35` |
+| `derived.txt` | `scripts/derived.py`: the serving line, the ruler against s3, the cells against s3 (speeds, token hashes from s3's `rank0-full.log`, text heads), rounds of each reply, the pair checks and the before/after per request, durations, the `thinking=False` count |
+| `boot-driver.txt` | `scripts/boot.sh`'s own output |
+| `gpus_idle_end.txt` | containers, GPU use and `free -h` on both nodes at the end |
+| `final-validate.txt` | the same checks as `step1-validate.txt` after the README, `recipe.yaml`, `AGENTS.md` and ledger updates |
+
+Not here: a second boot (the decode table and its two-boot rule stay with s3; the ruler is greedy and this commit changes only sampling with a top_p cut); `bench_openai`, `prefill_cold`, needles, quality and NLL (not rerun: the commit does not touch prompts, logits or top_k 20 sampling); rows where the device cut falls back to the host rule (past `TMAX`, or where the draw cannot decide) are not counted in the logs.

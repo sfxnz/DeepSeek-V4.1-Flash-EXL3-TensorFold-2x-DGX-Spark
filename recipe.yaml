@@ -22,22 +22,24 @@ model:
 image:
   base: nvcr.io/nvidia/pytorch:26.07-py3
   digest: sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
-  local_tag: &image tf-dsv41-flash:0.6.4-ec28f35
+  local_tag: &image tf-dsv41-flash:0.6.4-41306d5
   build: docker/Dockerfile (pip install git+TF_REPO@TF_SHA under docker/constraints.txt; the commit pip installed is checked; no installed package may change, so torch and triton stay the base's)
 
 engine:
   name: tensorfold
-  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows
-  # The fork branch that carries both PRs on release v0.6.4 (6ea5ade), then the device keyed draw for top_k-off rows
-  # (the same patch as be2cc80 on fork branch cuda-keyed-draw, which sits on 6ea5ade). Bump TF_REPO and TF_SHA
-  # together to an upstream release tag once the family is released there; a bump needs new evidence.
+  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows, with and without a top_p cut
+  # The fork branch that carries both PRs on release v0.6.4 (6ea5ade), then the device keyed draw for top_k-off rows:
+  # 44338a2 (no top_p cut; the same patch as be2cc80 on fork branch cuda-keyed-draw) and 41306d5 (the top_p cut on
+  # the device; the same patch as 43ebdce, which sits on be2cc80 on 6ea5ade). Bump TF_REPO and TF_SHA together to an
+  # upstream release tag once the family is released there; a bump needs new evidence.
   repo: &tf_repo https://github.com/sfxnz/TensorFold.git
-  branch: dsv41-recipe-engine
-  commit: &tf_sha ec28f35c7568986666dc996f3c8b01ea59b6d0ca
+  branch: dsv41-recipe-engine2
+  commit: &tf_sha 41306d5e2acd5651fc0954609b3a651d2ef61d6e
   base_release: v0.6.4 (6ea5ade)
   upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391]
   family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip, fork branch deepseek-v41-cuda)
-  keyed_draw: be2cc80cda2cfac64a2dac1b514dc8e9a53f9205 (fork branch cuda-keyed-draw; ec28f35 is the same patch on 0d91389)
+  keyed_draw: be2cc80cda2cfac64a2dac1b514dc8e9a53f9205 then 43ebdce14a4cad4b311ec0a800009b2b5740e802 on 6ea5ade (41306d5 is the same two patches on 0d91389)
+  previous: ec28f35c7568986666dc996f3c8b01ea59b6d0ca (fork branch dsv41-recipe-engine; sessions s2 and s3)
 
 hardware:
   shape: 2x DGX Spark (GB10)
@@ -72,9 +74,10 @@ serve:
     THINKING: 0
     MAX_TOKENS: 4096
     # --top-p on both ranks: the server's top_p when a request sends none. DeepSeek's model card recommends
-    # temperature 1.0 and top_p "0.95 or 1.0"; at TF_SHA a top_k-off row without a top_p cut (1.0) draws on the
-    # device, a cut (< 1) reads each rank's vocabulary half to the host (evidence/decision.tsv TOPP1).
-    # Temperature is not passed: the engine's default, 1.0, applies.
+    # temperature 1.0 and top_p "0.95 or 1.0"; at ec28f35 a top_k-off row without a top_p cut (1.0) drew on the
+    # device and a cut (< 1) read each rank's vocabulary half to the host (evidence/decision.tsv TOPP1). At TF_SHA
+    # both draw on the device at the same cost a round (evidence/s4-device-nucleus/derived.txt); 1.0 stays the
+    # default. Temperature is not passed: the engine's default, 1.0, applies.
     TOP_P: 1.0
     HF_CACHE: $HOME/.cache/huggingface
     SNAPSHOT_SHA: *revision
@@ -125,7 +128,7 @@ measured:
   # kit/render.py renders a row with evidence null as "not yet measured on this pair" and refuses a number without
   # evidence.
   decode:
-    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed greedy, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s3 bootC and bootD, 2026-10-04: `--context 1048576`, `--top-p 1.0`, 3 drafts a round, no env override); each row is the median of the two per-boot medians (evidence/s3-default-1m/decode.txt, which also gives each boot's and the pooled 18-run medians); TensorFold `ec28f35` at TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS_LONG=9; runs 2 to 9 of each cell resume the kept prompt, so TTFT p50 is a resumed prompt. Also measured: two boots at `--context 65538` (s2 bootA and bootB): prose 45.7, structured 64.2, prose_long 34.4 (evidence/s2-run-sh-ec28f35/decode.txt)"
+    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed greedy, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s3 bootC and bootD, 2026-10-04: `--context 1048576`, `--top-p 1.0`, 3 drafts a round, no env override); each row is the median of the two per-boot medians (evidence/s3-default-1m/decode.txt, which also gives each boot's and the pooled 18-run medians); TensorFold `ec28f35` at TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS_LONG=9; runs 2 to 9 of each cell resume the kept prompt, so TTFT p50 is a resumed prompt. Also measured: two boots at `--context 65538` (s2 bootA and bootB): prose 45.7, structured 64.2, prose_long 34.4 (evidence/s2-run-sh-ec28f35/decode.txt); one boot at the pinned `41306d5` and the shipped defaults (s4, 2026-10-05; its one commit over `ec28f35` changes only top-k-off sampling with a top_p cut, which the greedy ruler does not reach): prose 45.26, structured 63.74, prose_long 34.18 (evidence/s4-device-nucleus/gate/bench-*.out, evidence/s4-device-nucleus/derived.txt)"
     units: {decode: tok/s per stream (median), aggregate: tok/s, ttft_p50: s}
     rows:
       - {phase: prose, concurrency: 1, decode: 46.0, aggregate: 46.0, ttft_p50: 0.07, evidence: evidence/s3-default-1m/decode.txt,
@@ -137,7 +140,7 @@ links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8
   base_model: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
   engine: https://github.com/ashhart/TensorFold
-  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine
+  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine2
   base_image: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
   repo: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-TensorFold-2x-DGX-Spark
   sibling_vllm: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark

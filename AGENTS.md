@@ -1,6 +1,6 @@
 # AGENTS.md — DeepSeek-V4.1-Flash EXL3 · TensorFold · 2× DGX Spark
 
-Serve `sfxnz/DeepSeek-V4.1-Flash-EXL3` (revision `982b704`, branch `2.0bpw-mcg-viterbi-lmhead-mxfp8`) at TP=2 with TensorFold's own `deepseek_v41` CUDA family: commit `ec28f35` on `sfxnz/TensorFold` branch `dsv41-recipe-engine` (v0.6.4 + upstream PRs #390 and #391 + the device keyed draw for top_k-off rows, the patch of `be2cc80` on branch `cuda-keyed-draw`), inside `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned in `docker/Dockerfile`). Not vLLM. The vLLM recipe is a separate repo (`sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark`); one repo per engine.
+Serve `sfxnz/DeepSeek-V4.1-Flash-EXL3` (revision `982b704`, branch `2.0bpw-mcg-viterbi-lmhead-mxfp8`) at TP=2 with TensorFold's own `deepseek_v41` CUDA family: commit `41306d5` on `sfxnz/TensorFold` branch `dsv41-recipe-engine2` (v0.6.4 + upstream PRs #390 and #391 + the device keyed draw for top_k-off rows without and with a top_p cut, the patches of `be2cc80` and `43ebdce` on branch `cuda-keyed-draw`), inside `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned in `docker/Dockerfile`). Not vLLM. The vLLM recipe is a separate repo (`sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark`); one repo per engine.
 
 Humans read [README.md](README.md).
 
@@ -27,13 +27,13 @@ Humans read [README.md](README.md).
 - **Image.** Built on the head from `docker/Dockerfile` (spark2 has no internet). Run `IMAGE_ONLY=1 ./run.sh` before the downtime. `run.sh` refuses an image whose `tensorfold.sha` label differs from `TF_SHA`, and copies the head's image to the worker when the image IDs differ.
 - **TF32.** Keep `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0` in the container env, as the receipts ran.
 
-## Known engine limits (deepseek_v41 at `ec28f35`, two ranks)
+## Known engine limits (deepseek_v41 at `41306d5`, two ranks)
 
 - Two ranks only, one request at a time (`--parallel` is ignored). Both ranks decode each request to `max_tokens` or an end token.
 - This export only. The family checks the checkpoint at startup and refuses EXL3 outside the routed experts or a BF16 LM head.
 - Refused with HTTP 400: images, `response_format` / guided / structured outputs, `logprobs`, `tool_choice: "required"` or named, `thinking_budget`, `n > 1`.
 - An effort name turns thinking on, even on a `--no-thinking` server; `chat_template_kwargs.thinking: false` keeps it off.
-- Sampling with top-k off is exact. Without a top_p cut (`top_p` 1.0) the draw runs on the device. With a cut (the engine default `top_p` 0.95, or a request's top_p under 1) a row whose nucleus runs past 1,024 candidates still reads each rank's vocabulary half to the host: about 15-24 tok/s against about 37-50 with `top_k` 20 or `top_p` 1.0 (`evidence/s2-run-sh-ec28f35/bootA/pairs.jsonl`, `evidence/s3-default-1m/derived.txt`). So `run.sh` passes `--top-p 1.0` (`TOP_P` in `recipe.yaml`, decision `TOPP1`). Greedy is not affected.
+- Sampling with top-k off is exact and draws on the device, with or without a top_p cut: on the ruler's prose prompt top_p 0.95 and 0.9 decode at 31.8 tok/s against 36.6 at top_p 1.0, the gap being that reply's extra rounds, and replies equal the old host path's (`evidence/s4-device-nucleus/derived.txt`). At `ec28f35` a cut read each rank's vocabulary half to the host (15.5 tok/s there), which is why `run.sh` passes `--top-p 1.0` (`TOP_P` in `recipe.yaml`, decision `TOPP1`). Past the cut's `TMAX` bound, or where the device draw cannot decide, the host rule still runs. Greedy is not affected.
 - What happens when one rank dies mid-request is not tested here. Restart both with `./stop.sh && ./run.sh`.
 
 ## Host memory safety
