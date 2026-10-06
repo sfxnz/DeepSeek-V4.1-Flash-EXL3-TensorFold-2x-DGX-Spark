@@ -36,7 +36,7 @@ VERBATIM = {
     "tests/test_smoke_chat.py": "7dbd9d977db194c349e7b12992d986cbf758c203224412c5bc52334ed367d35f",
 }
 TF_REPO = "https://github.com/sfxnz/TensorFold.git"
-TF_SHA = "41306d5e2acd5651fc0954609b3a651d2ef61d6e"
+TF_SHA = "903a1e8af62c8f46eceee6b95481706ada30ae49"
 SNAPSHOT_SHA = "982b70452f399814f56b46272fd30394ae10d58c"
 CONFIG_SHA256 = "6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5"
 INDEX_SHA256 = "91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03"
@@ -136,7 +136,7 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(out.startswith("==> validate-only "), out)
         self.assertEqual(len(out.splitlines()), 1, out)
         for want in (f"tf={TF_SHA}", f"repo={TF_REPO}", f"snapshot={SNAPSHOT_SHA}",
-                     f"tp=2 ctx={d['CONTEXT']} drafts={d['MTP_DRAFTS']}", "confidence=none", "thinking=0",
+                     f"tp=2 ctx={d['CONTEXT']} drafts={d['MTP_DRAFTS']}", f"confidence={d['MTP_CONFIDENCE']}", "thinking=0",
                      f"max_tokens={d['MAX_TOKENS']}", "host=0.0.0.0", f"mem_gate={d['MEM_GATE_GIB']}",
                      "engine_env=0", f"image={d['IMAGE']}"):
             self.assertIn(want, out)
@@ -223,7 +223,7 @@ class GuardTests(unittest.TestCase):
         self.assertIn("env: TF_DSV41_CACHE_GIB=0\n", _run_sh(validate="args", TF_DSV41_CACHE_GIB="0").stdout)
 
     def test_paths_and_shas(self) -> None:
-        self.refused("not a 40-hex TensorFold commit", TF_SHA="41306d5")
+        self.refused("not a 40-hex TensorFold commit", TF_SHA="903a1e8")
         self.refused("must be an https git URL ending .git", TF_REPO="git@github.com:sfxnz/TensorFold.git")
         self.refused("not a 40-hex snapshot revision", SNAPSHOT_SHA="main")
         self.refused("not a 64-hex sha256", CONFIG_SHA256="6469adab")
@@ -415,13 +415,13 @@ class RankIdentityTests(unittest.TestCase):
             self.assertEqual(f0[k], v, k)
         self.assertEqual(f0["--name"], [SERVED])
         self.assertIn("--no-thinking", f1)
-        self.assertEqual(f1["--mtp-drafts"], ["3"])
+        self.assertEqual(f1["--mtp-drafts"], ["5"])
+        self.assertEqual(f1["--mtp-confidence"], ["0.15"])
         self.assertEqual(f1["--top-p"], ["1.0"])
         self.assertNotIn("--temperature", f1)
         self.assertNotIn("--top-k", f1)
         for argv in self.args_out(TOP_P="0.95")[:2]:
             self.assertEqual(self.flags(argv)["--top-p"], ["0.95"])
-        self.assertNotIn("--mtp-confidence", f1)
         self.assertNotIn("--parallel", f1)
         self.assertNotIn("--kv-dtype", f1)
         thinking = self.flags(self.args_out(THINKING="1", MTP_CONFIDENCE="0.5")[1])

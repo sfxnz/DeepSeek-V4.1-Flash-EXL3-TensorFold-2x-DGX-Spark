@@ -1,0 +1,32 @@
+# s5 step 1: checks after the pin bump to 903a1e8 and the draft policy change, 2026-10-06T16:23:46Z
+$ python3 -m unittest discover -s tests -q
+----------------------------------------------------------------------
+Ran 90 tests in 5.391s
+
+OK
+rc=0
+$ python3 kit/render.py --check
+rc=0
+$ python3 kit/render.py --strict --check
+rc=0
+$ VALIDATE_ONLY=1 ./run.sh
+==> validate-only image=tf-dsv41-flash:0.6.4-903a1e8 tf=903a1e8af62c8f46eceee6b95481706ada30ae49 repo=https://github.com/sfxnz/TensorFold.git snapshot=982b70452f399814f56b46272fd30394ae10d58c tp=2 ctx=1048576 drafts=5 confidence=0.15 thinking=0 max_tokens=4096 top_p=1.0 hca=rocep1s0f1,roceP2p1s0f1 host=0.0.0.0 mem_gate=100 engine_env=0
+rc=0
+$ VALIDATE_ONLY=args ./run.sh
+rank1: tensorfold serve /cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c --tp 2 --rank 1 --master 10.100.8.1 --master-port 29571 --name deepseek-ai/DeepSeek-V4.1-Flash --context 1048576 --mtp-drafts 5 --top-p 1.0 --no-update-check --mtp-confidence 0.15 --no-thinking
+rank0: tensorfold serve /cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c --tp 2 --rank 0 --master 10.100.8.1 --master-port 29571 --name deepseek-ai/DeepSeek-V4.1-Flash --context 1048576 --mtp-drafts 5 --top-p 1.0 --no-update-check --mtp-confidence 0.15 --no-thinking --host 0.0.0.0 --port 8000 --max-tokens 4096
+env: HF_HOME=/cache/huggingface
+env: HF_HUB_OFFLINE=1
+env: TENSORFOLD_NO_UPDATE_CHECK=1
+env: PYTHONUNBUFFERED=1
+env: PYTHONDONTWRITEBYTECODE=1
+env: TORCH_EXTENSIONS_DIR=/cache/tf/torch_extensions
+env: TRITON_CACHE_DIR=/cache/tf/triton
+env: CUDA_CACHE_PATH=/cache/tf/nv
+env: TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0
+env: NCCL_SOCKET_IFNAME=enp1s0f1np1
+env: NCCL_IB_HCA=rocep1s0f1,roceP2p1s0f1
+env: NCCL_DEBUG=WARN
+rc=0
+$ shellcheck -S warning run.sh stop.sh tools/session_gate.sh
+rc=0

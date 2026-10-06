@@ -1,0 +1,18 @@
+Copies, unchanged, of the C5 unit receipts (lab data/tf-dsv41/receipts/c5) and their dev scripts (lab data/tf-dsv41/dev/c5), 2026-10-06.
+A boots (1A, 4A): commit-1A.txt / commit-4A.txt, the integration tip before C5 (its default policy: 3 drafts every round).
+B boots (2B, 3B): unit/C5 (default policy: up to 5 drafts, confidence product stop 0.15); sweep-2B/3B.jsonl: sweep.py on the B boots, d=3 vs c0.15@5, forward then reversed.
+All boots: --context 65538, the dev launcher (serve_pair.sh, not copied), port 8080; not run.sh.
+
+57b01445cc8bb1baf6cc6dd412f0b2e9392b79fad1fc0fee73679033485ed4a4  abba.log
+4b71166f907465cd6d6cb880953fc521c10aa30fc6b15373d2a2649c5e16aeb2  abba.sh
+3b0ab1d25b5ac01d81c97b4d67414388ad4c244a6a2643907cf620ca7299db52  abba_table.py
+1f77d3a67f01aad6aa6e5464ce2c4313063871c644d5e0a06b48efa8234445d3  abba_table.txt
+f9c7615c8f48137b6aaf5fcb212c71db9dd497d06d0e7501374bdc4391fff994  commit-1A.txt
+ec2a6339cfc0ab92a3d80cc6f7a15c896abbf8e4b94f39930c3f8b63b240b860  commit-2B.txt
+ec2a6339cfc0ab92a3d80cc6f7a15c896abbf8e4b94f39930c3f8b63b240b860  commit-3B.txt
+f9c7615c8f48137b6aaf5fcb212c71db9dd497d06d0e7501374bdc4391fff994  commit-4A.txt
+e2bed8a2b2e558d866d9f85c03d499e73a4350f8bf5c416dc54a695fe06ecef8  session.sh
+f3ccfa73029cf8bf3ddc8712a098d3339362c28c7992c1b9a7d2f0e66b0dd2e7  SOURCES.txt
+5d5ec1af367ab545ff548c589dfb90d3e63ffb3a153c611ab2a0904433fd8719  sweep-2B.jsonl
+daab43e58602abed1e68703c5c028ba0aa03346f6da11b149a3dd374c9ec8e68  sweep-3B.jsonl
+049638ed01e5f566de9ac52053c56895d0769d9154fa030f4548c8d222b46ecd  sweep.py

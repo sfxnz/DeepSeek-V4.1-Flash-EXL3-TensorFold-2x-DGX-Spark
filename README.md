@@ -211,12 +211,12 @@ Stop both ranks from the head:
 <!-- BEGIN generated defaults from recipe.yaml — edit recipe.yaml and run kit/render.py -->
 | Setting | Value |
 |---|---|
-| Engine | TensorFold `41306d5e2acd5651fc0954609b3a651d2ef61d6e` (v0.6.4 + the deepseek_v41 CUDA family) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-41306d5` from `docker/Dockerfile` |
+| Engine | TensorFold `903a1e8af62c8f46eceee6b95481706ada30ae49` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-903a1e8` from `docker/Dockerfile` |
 | Model | `sfxnz/DeepSeek-V4.1-Flash-EXL3` at `982b70452f399814f56b46272fd30394ae10d58c`, served from the HF cache `$HOME/.cache/huggingface` (read-only) on each node |
 | Snapshot check | `config.json` sha256 `6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5`, index sha256 `91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03`, 48 shards, 357466041064 shard bytes, every shard's header ending at its size |
 | Ranks | `--tp 2`: rank 1 on `spark2` first, then rank 0 (HTTP) on the head; rendezvous `10.100.8.1:29571` |
 | `--context` | 1048576, the model's native window (tested through run.sh: needles at 130k, 258k, 524k and 1,039,528 prompt tokens, all found) |
-| Drafting | `--mtp-drafts 3` (DSpark drafts a round; 0 decodes one token a round); `--mtp-confidence` not passed |
+| Drafting | `--mtp-drafts 5 --mtp-confidence 0.15`, the engine's default policy: up to 5 DSpark drafts a round, the chain stopping where the drafts' confidence product falls under 0.15 (`MTP_CONFIDENCE` empty: 5 drafts every round; 0 drafts: one token a round) |
 | Thinking | off (`--no-thinking`, `THINKING=0`) on both ranks; a request turns it on with `chat_template_kwargs.thinking` or an effort name |
 | `--max-tokens` | 4096 (the reply cap when a request sets none) |
 | Sampling | `--top-p 1.0` on both ranks (the top_p when a request sends none); temperature not passed (the engine's default, 1.0); top-k off (the family's default). DeepSeek's model card: temperature 1.0, top_p 0.95 or 1.0 |

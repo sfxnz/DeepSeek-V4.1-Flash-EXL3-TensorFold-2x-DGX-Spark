@@ -1,0 +1,75 @@
+exactness
+1A pairs equal 7 / 7 | bench_concurrent alone [(12, 0, 0), (12, 0, 0), (12, 0, 0), (12, 0, 0)] serial [(4, 0, 0), (4, 0, 0), (1, 0, 0), (1, 0, 0)]
+2B pairs equal 7 / 7 | bench_concurrent alone [(12, 0, 0), (12, 0, 0), (12, 0, 0), (12, 0, 0)] serial [(4, 0, 0), (4, 0, 0), (1, 0, 0), (1, 0, 0)]
+3B pairs equal 7 / 7 | bench_concurrent alone [(12, 0, 0), (12, 0, 0), (12, 0, 0), (12, 0, 0)] serial [(4, 0, 0), (4, 0, 0), (1, 0, 0), (1, 0, 0)]
+4A pairs equal 7 / 7 | bench_concurrent alone [(12, 0, 0), (12, 0, 0), (12, 0, 0), (12, 0, 0)] serial [(4, 0, 0), (4, 0, 0), (1, 0, 0), (1, 0, 0)]
+pairs reply shas equal across boots: True {'1A': '3d5fc647da06', '2B': '3d5fc647da06', '3B': '3d5fc647da06', '4A': '3d5fc647da06'}
+
+bench_openai median tok/s
+| Prompt | Temp | 1A | 2B | 3B | 4A | B/A |
+|---|---|---|---|---|---|---|
+| fibonacci-raw | 1.0 | 46.8 | 50.3 | 50.6 | 46.9 | 1.078x |
+| gpu-chat-no-think | 1.0 | 42.0 | 45.1 | 45.0 | 42.1 | 1.072x |
+| fibonacci-raw | 0.0 | 62.2 | 64.4 | 64.4 | 61.7 | 1.040x |
+| gpu-chat-no-think | 0.0 | 44.9 | 41.7 | 41.7 | 45.2 | 0.926x |
+
+vLLM recipe cells: bench_decode (greedy, 200 tokens) and L.A.I.L (t=0.2, 512 tokens), median tok/s
+| Cell | 1A | 2B | 3B | 4A | B/A |
+|---|---|---|---|---|---|
+| prose | 49.8 | 55.6 | 56.4 | 50.2 | 1.119x |
+| structured | 66.9 | 98.8 | 97.0 | 71.7 | 1.412x |
+| prose_long | 38.2 | 39.6 | 41.3 | 37.9 | 1.062x |
+| L.A.I.L | 34.4 | 38.6 | 39.3 | 36.1 | 1.105x |
+
+prefill_cold tok/s (Engram pages dropped before the run)
+| Tokens | 1A | 2B | 3B | 4A | B/A |
+|---|---|---|---|---|---|
+| 2,048 | 1040.1 | 1044.7 | 1047.2 | 1054.1 | 0.999x |
+| 8,192 | 1452.4 | 1453.9 | 1452.8 | 1467.7 | 0.995x |
+| 16,384 | 1583.1 | 1589.9 | 1596.6 | 1599.9 | 1.001x |
+| 32,768 | 1591.7 | 1669.6 | 1670.5 | 1655.4 | 1.029x |
+| 65,536 | 1694.5 | 1710.5 | 1714.6 | 1715.5 | 1.004x |
+
+within the B boots (2B, 3B): d=3 vs the default, each pass forward then reversed (ABBA)
+decode tok/s (mean over requests; tokens a round in brackets)
+| Policy | prose | structured | lail | code | sv | de | zh | sv_greedy | de_greedy | zh_greedy |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 3 | 50.2 (2.80) | 70.4 (3.90) | 35.6 (2.16) | 49.2 (2.77) | 27.0 (1.57) | 36.3 (2.10) | 42.6 (2.47) | 28.4 (1.55) | 41.8 (2.25) | 40.2 (2.17) |
+| c0.15@5 | 55.1 (3.02) | 98.2 (5.85) | 39.0 (2.13) | 54.6 (3.22) | 30.9 (1.50) | 40.5 (2.06) | 46.1 (2.51) | 32.1 (1.47) | 46.4 (2.27) | 43.1 (2.14) |
+
+relative to d=3 (tok/s ratio)
+| Policy | prose | structured | lail | code | sv | de | zh | sv_greedy | de_greedy | zh_greedy |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 3 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| c0.15@5 | 1.098 | 1.394 | 1.095 | 1.110 | 1.142 | 1.116 | 1.081 | 1.130 | 1.110 | 1.072 |
+
+mean ms a round: device / engram / sampling / markov / launch
+3 52.84 / 1.91 / 1.01 / 0.10 / 0.47
+c0.15@5 49.90 / 1.07 / 0.91 / 0.08 / 0.54
+
+acceptance by draft position (conditional: accepted / reached), fixed policies, by language
+d=3 en: p0: 0.737 (2004)  p1: 0.692 (1476)  p2: 0.711 (1016)
+d=3 sv: p0: 0.404 (2068)  p1: 0.324 (834)  p2: 0.222 (270)
+d=3 de: p0: 0.606 (1502)  p1: 0.587 (906)  p2: 0.549 (532)
+d=3 zh: p0: 0.652 (1380)  p1: 0.660 (900)  p2: 0.619 (588)
+
+calibration (all policies' rounds): predicted sigmoid(conf_i) vs realized acceptance of draft i once reached
+en: conditional ECE 0.019 over 8984; cumulative (product vs all first i+1 kept) ECE 0.032 over 11340
+   conditional [0.0) pred 0.07 real 0.00 n=8  [0.1) pred 0.17 real 0.19 n=116  [0.2) pred 0.26 real 0.25 n=502  [0.3) pred 0.35 real 0.42 n=788  [0.4) pred 0.46 real 0.48 n=896  [0.5) pred 0.55 real 0.60 n=910  [0.6) pred 0.65 real 0.67 n=848  [0.7) pred 0.75 real 0.74 n=684  [0.8) pred 0.85 real 0.85 n=862  [0.9) pred 0.98 real 0.99 n=3370
+   cumulative  [0.0) pred 0.05 real 0.06 n=830  [0.1) pred 0.16 real 0.22 n=1082  [0.2) pred 0.25 real 0.27 n=1296  [0.3) pred 0.35 real 0.42 n=1128  [0.4) pred 0.45 real 0.50 n=942  [0.5) pred 0.55 real 0.57 n=902  [0.6) pred 0.65 real 0.61 n=734  [0.7) pred 0.75 real 0.65 n=568  [0.8) pred 0.85 real 0.81 n=732  [0.9) pred 0.98 real 0.98 n=3126
+sv: conditional ECE 0.040 over 5726; cumulative (product vs all first i+1 kept) ECE 0.017 over 8892
+   conditional [0.0) pred 0.07 real 0.10 n=718  [0.1) pred 0.15 real 0.19 n=1308  [0.2) pred 0.24 real 0.26 n=878  [0.3) pred 0.35 real 0.30 n=604  [0.4) pred 0.45 real 0.38 n=564  [0.5) pred 0.55 real 0.60 n=480  [0.6) pred 0.64 real 0.76 n=274  [0.7) pred 0.75 real 0.76 n=288  [0.8) pred 0.84 real 0.87 n=232  [0.9) pred 0.95 real 0.98 n=380
+   cumulative  [0.0) pred 0.03 real 0.03 n=3798  [0.1) pred 0.15 real 0.17 n=1484  [0.2) pred 0.24 real 0.26 n=950  [0.3) pred 0.35 real 0.33 n=640  [0.4) pred 0.44 real 0.43 n=506  [0.5) pred 0.55 real 0.59 n=444  [0.6) pred 0.64 real 0.74 n=204  [0.7) pred 0.76 real 0.78 n=268  [0.8) pred 0.84 real 0.88 n=226  [0.9) pred 0.95 real 0.98 n=372
+de: conditional ECE 0.071 over 5510; cumulative (product vs all first i+1 kept) ECE 0.066 over 7376
+   conditional [0.0) pred 0.07 real 0.13 n=186  [0.1) pred 0.16 real 0.27 n=646  [0.2) pred 0.25 real 0.37 n=604  [0.3) pred 0.35 real 0.45 n=530  [0.4) pred 0.45 real 0.43 n=498  [0.5) pred 0.55 real 0.68 n=464  [0.6) pred 0.65 real 0.74 n=400  [0.7) pred 0.75 real 0.83 n=378  [0.8) pred 0.86 real 0.79 n=502  [0.9) pred 0.97 real 0.97 n=1302
+   cumulative  [0.0) pred 0.03 real 0.07 n=1726  [0.1) pred 0.16 real 0.26 n=916  [0.2) pred 0.25 real 0.38 n=858  [0.3) pred 0.34 real 0.47 n=626  [0.4) pred 0.45 real 0.39 n=462  [0.5) pred 0.55 real 0.69 n=406  [0.6) pred 0.65 real 0.65 n=392  [0.7) pred 0.75 real 0.71 n=362  [0.8) pred 0.86 real 0.78 n=436  [0.9) pred 0.97 real 0.98 n=1192
+zh: conditional ECE 0.033 over 5632; cumulative (product vs all first i+1 kept) ECE 0.030 over 7390
+   conditional [0.0) pred 0.08 real 0.00 n=12  [0.1) pred 0.17 real 0.20 n=178  [0.2) pred 0.25 real 0.25 n=574  [0.3) pred 0.35 real 0.33 n=654  [0.4) pred 0.45 real 0.54 n=634  [0.5) pred 0.55 real 0.62 n=572  [0.6) pred 0.65 real 0.60 n=506  [0.7) pred 0.75 real 0.82 n=438  [0.8) pred 0.85 real 0.87 n=520  [0.9) pred 0.97 real 0.98 n=1544
+   cumulative  [0.0) pred 0.04 real 0.06 n=918  [0.1) pred 0.15 real 0.21 n=816  [0.2) pred 0.25 real 0.27 n=1110  [0.3) pred 0.35 real 0.36 n=724  [0.4) pred 0.45 real 0.50 n=620  [0.5) pred 0.55 real 0.61 n=500  [0.6) pred 0.65 real 0.58 n=438  [0.7) pred 0.75 real 0.78 n=398  [0.8) pred 0.85 real 0.87 n=542  [0.9) pred 0.97 real 0.97 n=1324
+all: conditional ECE 0.026 over 25852; cumulative (product vs all first i+1 kept) ECE 0.029 over 34998
+   conditional [0.0) pred 0.07 real 0.10 n=924  [0.1) pred 0.15 real 0.21 n=2248  [0.2) pred 0.25 real 0.28 n=2558  [0.3) pred 0.35 real 0.38 n=2576  [0.4) pred 0.45 real 0.46 n=2592  [0.5) pred 0.55 real 0.62 n=2426  [0.6) pred 0.65 real 0.68 n=2028  [0.7) pred 0.75 real 0.78 n=1788  [0.8) pred 0.85 real 0.84 n=2116  [0.9) pred 0.98 real 0.98 n=6596
+   cumulative  [0.0) pred 0.03 real 0.05 n=7272  [0.1) pred 0.15 real 0.21 n=4298  [0.2) pred 0.25 real 0.29 n=4214  [0.3) pred 0.35 real 0.40 n=3118  [0.4) pred 0.45 real 0.47 n=2530  [0.5) pred 0.55 real 0.60 n=2252  [0.6) pred 0.65 real 0.63 n=1768  [0.7) pred 0.75 real 0.72 n=1596  [0.8) pred 0.85 real 0.83 n=1936  [0.9) pred 0.98 real 0.98 n=6014
+
+exactness: every policy's reply equals every other's for the same case and seed
+cells 14 with one reply sha: 14
+

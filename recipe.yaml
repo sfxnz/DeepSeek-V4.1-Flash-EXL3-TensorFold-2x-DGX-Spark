@@ -22,24 +22,30 @@ model:
 image:
   base: nvcr.io/nvidia/pytorch:26.07-py3
   digest: sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
-  local_tag: &image tf-dsv41-flash:0.6.4-41306d5
+  local_tag: &image tf-dsv41-flash:0.6.4-903a1e8
   build: docker/Dockerfile (pip install git+TF_REPO@TF_SHA under docker/constraints.txt; the commit pip installed is checked; no installed package may change, so torch and triton stay the base's)
 
 engine:
   name: tensorfold
-  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows, with and without a top_p cut
-  # The fork branch that carries both PRs on release v0.6.4 (6ea5ade), then the device keyed draw for top_k-off rows:
-  # 44338a2 (no top_p cut; the same patch as be2cc80 on fork branch cuda-keyed-draw) and 41306d5 (the top_p cut on
-  # the device; the same patch as 43ebdce, which sits on be2cc80 on 6ea5ade). Bump TF_REPO and TF_SHA together to an
-  # upstream release tag once the family is released there; a bump needs new evidence.
+  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows + the speed units C1, C2, C3, C4, C5, C7, C8
+  # The fork's integration branch: release v0.6.4 (6ea5ade), the family (e174ee0 has PR 391's tip tree, 0d91389), the
+  # device keyed draw (C6, C6b; db7f53e has 41306d5's tree), then the speed units, each merged after its own receipts
+  # (lab data/tf-dsv41/receipts/c1..c8): C1 prompt decoder-row skip, C3 prompt-window EXL3 expert kernel, C2 decode
+  # fusion, C7 packed caches and the split decode index selection, C4 Engram I/O off the decode path with resident
+  # scale rows, C5 device-drawn drafts and the confidence draft policy (engine default: up to 5 drafts, stop under a
+  # confidence product of 0.15), C8 prompt chunks in two row halves and the kept snapshot from inside its chunk.
+  # Upstream froze its Python engine at 0.6.5 (ashhart/TensorFold issue 286) and closed PRs 390, 391 and 408; the
+  # maintainer rewrites the useful parts in the Zig engine with credit. So the recipe pins the fork. A bump needs new
+  # evidence.
   repo: &tf_repo https://github.com/sfxnz/TensorFold.git
-  branch: dsv41-recipe-engine2
-  commit: &tf_sha 41306d5e2acd5651fc0954609b3a651d2ef61d6e
+  branch: dsv41-recipe-engine3
+  commit: &tf_sha 903a1e8af62c8f46eceee6b95481706ada30ae49
   base_release: v0.6.4 (6ea5ade)
-  upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391]
-  family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip, fork branch deepseek-v41-cuda)
-  keyed_draw: be2cc80cda2cfac64a2dac1b514dc8e9a53f9205 then 43ebdce14a4cad4b311ec0a800009b2b5740e802 on 6ea5ade (41306d5 is the same two patches on 0d91389)
-  previous: ec28f35c7568986666dc996f3c8b01ea59b6d0ca (fork branch dsv41-recipe-engine; sessions s2 and s3)
+  upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391, https://github.com/ashhart/TensorFold/pull/408]
+  upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine frozen at 0.6.5; PRs 390, 391 and 408 closed; new work goes to the Zig engine)
+  family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip; the same tree as e174ee0 on the fork's integration branch)
+  keyed_draw: 0582d5f (C6) and 3ab53da (C6b), merged as 684e2eb and d663c34 (db7f53e has the tree of 41306d5, the s4 pin)
+  previous: 41306d5e2acd5651fc0954609b3a651d2ef61d6e (fork branch dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
 
 hardware:
   shape: 2x DGX Spark (GB10)
@@ -69,8 +75,12 @@ serve:
     # (evidence/s2-run-sh-ec28f35/ctx1m/needles.jsonl, evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv); s3 booted it
     # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt).
     CONTEXT: 1048576
-    MTP_DRAFTS: 3
-    MTP_CONFIDENCE: ""
+    # The engine's default draft policy, written out so a bump cannot change it silently: up to 5 DSpark drafts a
+    # round, the chain stopping where the drafts' confidence product falls under 0.15 (TF_SHA's
+    # families/deepseek_v41/cuda DEFAULT_DRAFTS, DEFAULT_CONFIDENCE). A fixed count (MTP_DRAFTS alone, MTP_CONFIDENCE
+    # empty) drafts that many every round. Decision DRAFTS in evidence/decision.tsv.
+    MTP_DRAFTS: 5
+    MTP_CONFIDENCE: 0.15
     THINKING: 0
     MAX_TOKENS: 4096
     # --top-p on both ranks: the server's top_p when a request sends none. DeepSeek's model card recommends
@@ -106,12 +116,12 @@ serve:
 readme:
   # Rows of the README "Defaults" table. {NAME} is replaced by serve.env.NAME.
   defaults:
-    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
+    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
     - Model: "`{MODEL}` at `{SNAPSHOT_SHA}`, served from the HF cache `{HF_CACHE}` (read-only) on each node"
     - Snapshot check: "`config.json` sha256 `{CONFIG_SHA256}`, index sha256 `{INDEX_SHA256}`, {SHARDS} shards, {SHARD_BYTES} shard bytes, every shard's header ending at its size"
     - Ranks: "`--tp {TP}`: rank 1 on `{WORKER_HOST}` first, then rank 0 (HTTP) on the head; rendezvous `{HEAD_IP}:{MASTER_PORT}`"
     - "`--context`": "{CONTEXT}, the model's native window (tested through run.sh: needles at 130k, 258k, 524k and 1,039,528 prompt tokens, all found)"
-    - Drafting: "`--mtp-drafts {MTP_DRAFTS}` (DSpark drafts a round; 0 decodes one token a round); `--mtp-confidence` not passed"
+    - Drafting: "`--mtp-drafts {MTP_DRAFTS} --mtp-confidence {MTP_CONFIDENCE}`, the engine's default policy: up to {MTP_DRAFTS} DSpark drafts a round, the chain stopping where the drafts' confidence product falls under {MTP_CONFIDENCE} (`MTP_CONFIDENCE` empty: {MTP_DRAFTS} drafts every round; 0 drafts: one token a round)"
     - Thinking: "off (`--no-thinking`, `THINKING={THINKING}`) on both ranks; a request turns it on with `chat_template_kwargs.thinking` or an effort name"
     - "`--max-tokens`": "{MAX_TOKENS} (the reply cap when a request sets none)"
     - Sampling: "`--top-p {TOP_P}` on both ranks (the top_p when a request sends none); temperature not passed (the engine's default, 1.0); top-k off (the family's default). DeepSeek's model card: temperature 1.0, top_p 0.95 or 1.0"
@@ -140,7 +150,7 @@ links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8
   base_model: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
   engine: https://github.com/ashhart/TensorFold
-  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine2
+  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine3
   base_image: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
   repo: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-TensorFold-2x-DGX-Spark
   sibling_vllm: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark

@@ -1,0 +1,43 @@
+== 1A /home/sfxnz/projects/code/wt/C5-before 11:11:07
+serving 1A
+== 1A bench_concurrent 11:12:14
+== 1A pairs 11:18:56
+== 1A bench_openai 11:20:01
+== 1A bench_decode 11:20:37
+== 1A lail 11:21:25
+== 1A prefill_cold 11:22:25
+== 1A done 11:26:35
+stopped 1A
+== 2B /home/sfxnz/projects/code/wt/C5 11:26:40
+serving 2B
+== 2B bench_concurrent 11:27:47
+== 2B pairs 11:33:57
+== 2B bench_openai 11:34:58
+== 2B bench_decode 11:35:33
+== 2B lail 11:36:14
+== 2B prefill_cold 11:37:08
+== 2B sweep 11:41:07
+== 2B done 11:47:28
+stopped 2B
+== 3B /home/sfxnz/projects/code/wt/C5 11:47:32
+serving 3B
+== 3B bench_concurrent 11:48:34
+== 3B pairs 11:54:39
+== 3B bench_openai 11:55:40
+== 3B bench_decode 11:56:14
+== 3B lail 11:56:55
+== 3B prefill_cold 11:57:48
+== 3B sweep 12:01:46
+== 3B done 12:08:08
+stopped 3B
+== 4A /home/sfxnz/projects/code/wt/C5-before 12:08:13
+serving 4A
+== 4A bench_concurrent 12:09:09
+== 4A pairs 12:15:40
+== 4A bench_openai 12:16:43
+== 4A bench_decode 12:17:18
+== 4A lail 12:18:05
+== 4A prefill_cold 12:19:03
+== 4A done 12:23:02
+stopped 4A
+== done 12:23:06

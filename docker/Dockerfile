@@ -3,11 +3,11 @@
 # TF_SHA so only the first boot pays for them.
 ARG BASE=nvcr.io/nvidia/pytorch:26.07-py3@sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
 FROM ${BASE}
-# The fork branch dsv41-recipe-engine2: upstream PRs 390 and 391 on release v0.6.4, plus the device keyed draw for
-# top_k-off rows (with and without a top_p cut). Bump both to an upstream release tag's commit once the family is
-# released there.
+# The fork branch dsv41-recipe-engine3: the family of upstream PRs 390 and 391 on release v0.6.4, the device keyed
+# draw for top_k-off rows, and the speed units C1-C5, C7, C8. Upstream froze its Python engine (issue 286), so the
+# recipe pins the fork.
 ARG TF_REPO=https://github.com/sfxnz/TensorFold.git
-ARG TF_SHA=41306d5e2acd5651fc0954609b3a651d2ef61d6e
+ARG TF_SHA=903a1e8af62c8f46eceee6b95481706ada30ae49
 # TensorFold's runtime deps at the versions expected in the base; pip may not change any installed package (checked below).
 COPY constraints.txt /opt/tensorfold-constraints.txt
 # Install from git at the full commit, then check the commit pip recorded (direct_url.json) and that every other

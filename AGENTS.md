@@ -1,6 +1,6 @@
 # AGENTS.md — DeepSeek-V4.1-Flash EXL3 · TensorFold · 2× DGX Spark
 
-Serve `sfxnz/DeepSeek-V4.1-Flash-EXL3` (revision `982b704`, branch `2.0bpw-mcg-viterbi-lmhead-mxfp8`) at TP=2 with TensorFold's own `deepseek_v41` CUDA family: commit `41306d5` on `sfxnz/TensorFold` branch `dsv41-recipe-engine2` (v0.6.4 + upstream PRs #390 and #391 + the device keyed draw for top_k-off rows without and with a top_p cut, the patches of `be2cc80` and `43ebdce` on branch `cuda-keyed-draw`), inside `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned in `docker/Dockerfile`). Not vLLM. The vLLM recipe is a separate repo (`sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark`); one repo per engine.
+Serve `sfxnz/DeepSeek-V4.1-Flash-EXL3` (revision `982b704`, branch `2.0bpw-mcg-viterbi-lmhead-mxfp8`) at TP=2 with TensorFold's own `deepseek_v41` CUDA family: commit `903a1e8` on `sfxnz/TensorFold` branch `dsv41-recipe-engine3` (v0.6.4 + the family of upstream PRs #390 and #391 + the device keyed draw for top_k-off rows + the speed units C1-C5, C7, C8; upstream froze its Python engine, issue #286, so the recipe pins the fork), inside `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned in `docker/Dockerfile`). Not vLLM. The vLLM recipe is a separate repo (`sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark`); one repo per engine.
 
 Humans read [README.md](README.md).
 
@@ -16,7 +16,7 @@ Humans read [README.md](README.md).
 
 ## Working rules
 
-- **One engine.** This recipe serves TensorFold's own family only. No patches, no vendored launcher code, no other packs. To change the engine, bump `TF_REPO` + `TF_SHA` in `recipe.yaml` (to an upstream release tag's commit once the family is released there), render, rebuild with `IMAGE_ONLY=1 ./run.sh`, and measure again.
+- **One engine.** This recipe serves TensorFold's own family only. No patches, no vendored launcher code, no other packs. To change the engine, bump `TF_REPO` + `TF_SHA` in `recipe.yaml` (the fork while upstream's Python engine stays frozen, issue #286), render, rebuild with `IMAGE_ONLY=1 ./run.sh`, and measure again.
 - **Window.** `CONTEXT=1048576`, the native window: s2 ran the bench and needles up to 1,039,528 prompt tokens through `run.sh` at it (`evidence/s2-run-sh-ec28f35/ctx1m`). Do not advertise a window that was not run through `run.sh`.
 - **One knob per session.** Change one knob at a time against the gate (`tools/session_gate.sh EVDIR`). Final numbers come from two boots: report the median of the per-boot medians.
 - **Frozen ruler.** `bench_decode.py` is byte-identical to the vLLM sibling's frozen ruler (sha256 `3172cbc4…`, enforced by `tests/`). Do not edit it. Its `/metrics` acceptance fields stay empty on this engine; drafting shows in rank 0's `done req-…` log lines.
@@ -27,7 +27,7 @@ Humans read [README.md](README.md).
 - **Image.** Built on the head from `docker/Dockerfile` (spark2 has no internet). Run `IMAGE_ONLY=1 ./run.sh` before the downtime. `run.sh` refuses an image whose `tensorfold.sha` label differs from `TF_SHA`, and copies the head's image to the worker when the image IDs differ.
 - **TF32.** Keep `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0` in the container env, as the receipts ran.
 
-## Known engine limits (deepseek_v41 at `41306d5`, two ranks)
+## Known engine limits (deepseek_v41 at `903a1e8`, two ranks)
 
 - Two ranks only, one request at a time (`--parallel` is ignored). Both ranks decode each request to `max_tokens` or an end token.
 - This export only. The family checks the checkpoint at startup and refuses EXL3 outside the routed experts or a BF16 LM head.
