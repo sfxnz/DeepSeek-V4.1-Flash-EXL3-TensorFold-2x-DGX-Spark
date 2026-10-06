@@ -1,0 +1,12 @@
+2026-10-06T17:00:16Z run.sh
+2026-10-06T17:01:22Z gate
+2026-10-06T17:03:17Z lail
+2026-10-06T17:05:37Z sampled cells
+2026-10-06T17:07:50Z bench_openai
+2026-10-06T17:08:35Z pairs
+2026-10-06T17:09:26Z bench_concurrent
+2026-10-06T17:15:37Z prefill_cold
+2026-10-06T17:19:16Z needle 1040000@0.5
+2026-10-06T17:31:58Z quality full
+2026-10-06T17:48:16Z logs and stop
+2026-10-06T17:48:22Z bootF done

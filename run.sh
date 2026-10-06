@@ -67,8 +67,8 @@ NATIVE_CONTEXT=1048576
 # DSpark drafts at most 5 tokens a round (families/deepseek_v41/cuda BLOCK).
 MAX_MTP_DRAFTS=5
 # Admission grants MemAvailable less max(4 GiB, MemTotal / 10), 12.1 GiB on a Spark; the default window's startup
-# estimate is 79.09 GiB (evidence/s0-engine-receipts/serve_default_rank0.log). Below this gate it cannot fit.
-MIN_MEM_GATE_GIB=92
+# estimate is 81.32 GiB at TF_SHA (evidence/s5-final/bootE/gate/startup.txt). Below this gate it cannot fit.
+MIN_MEM_GATE_GIB=94
 # Every NAME="${NAME:-…}" line of the generated block. The engine knobs (TF_DSV41_*) go to both ranks as
 # `-e KEY=VALUE` (container_env), and the worker gets every name forwarded (worker_env).
 mapfile -t GENERATED_VARS < <(sed -n '/^# BEGIN generated from recipe.yaml/,/^# END generated/s/^\([A-Z][A-Z0-9_]*\)="\${.*/\1/p' "${BASH_SOURCE[0]}")

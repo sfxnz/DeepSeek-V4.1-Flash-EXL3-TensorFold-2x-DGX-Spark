@@ -1,0 +1,19 @@
+2026-10-06T18:21:38Z
+## spark1 containers
+dsv41-exl3-nfs	dsv41-exl3-nfs:local	Exited (137) 2 weeks ago
+conduit	matrixconduit/matrix-conduit:latest	Up 2 weeks
+## spark1 GPU compute apps
+pid, process_name
+utilization.gpu [%]
+0 %
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       7.3Gi       102Gi       732Ki        13Gi       114Gi
+Swap:           15Gi       4.6Gi        11Gi
+## spark2 containers
+## spark2 GPU compute apps
+pid, process_name
+utilization.gpu [%]
+0 %
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       4.7Gi        95Gi       648Ki        23Gi       117Gi
+Swap:           15Gi       2.0Gi        13Gi

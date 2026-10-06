@@ -1,0 +1,102 @@
+# Derived README numbers, s5-final. Inputs: files in this directory and ../s2-run-sh-ec28f35, ../s3-default-1m, ../s4-device-nucleus.
+
+## Serve: gate/serve-argv.txt and rank 0's lines (gate/startup.txt), each boot
+bootE: image tf-dsv41-flash:0.6.4-903a1e8; rank 0 flags {'--mtp-drafts': '5', '--mtp-confidence': '0.15', '--top-p': '1.0', '--context': '1048576'}; rank 1 argv has the same --mtp-* flags: True; startup estimates [('0', '81.32', '99.54'), ('1', '81.32', '102.12')]; rank 0 loaded in 194.7 s
+bootF: image tf-dsv41-flash:0.6.4-903a1e8; rank 0 flags {'--mtp-drafts': '5', '--mtp-confidence': '0.15', '--top-p': '1.0', '--context': '1048576'}; rank 1 argv has the same --mtp-* flags: True; startup estimates [('0', '81.32', '99.50'), ('1', '81.32', '101.67')]; rank 0 loaded in 51.8 s
+admission floor: startup estimate 81.32 GiB + reserve 12.1 GiB = 93.42 GiB -> MIN_MEM_GATE_GIB 94 (was 92 = 79.09 + 12.1 at 41306d5)
+
+## Frozen ruler: gate/bench-*.out SUMMARY per boot; row = median of the two boots (decode.txt); vLLM: vllm/bench-*.out
+prose: E 55.76 / F 55.85 -> 55.81 (ttft p50 0.068); s3 (ec28f35, d=3) 46.02 -> x1.213; vLLM 47.88 (ttft p50 0.236, natural 84) -> TF/vLLM 1.165
+structured: E 97.42 / F 97.09 -> 97.25 (ttft p50 0.071); s3 (ec28f35, d=3) 64.08 -> x1.518; vLLM 82.57 (ttft p50 0.214, natural 200) -> TF/vLLM 1.178
+prose_long: E 40.45 / F 40.91 -> 40.68 (ttft p50 0.069); s3 (ec28f35, d=3) 34.62 -> x1.175; vLLM 43.32 (ttft p50 0.271, natural 200) -> TF/vLLM 0.939
+
+## L.A.I.L (the vLLM recipe's tools/measure_lail_prose.py, 512 tokens, t=0.2, 10 runs): lail.log SUMMARY
+TF E 41.40 / F 41.05 -> 41.23 (ttft 0.075); vLLM 40.19 (ttft 0.325, acceptance_len 2.0582329317269075) -> TF/vLLM 1.026
+
+## Sampled cells (scripts/sampled_cell.py, 9 runs): sampled-<label>.txt SAMPLED; token_sha against s4 (41306d5, 3 drafts a round)
+nofields {}: TF E 42.65 / F 42.88 -> 42.77; token_sha {'bootE': ['4e0fa4daff89'], 'bootF': ['4e0fa4daff89']}, s4 ['4e0fa4daff89'] (36.59 tok/s), equal: True, x1.169 vs s4; vLLM 42.06 (same text every run False) -> TF/vLLM 1.017
+top_p095 {"temperature": 1.0, "top_p": 0.95}: TF E 37.54 / F 37.87 -> 37.70; token_sha {'bootE': ['dae740142762'], 'bootF': ['dae740142762']}, s4 ['dae740142762'] (31.76 tok/s), equal: True, x1.187 vs s4; vLLM 42.19 (same text every run False) -> TF/vLLM 0.894
+top_k20 {"temperature": 1.0, "top_k": 20}: TF E 42.53 / F 42.56 -> 42.55; token_sha {'bootE': ['c8313f988d0b'], 'bootF': ['c8313f988d0b']}, s4 ['c8313f988d0b'] (37.04 tok/s), equal: True, x1.149 vs s4; vLLM 43.45 (same text every run False) -> TF/vLLM 0.979
+
+## bench_openai (the engine's tools/bench_openai.py, 64 tokens, 5 reps): bench_openai.json; t=0 chat: bench_t0_chat.json
+fibonacci-raw t=1.0: TF E 44.09 / F 47.43 -> 45.76; vLLM 47.05 -> TF/vLLM 0.973
+gpu-chat-no-think t=1.0: TF E 40.46 / F 42.47 -> 41.47; vLLM 43.12 -> TF/vLLM 0.962
+fibonacci-raw t=0.0: TF E 64.29 / F 64.21 -> 64.25; vLLM: the tool's t=0 pass not run (it fails on fibonacci-raw there); the chat prompt at t=0 is bench_t0_chat
+gpu-chat-no-think t=0.0: TF E 40.93 / F 41.39 -> 41.16; vLLM: the tool's t=0 pass not run (it fails on fibonacci-raw there); the chat prompt at t=0 is bench_t0_chat
+bench_t0_chat gpu-chat-no-think t=0: TF E 41.08 / F 41.36 -> 41.22 (texts identical [True, True]); vLLM 47.06 (texts identical False) -> TF/vLLM 0.876
+
+## prefill_cold (the engine's tools/prefill_cold.py, quiet; TF: s2's prompts, vLLM: the goldens' G7 set): prefill_cold.json summary tok_s (median of 3)
+2048: TF E 1139.7 / F 1153.2 -> 1146.5 tok/s (ttft 1.79 s); s3 526.0 -> x2.18; vLLM 792.9 (ttft 2.58 s) -> TF/vLLM 1.446
+8192: TF E 1573.6 / F 1511.4 -> 1542.5 tok/s (ttft 5.31 s); s3 551.7 -> x2.80; vLLM 744.8 (ttft 11.00 s) -> TF/vLLM 2.071
+16384: TF E 1704.3 / F 1665.4 -> 1684.8 tok/s (ttft 9.73 s); s3 561.3 -> x3.00; vLLM 739.9 (ttft 22.14 s) -> TF/vLLM 2.277
+32768: TF E 1655.6 / F 1762.4 -> 1709.0 tok/s (ttft 19.19 s); s3 563.5 -> x3.03; vLLM 777.1 (ttft 42.16 s) -> TF/vLLM 2.199
+65536: TF E 1800.2 / F 1779.9 -> 1790.1 tok/s (ttft 36.61 s); s3 570.6 -> x3.14; vLLM 760.7 (ttft 86.15 s) -> TF/vLLM 2.353
+bootE prefill-clients.txt: connections held by ['bun', 'python'] (the lab app's model-list pollers)
+bootF prefill-clients.txt: connections held by ['bun', 'python'] (the lab app's model-list pollers)
+vllm prefill-clients.txt: connections held by ['python'] (the lab app's model-list pollers)
+
+## Exactness: pairs.jsonl and bench_concurrent.json, each boot
+bootE: drafted == draft:false 6 of 6; drafted equal to s2's reply (ec28f35, 3 drafts) 6 of 6; drafted tok/s 47.24-66.61
+  bench_concurrent code t=1.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 4, 'unequal': 0, 'failed': 0}, aggregate 46.7 tok/s
+  bench_concurrent chat t=1.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 4, 'unequal': 0, 'failed': 0}, aggregate 48.5 tok/s
+  bench_concurrent code t=0.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 1, 'unequal': 0, 'failed': 0}, aggregate 82.2 tok/s
+  bench_concurrent chat t=0.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 1, 'unequal': 0, 'failed': 0}, aggregate 42.0 tok/s
+bootF: drafted == draft:false 6 of 6; drafted equal to s2's reply (ec28f35, 3 drafts) 6 of 6; drafted tok/s 52.71-65.73
+  bench_concurrent code t=1.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 4, 'unequal': 0, 'failed': 0}, aggregate 51.0 tok/s
+  bench_concurrent chat t=1.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 4, 'unequal': 0, 'failed': 0}, aggregate 48.6 tok/s
+  bench_concurrent code t=0.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 1, 'unequal': 0, 'failed': 0}, aggregate 83.8 tok/s
+  bench_concurrent chat t=0.0 streams 4: alone {'equal': 12, 'unequal': 0, 'failed': 0}, serial {'equal': 1, 'unequal': 0, 'failed': 0}, aggregate 44.6 tok/s
+
+## TF / vLLM, every same-session cell
+ruler prose: TF 55.81, vLLM 47.88, TF/vLLM 1.165 (+16.5%)
+ruler structured: TF 97.25, vLLM 82.57, TF/vLLM 1.178 (+17.8%)
+ruler prose_long: TF 40.68, vLLM 43.32, TF/vLLM 0.939 (-6.1%)
+L.A.I.L: TF 41.23, vLLM 40.19, TF/vLLM 1.026 (+2.6%)
+sampled nofields: TF 42.77, vLLM 42.06, TF/vLLM 1.017 (+1.7%)
+sampled top_p095: TF 37.70, vLLM 42.19, TF/vLLM 0.894 (-10.6%)
+sampled top_k20: TF 42.55, vLLM 43.45, TF/vLLM 0.979 (-2.1%)
+bench_openai fibonacci-raw t=1.0: TF 45.76, vLLM 47.05, TF/vLLM 0.973 (-2.7%)
+bench_openai gpu-chat-no-think t=1.0: TF 41.47, vLLM 43.12, TF/vLLM 0.962 (-3.8%)
+bench_t0_chat gpu-chat-no-think t=0: TF 41.22, vLLM 47.06, TF/vLLM 0.876 (-12.4%)
+prefill 2048: TF 1146.45, vLLM 792.90, TF/vLLM 1.446 (+44.6%)
+prefill 8192: TF 1542.50, vLLM 744.80, TF/vLLM 2.071 (+107.1%)
+prefill 16384: TF 1684.85, vLLM 739.90, TF/vLLM 2.277 (+127.7%)
+prefill 32768: TF 1709.00, vLLM 777.10, TF/vLLM 2.199 (+119.9%)
+prefill 65536: TF 1790.05, vLLM 760.70, TF/vLLM 2.353 (+135.3%)
+
+## Needle (bootF/needle.jsonl, scripts/long_needle.py) and MemAvailable (bootF/memwatch.tsv, both nodes every 5 s)
+prompt 1039528 tokens (doc 1039503), prefill 754.3 s = 12.6 min, 1378.1 tok/s, found True ('CZP-3128-QL'), wall 756.6 s, 2026-10-06T17:19:21Z to 2026-10-06T17:31:57Z; s2 (ec28f35): 1039528 tokens, prefill 2077.8 s, 500.3 tok/s -> x2.75
+MemAvailable minimum over the needle (140 samples): head 18506 MiB = 18.1 GiB, worker 25756 MiB = 25.2 GiB; SwapFree minimum head 12184 MiB, worker 13823 MiB
+over the whole boot F (536 samples, 2026-10-06T17:00:16Z to 2026-10-06T17:48:20Z): head min 15.0 GiB, worker min 23.7 GiB
+
+## Quality: bootF/quality_full.json (qe_tf.py --full --only selfcons,gsm8k,gsm8k_think,mmlu,tools,needle, round-36 full baseline)
+gsm8k: 97/100 (0.97); vLLM round-36 baseline 97/100
+gsm8k_think: 39/40 (0.975); vLLM round-36 baseline 39/40
+mmlu: 204/228 (0.8947); vLLM round-36 baseline 205/228
+tools: exact_args {'k': 22, 'n': 22, 'rate': 1.0, 'ci95': [0.8513, 1.0]}, json_valid {'k': 22, 'n': 22, 'rate': 1.0, 'ci95': [0.8513, 1.0]}, no_call {'k': 8, 'n': 8, 'rate': 1.0, 'ci95': [0.6756, 1.0]}
+needle: found 9 of 9; selfcons identical 12, aa hazard 0.0, golden {'hazard': 0.01307, 'diverged': 12, 'pairs': 24, 'first_div': [None, 1, 71, None, None, None, 0, None, None, 3, 15, 11, None, 1, 71, None, None, None, 0, None, None, 3, 15, 11]}
+gates: [('selfcons.golden_hazard', True, 0.01307), ('selfcons.aa_hazard', True, 0.0), ('tools.json_valid', True, 1.0), ('tools.exact_args', True, 1.0), ('tools.no_call', True, 1.0), ('gsm8k.acc', True, 0.97), ('gsm8k_think.acc', True, 0.975), ('mmlu.acc', True, 0.8947), ('needle.found', True, 9)]; pass True; elapsed 978.4 s
+
+## NLL: nll/nll_compare.txt
+{
+ "passages": 40,
+ "tokens_scored": 19828,
+ "mean_nll": 0.13706928634074356,
+ "repeat_mean_nll": 0.13706928634074356,
+ "s2_ec28f35_mean_nll": 0.13706928634074356,
+ "files": 80,
+ "bit_identical_to_s2": 80,
+ "arrays_that_differ": {},
+ "max_abs_dlogprob": 0.0,
+ "top1_changes": 0
+}
+
+## Durations
+bootE ./run.sh to ready: 16:29:41 to 16:33:09 = 208 s
+bootF ./run.sh to ready: 17:00:16 to 17:01:22 = 66 s
+vLLM env AUDIT=strict ./run.sh to ready: 17:54:27 to 18:05:08 = 641 s
+IMAGE_ONLY=1 ./run.sh: 16:24:24 to 16:27:58 = 214 s
+
+## Bench requests with thinking off: gate/docker-head.log
+bootE: done lines=32 thinking=False=32
+bootF: done lines=32 thinking=False=32

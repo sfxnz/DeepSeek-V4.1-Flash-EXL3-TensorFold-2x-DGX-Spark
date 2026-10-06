@@ -1,0 +1,24 @@
+# tools/prefill_cold.py at 903a1e8af62c8f46eceee6b95481706ada30ae49 (/home/sfxnz/projects/code/TensorFold), host venv, prompts /home/sfxnz/projects/data/tf-dsv41/goldens/G7_prefill_prompts.json sha256 61e6d4291fff2e796532c24e1e19c208c7decc034af4c27a88fb7c5e04d07461, 2026-10-06T18:12:26Z
+{"ttft_s": 1.6443, "prompt_tokens": 1024, "length": 1024, "rep": 0}
+{"ttft_s": 2.4822, "prompt_tokens": 2048, "length": 2048, "rep": 0}
+{"ttft_s": 2.5829, "prompt_tokens": 2048, "length": 2048, "rep": 1}
+{"ttft_s": 2.6683, "prompt_tokens": 2047, "length": 2048, "rep": 2}
+{"ttft_s": 10.3473, "prompt_tokens": 8192, "length": 8192, "rep": 0}
+{"ttft_s": 10.9991, "prompt_tokens": 8191, "length": 8192, "rep": 1}
+{"ttft_s": 11.5706, "prompt_tokens": 8192, "length": 8192, "rep": 2}
+{"ttft_s": 22.7978, "prompt_tokens": 16384, "length": 16384, "rep": 0}
+{"ttft_s": 20.4573, "prompt_tokens": 16384, "length": 16384, "rep": 1}
+{"ttft_s": 22.1428, "prompt_tokens": 16384, "length": 16384, "rep": 2}
+{"ttft_s": 42.2009, "prompt_tokens": 32767, "length": 32768, "rep": 0}
+{"ttft_s": 42.0346, "prompt_tokens": 32767, "length": 32768, "rep": 1}
+{"ttft_s": 42.1654, "prompt_tokens": 32768, "length": 32768, "rep": 2}
+{"ttft_s": 85.2625, "prompt_tokens": 65536, "length": 65536, "rep": 0}
+{"ttft_s": 86.1479, "prompt_tokens": 65535, "length": 65536, "rep": 1}
+{"ttft_s": 86.8675, "prompt_tokens": 65536, "length": 65536, "rep": 2}
+{"length": 2048, "prompt_tokens": 2048, "ttft_s": 2.583, "tok_s": 792.9, "ttft_all": [2.4822, 2.5829, 2.6683]}
+{"length": 8192, "prompt_tokens": 8192, "ttft_s": 10.999, "tok_s": 744.8, "ttft_all": [10.3473, 10.9991, 11.5706]}
+{"length": 16384, "prompt_tokens": 16384, "ttft_s": 22.143, "tok_s": 739.9, "ttft_all": [22.7978, 20.4573, 22.1428]}
+{"length": 32768, "prompt_tokens": 32767, "ttft_s": 42.165, "tok_s": 777.1, "ttft_all": [42.2009, 42.0346, 42.1654]}
+{"length": 65536, "prompt_tokens": 65536, "ttft_s": 86.148, "tok_s": 760.7, "ttft_all": [85.2625, 86.1479, 86.8675]}
+rc=0
+2026-10-06T18:20:39Z

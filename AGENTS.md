@@ -17,7 +17,7 @@ Humans read [README.md](README.md).
 ## Working rules
 
 - **One engine.** This recipe serves TensorFold's own family only. No patches, no vendored launcher code, no other packs. To change the engine, bump `TF_REPO` + `TF_SHA` in `recipe.yaml` (the fork while upstream's Python engine stays frozen, issue #286), render, rebuild with `IMAGE_ONLY=1 ./run.sh`, and measure again.
-- **Window.** `CONTEXT=1048576`, the native window: s2 ran the bench and needles up to 1,039,528 prompt tokens through `run.sh` at it (`evidence/s2-run-sh-ec28f35/ctx1m`). Do not advertise a window that was not run through `run.sh`.
+- **Window.** `CONTEXT=1048576`, the native window: s2 ran the bench and needles up to 1,039,528 prompt tokens through `run.sh` at it (`evidence/s2-run-sh-ec28f35/ctx1m`); s5 ran the 1,039,528-token needle again at `903a1e8` (`evidence/s5-final/bootF/needle.jsonl`). Do not advertise a window that was not run through `run.sh`.
 - **One knob per session.** Change one knob at a time against the gate (`tools/session_gate.sh EVDIR`). Final numbers come from two boots: report the median of the per-boot medians.
 - **Frozen ruler.** `bench_decode.py` is byte-identical to the vLLM sibling's frozen ruler (sha256 `3172cbc4…`, enforced by `tests/`). Do not edit it. Its `/metrics` acceptance fields stay empty on this engine; drafting shows in rank 0's `done req-…` log lines.
 - **Memory.** Read unified memory with `free -h`. Never `nvidia-smi` VRAM.
@@ -33,14 +33,14 @@ Humans read [README.md](README.md).
 - This export only. The family checks the checkpoint at startup and refuses EXL3 outside the routed experts or a BF16 LM head.
 - Refused with HTTP 400: images, `response_format` / guided / structured outputs, `logprobs`, `tool_choice: "required"` or named, `thinking_budget`, `n > 1`.
 - An effort name turns thinking on, even on a `--no-thinking` server; `chat_template_kwargs.thinking: false` keeps it off.
-- Sampling with top-k off is exact and draws on the device, with or without a top_p cut: on the ruler's prose prompt top_p 0.95 and 0.9 decode at 31.8 tok/s against 36.6 at top_p 1.0, the gap being that reply's extra rounds, and replies equal the old host path's (`evidence/s4-device-nucleus/derived.txt`). At `ec28f35` a cut read each rank's vocabulary half to the host (15.5 tok/s there), which is why `run.sh` passes `--top-p 1.0` (`TOP_P` in `recipe.yaml`, decision `TOPP1`). Past the cut's `TMAX` bound, or where the device draw cannot decide, the host rule still runs. Greedy is not affected.
+- Sampling with top-k off is exact and draws on the device, with or without a top_p cut: on the ruler's prose prompt top_p 0.95 decodes at 37.7 tok/s against 42.8 with no sampling field (top_p 1.0) at `903a1e8`, the gap being that reply's extra rounds, and replies equal the old host path's (`evidence/s5-final/derived.txt`, `evidence/s4-device-nucleus/derived.txt`). At `ec28f35` a cut read each rank's vocabulary half to the host (15.5 tok/s there), which is why `run.sh` passes `--top-p 1.0` (`TOP_P` in `recipe.yaml`, decision `TOPP1`). Past the cut's `TMAX` bound, or where the device draw cannot decide, the host rule still runs. Greedy is not affected.
 - What happens when one rank dies mid-request is not tested here. Restart both with `./stop.sh && ./run.sh`.
 
 ## Host memory safety
 
 - **Watchdogs.** Keep `OOM_SCORE_ADJ=1000`, `MEMGUARD=1` and `--ulimit core=1`.
-- **Load gate.** MemAvailable ≥ `MEM_GATE_GIB=100` on each node before a load. `run.sh` refuses less than 92 unless `FORCE_UNSAFE_MEM_GATE=1`; record that boot.
-- **Admission.** The engine grants MemAvailable less max(4 GiB, MemTotal / 10) and refuses an explicit `--context` that does not fit, on both ranks. Startup estimate 78.46 GiB at 65538, 79.09 GiB at the native 1048576 (`evidence/s0-engine-receipts/serve_*_rank0.log`).
+- **Load gate.** MemAvailable ≥ `MEM_GATE_GIB=100` on each node before a load. `run.sh` refuses less than 94 unless `FORCE_UNSAFE_MEM_GATE=1`; record that boot.
+- **Admission.** The engine grants MemAvailable less max(4 GiB, MemTotal / 10) and refuses an explicit `--context` that does not fit, on both ranks. Startup estimate at `903a1e8` 81.32 GiB at the native 1048576 (`evidence/s5-final/bootE/gate/startup.txt`); at `0d91389` it was 78.46 GiB at 65538 and 79.09 GiB at 1048576 (`evidence/s0-engine-receipts/serve_*_rank0.log`).
 - **No sudo.** No `drop_caches`. If MemAvailable stays short, find what holds it (`free -h`, `docker ps`).
 - **Before a heavy step** (a long prompt at a large window), run `free -h` on both nodes.
 

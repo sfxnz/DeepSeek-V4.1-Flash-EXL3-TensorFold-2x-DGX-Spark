@@ -1,0 +1,6 @@
+# tools/bench_openai.py at 903a1e8af62c8f46eceee6b95481706ada30ae49 (/home/sfxnz/projects/code/TensorFold), host venv, 2026-10-06T17:07:50Z
+{"label": "s5-bootF", "prompt": "fibonacci-raw", "temperature": 1.0, "decode_tps_median": 47.43489646057018, "decode_tps_all": [26.15, 39.12, 52.1, 47.43, 51.87], "ttft_s_median": 0.0667606177739799}
+{"label": "s5-bootF", "prompt": "gpu-chat-no-think", "temperature": 1.0, "decode_tps_median": 42.46999253507033, "decode_tps_all": [52.48, 42.3, 39.49, 42.47, 50.03], "ttft_s_median": 0.06911721709184349}
+{"label": "s5-bootF", "prompt": "fibonacci-raw", "temperature": 0.0, "decode_tps_median": 64.2097120688699, "decode_tps_all": [63.92, 64.56, 64.53, 64.05, 64.21], "ttft_s_median": 0.0668007789645344}
+{"label": "s5-bootF", "prompt": "gpu-chat-no-think", "temperature": 0.0, "decode_tps_median": 41.38962980869166, "decode_tps_all": [41.4, 41.57, 41.39, 41.21, 41.13], "ttft_s_median": 0.07013611705042422}
+rc=0

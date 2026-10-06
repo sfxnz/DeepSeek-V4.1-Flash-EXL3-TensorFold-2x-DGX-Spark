@@ -191,8 +191,8 @@ class GuardTests(unittest.TestCase):
         self.assertIn("top_p=0.95", self.accepted(TOP_P="0.95").stdout)
 
     def test_memory_gate_floor(self) -> None:
-        self.refused("is below 92 GiB", MEM_GATE_GIB="64")
-        self.refused("is below 92 GiB", MEM_GATE_GIB="0")
+        self.refused("is below 94 GiB", MEM_GATE_GIB="64")
+        self.refused("is below 94 GiB", MEM_GATE_GIB="0")
         self.assertIn("mem_gate=0", self.accepted(MEM_GATE_GIB="0", FORCE_UNSAFE_MEM_GATE="1").stdout)
         self.assertIn("mem_gate=110", self.accepted(MEM_GATE_GIB="110").stdout)
 
