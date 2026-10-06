@@ -25,7 +25,7 @@ fibonacci-raw t=0.0: TF E 64.29 / F 64.21 -> 64.25; vLLM: the tool's t=0 pass no
 gpu-chat-no-think t=0.0: TF E 40.93 / F 41.39 -> 41.16; vLLM: the tool's t=0 pass not run (it fails on fibonacci-raw there); the chat prompt at t=0 is bench_t0_chat
 bench_t0_chat gpu-chat-no-think t=0: TF E 41.08 / F 41.36 -> 41.22 (texts identical [True, True]); vLLM 47.06 (texts identical False) -> TF/vLLM 0.876
 
-## prefill_cold (the engine's tools/prefill_cold.py, quiet; TF: s2's prompts, vLLM: the goldens' G7 set): prefill_cold.json summary tok_s (median of 3)
+## prefill_cold (the engine's tools/prefill_cold.py, quiet; TF: s2's prompts.json, vLLM: the goldens' G7 copy, same 16 items): prefill_cold.json summary tok_s (median of 3)
 2048: TF E 1139.7 / F 1153.2 -> 1146.5 tok/s (ttft 1.79 s); s3 526.0 -> x2.18; vLLM 792.9 (ttft 2.58 s) -> TF/vLLM 1.446
 8192: TF E 1573.6 / F 1511.4 -> 1542.5 tok/s (ttft 5.31 s); s3 551.7 -> x2.80; vLLM 744.8 (ttft 11.00 s) -> TF/vLLM 2.071
 16384: TF E 1704.3 / F 1665.4 -> 1684.8 tok/s (ttft 9.73 s); s3 561.3 -> x3.00; vLLM 739.9 (ttft 22.14 s) -> TF/vLLM 2.277

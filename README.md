@@ -48,7 +48,7 @@ Same pack, same pair, same clients, one day. TensorFold: boots E and F at the sh
 | sampled, no sampling field (200 tokens, 9 runs) | 42.77 | 42.06 | 1.017 |
 | sampled, temperature 1.0, top_p 0.95 | 37.70 | 42.19 | 0.894 |
 | sampled, temperature 1.0, top_k 20 | 42.55 | 43.45 | 0.979 |
-| bench_openai fibonacci-raw, t=1 (64 tokens, 5 reps) | 45.76 | 47.05 | 0.973 |
+| bench_openai fibonacci-raw, t=1 (64 tokens, 5 reps), see note | 45.76 | 47.05 | 0.973 |
 | bench_openai gpu-chat-no-think, t=1 | 41.47 | 43.12 | 0.962 |
 | gpu-chat-no-think, t=0 (`bench_t0_chat.py`, 64 tokens, 5 reps) | 41.22 | 47.06 | 0.876 |
 
@@ -56,6 +56,7 @@ Same pack, same pair, same clients, one day. TensorFold: boots E and F at the sh
 - TTFT p50 of the ruler cells: TensorFold 0.068-0.071 s (runs 2-9 resume the kept prompt), vLLM 0.214-0.271 s. L.A.I.L TTFT 0.075 s against 0.325 s.
 - A request with no sampling field gets each server's own defaults (TensorFold: temperature 1.0, top_p 1.0, top-k off). TensorFold seeds an unseeded request from its prompt, so its 9 runs draw one reply; vLLM draws a new reply each run. TensorFold's top_p 0.95 reply on this prompt takes more rounds than its top_p 1.0 reply (99 against 86 in s4), which is most of that cell's gap.
 - `bench_openai`'s t=0 pass fails on vLLM (greedy emits only end tokens on the untemplated fibonacci-raw prompt), so vLLM ran it at t=1 only, plus [`bench_t0_chat.py`](evidence/s5-final/scripts/bench_t0_chat.py) (the oracle session's t=0 chat twin) on both. TensorFold's own t=0 pass: fibonacci-raw 64.25, gpu-chat-no-think 41.16.
+- The fibonacci-raw t=1 cells time different text. The recorded sample (first rep, first 160 characters) of TensorFold's reply is end tokens only in boots E and F and in s2: with `ignore_eos` it keeps drawing the end token. vLLM's reply has one end token and then continues with text. Read that row as a rough figure, not a like-for-like comparison.
 - Prose ends at its end token after 74 tokens on TensorFold and 84 on vLLM; both cells decode 200 with ignore_eos.
 
 **Prefill.** The engine's `tools/prefill_cold.py` at `903a1e8`, quiet (only the lab app's `/v1/models` pollers held connections, [`prefill-clients.txt`](evidence/s5-final/bootE/prefill-clients.txt)), median of 3 prompts a length, prompt tok/s:
@@ -68,7 +69,7 @@ Same pack, same pair, same clients, one day. TensorFold: boots E and F at the sh
 | 32,768 | 1709.0 (1655.6 / 1762.4) | 19.19 s | 777.1 | 42.16 s | 2.199 | 563.5 |
 | 65,536 | 1790.1 (1800.2 / 1779.9) | 36.61 s | 760.7 | 86.15 s | 2.353 | 570.6 |
 
-The prompt sets differ only in counting: s2's `prompts.json` for TensorFold, the oracle session's `G7_prefill_prompts.json` for vLLM (TensorFold's corpus and builder, lengths counted by vLLM's `/tokenize`; sha256 of both in `prefill_cold.log`). s3's column is s3 boot D ([`prefill_cold.json`](evidence/s3-default-1m/bootD/prefill_cold.json)). Against s3 the prompt rate is x2.2 at 2k to x3.1 at 64k; C1, C3 and C8 are the units on the prompt path.
+Both servers got the same prompts: s2's `prompts.json` for TensorFold and the oracle session's `G7_prefill_prompts.json` for vLLM hold the same 16 items (identical messages and token counts). The files differ only in an extra top-level `corpus_python` key in the G7 copy, so their sha256 values in `prefill_cold.log` differ. s3's column is s3 boot D ([`prefill_cold.json`](evidence/s3-default-1m/bootD/prefill_cold.json)). Against s3 the prompt rate is x2.2 at 2k to x3.1 at 64k; C1, C3 and C8 are the units on the prompt path.
 
 **Where TensorFold trails.**
 
@@ -90,7 +91,7 @@ The prompt sets differ only in counting: s2's `prompts.json` for TensorFold, the
 | Swedish / German / Chinese prose, t=0.2, 512 | 27.0 / 36.3 / 42.6 | 30.9 / 40.5 / 46.1 | 1.142 / 1.116 / 1.081 |
 | Swedish / German / Chinese, greedy 300 | 28.4 / 41.8 / 40.2 | 32.1 / 46.4 / 43.1 | 1.130 / 1.110 / 1.072 |
 
-Every case drew the same reply under both policies (14 of 14 cells). Across the four C5 boots (A B B A, boot medians B/A) the one cell that lost is `bench_openai` gpu-chat-no-think at t=0: 0.926, a fixed 64-token greedy chat reply. At `903a1e8` that cell decodes at 41.16 tok/s, where s2 measured 41.2 at `ec28f35` with 3 drafts ([`s2 bench_openai.log`](evidence/s2-run-sh-ec28f35/bootA/bench_openai.log)). The policy changes speed, not tokens: every sampled reply and every pair in s5 has the token hash s4 or s2 drew with 3 drafts (below).
+Every case drew the same reply under both policies (14 of 14 cells). Across the four C5 boots (A B B A, boot medians B/A) the one cell that lost beyond noise is `bench_openai` gpu-chat-no-think at t=0: 0.926 (prefill 2k and 8k sit at 0.999 and 0.995, within noise and off the draft path), a fixed 64-token greedy chat reply. At `903a1e8` that cell decodes at 41.16 tok/s, where s2 measured 41.2 at `ec28f35` with 3 drafts ([`s2 bench_openai.log`](evidence/s2-run-sh-ec28f35/bootA/bench_openai.log)). The policy changes speed, not tokens: every sampled reply and every pair in s5 has the token hash s4 or s2 drew with 3 drafts (below).
 
 ### Sampled decode (top-k off)
 

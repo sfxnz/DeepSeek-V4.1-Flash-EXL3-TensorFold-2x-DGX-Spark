@@ -123,7 +123,7 @@ print(f"bench_t0_chat gpu-chat-no-think t=0: TF E {t0[0]['decode_tps_median']:.2
       f"-> {row:.2f} (texts identical {[r['texts_identical'] for r in t0]}); vLLM {vt0['decode_tps_median']:.2f} "
       f"(texts identical {vt0['texts_identical']}) -> TF/vLLM {row / vt0['decode_tps_median']:.3f}")
 
-print("\n## prefill_cold (the engine's tools/prefill_cold.py, quiet; TF: s2's prompts, vLLM: the goldens' G7 set): "
+print("\n## prefill_cold (the engine's tools/prefill_cold.py, quiet; TF: s2's prompts.json, vLLM: the goldens' G7 copy, same 16 items): "
       "prefill_cold.json summary tok_s (median of 3)")
 s3p = {r["length"]: r["tok_s"] for r in json.load(open(f"{S3}/bootD/prefill_cold.json"))["summary"]}
 vp = {r["length"]: r for r in json.load(open("vllm/prefill_cold.json"))["summary"]}
