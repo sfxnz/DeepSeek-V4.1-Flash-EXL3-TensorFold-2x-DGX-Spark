@@ -1,0 +1,5 @@
+s2: ctx1m/quality_quick.json (ec28f35, --context 1048576); s0: /home/sfxnz/projects/data/tf-dsv41/receipts/final/quality_quick.json (0d91389, --context 65538)
+selfcons: identical 12 of 12 | token ids of both runs equal to s0: True | golden hazard 0.01307 (s0 0.01307 )
+gsm8k: 97/100 | misses equal to s0: True | mean completion tokens 202.8 (s0 202.8 )
+tools: exact_args 22/22, json_valid 22/22, no_call 8/8 | all fields but time equal to s0: True
+needle: 6/6 | every cell (prompt tokens, answer) equal to s0: True

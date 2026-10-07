@@ -1,0 +1,14 @@
+{
+ "repo": "sfxnz/DeepSeek-V4.1-Flash-EXL3",
+ "revision": "982b70452f399814f56b46272fd30394ae10d58c",
+ "hub_sha": "982b70452f399814f56b46272fd30394ae10d58c",
+ "files": 56,
+ "listed_utc": "2026-10-04T18:09Z",
+ "huggingface_hub": "1.33.0",
+ "config_sha256": "6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5",
+ "index_sha256": "91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03",
+ "shards": 48,
+ "shard_bytes": 357466041064,
+ "all_files_bytes": 357486881279,
+ "shards_missing_from_listing": []
+}

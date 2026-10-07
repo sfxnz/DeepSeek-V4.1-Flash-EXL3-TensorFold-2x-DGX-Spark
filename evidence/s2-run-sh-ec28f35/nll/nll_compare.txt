@@ -1,0 +1,9 @@
+{
+ "passages": 40,
+ "tokens_scored": 19828,
+ "mean_nll": 0.13706928634074356,
+ "repeat_mean_nll": 0.13706928634074356,
+ "s0_0d91389_mean_nll": 0.13706928634074356,
+ "files": 80,
+ "bit_identical_to_s0": 80
+}

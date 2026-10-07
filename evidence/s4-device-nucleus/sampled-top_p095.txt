@@ -1,0 +1,12 @@
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 sampling={"temperature": 1.0, "top_p": 0.95}
+{"run": 1, "completion_tokens": 200, "ttft_s": 0.085, "decode_tok_s": 28.46, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 2, "completion_tokens": 200, "ttft_s": 0.094, "decode_tok_s": 29.19, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 3, "completion_tokens": 200, "ttft_s": 0.072, "decode_tok_s": 32.25, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 4, "completion_tokens": 200, "ttft_s": 0.068, "decode_tok_s": 32.06, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 5, "completion_tokens": 200, "ttft_s": 0.072, "decode_tok_s": 32.01, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 6, "completion_tokens": 200, "ttft_s": 0.073, "decode_tok_s": 32.18, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 7, "completion_tokens": 200, "ttft_s": 0.068, "decode_tok_s": 24.7, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 8, "completion_tokens": 200, "ttft_s": 0.068, "decode_tok_s": 31.76, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+{"run": 9, "completion_tokens": 200, "ttft_s": 0.078, "decode_tok_s": 31.73, "text_head": "Sparse attention helps long-context language models by reduc", "token_sha": "dae740142762"}
+SAMPLED {"label": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "runs": 9, "median_decode_tok_s": 31.76, "median_ttft_s": 0.072, "same_text_every_run": true, "token_shas": ["dae740142762"]}
+rc=0

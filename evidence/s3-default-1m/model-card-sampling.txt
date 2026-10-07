@@ -1,0 +1,12 @@
+# ~/.cache/huggingface/hub/models--deepseek-ai--DeepSeek-V4.1-Flash/snapshots/dba1be0a40aa45a94ad051997016db3960a90277/README.md lines 168-173, sha256 347c9db4e5506acb531cbc3b724407ab88e9af8781679152f0823d7bac16d251
+168: **Recommended sampling parameters:**
+169: 
+170: | Parameter | Value |
+171: | :--- | :--- |
+172: | `temperature` | 1.0 |
+173: | `top_p` | 0.95 or 1.0 |
+# the same card's evaluation settings (lines 109, 111, 147 mention top_p):
+109:DeepSeek-V4.1-Flash supports a continuously controllable reasoning effort from 1 to 100. All instruct results below use the maximum effort setting (`reasoning_effort=100`). Evaluations use `temperature=1.0, top_p=0.95`.
+111:For code agent benchmarks (Terminal-Bench 2.1/3.0/4.0, DeepSWE v1.1, NL2Repo-Bench, ProgramBench), the model is evaluated with the Minimal mode of DeepSeek Harness and a 1M-token context window. To align with official setup requirements, the mini-SWE harness is used for DeepSWE v1.1, and the Claude Code harness for SEC-Bench Pro. Visual agent benchmarks (Chartography, BabyVision, ZeroBench) use the Claude Code harness with a 512k-token context window. Agent's Last Exam and AutomationBench use their official scaffolds. All agentic evaluations use `temperature=1.0, top_p=0.95`.
+147:All scaffolds use N=8 samples per task on DeepSWE v1.1 and N=3 on Terminal-Bench 2.1, with Linux containers, `temperature=1.0`, `top_p=0.95`, a 1M-token context limit, and max_steps=500 per agent. Terminal-Bench 2.1 is evaluated without network access.
+173:| `top_p` | 0.95 or 1.0 |

@@ -1,0 +1,116 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 26.07 (build 373437299)
+PyTorch Version 2.13.0a0+9186a08
+Container image Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+NOTE: CUDA Forward Compatibility mode ENABLED.
+  Using CUDA 13.3 driver version 610.43.02 with kernel driver version 580.173.02.
+  See https://docs.nvidia.com/deploy/cuda-compatibility/ for details.
+
+[tensorfold] CUDA rank 0 startup estimate 77.37 GiB within 99.46 GiB; native 1048576, allocated prompt/reply window 16384, cache slots 16390
+[tensorfold] rank 0 of 2: 40 layers, 72.11 GiB of weights in 23.1 s
+[nll_tf] rank 0 engine up in 35.8s, limit 16384
+[nll_tf] 1/80 G1/pg1342-0 n=513 1.0s mean_nll_all=0.20272
+[nll_tf] 2/80 G1/pg1342-1 n=512 0.8s mean_nll_all=0.18215
+[nll_tf] 3/80 G1/pg1342-2 n=513 0.7s mean_nll_all=0.15218
+[nll_tf] 4/80 G1/pg1342-3 n=513 0.7s mean_nll_all=0.21805
+[nll_tf] 5/80 G1/pg84-0 n=513 0.7s mean_nll_all=0.14773
+[nll_tf] 6/80 G1/pg84-1 n=513 0.7s mean_nll_all=0.12228
+[nll_tf] 7/80 G1/pg84-2 n=513 0.7s mean_nll_all=0.13156
+[nll_tf] 8/80 G1/pg84-3 n=513 0.7s mean_nll_all=0.21575
+[nll_tf] 9/80 G1/pg2701-0 n=512 0.7s mean_nll_all=0.13721
+[nll_tf] 10/80 G1/pg2701-1 n=513 0.7s mean_nll_all=0.10798
+[nll_tf] 11/80 G1/pg2701-2 n=513 0.7s mean_nll_all=0.17133
+[nll_tf] 12/80 G1/pg2701-3 n=513 0.7s mean_nll_all=0.12754
+[nll_tf] 13/80 G1/pg1661-0 n=513 0.7s mean_nll_all=0.15656
+[nll_tf] 14/80 G1/pg1661-1 n=513 0.7s mean_nll_all=0.26598
+[nll_tf] 15/80 G1/pg1661-2 n=512 0.7s mean_nll_all=0.25368
+[nll_tf] 16/80 G1/pg1661-3 n=513 0.7s mean_nll_all=0.15336
+[nll_tf] 17/80 G1/pg98-0 n=512 0.7s mean_nll_all=0.38758
+[nll_tf] 18/80 G1/pg98-1 n=513 0.7s mean_nll_all=0.26456
+[nll_tf] 19/80 G1/pg98-2 n=513 0.7s mean_nll_all=0.19778
+[nll_tf] 20/80 G1/pg98-3 n=513 0.7s mean_nll_all=0.27480
+[nll_tf] 21/80 G1/pg74-0 n=513 0.7s mean_nll_all=0.12591
+[nll_tf] 22/80 G1/pg74-1 n=513 0.7s mean_nll_all=0.22827
+[nll_tf] 23/80 G1/pg74-2 n=513 0.7s mean_nll_all=0.34056
+[nll_tf] 24/80 G1/pg74-3 n=513 0.7s mean_nll_all=0.31951
+[nll_tf] 25/80 G1/pg345-0 n=513 0.7s mean_nll_all=0.27450
+[nll_tf] 26/80 G1/pg345-1 n=512 0.7s mean_nll_all=0.30251
+[nll_tf] 27/80 G1/pg345-2 n=513 0.7s mean_nll_all=0.21798
+[nll_tf] 28/80 G1/pg345-3 n=513 0.7s mean_nll_all=0.24965
+[nll_tf] 29/80 G1/pg3300-0 n=513 0.7s mean_nll_all=0.28153
+[nll_tf] 30/80 G1/pg3300-1 n=513 0.7s mean_nll_all=0.22422
+[nll_tf] 31/80 G1/pg3300-2 n=513 0.7s mean_nll_all=0.28939
+[nll_tf] 32/80 G1/pg3300-3 n=513 0.7s mean_nll_all=0.16081
+[nll_tf] 33/80 G1/pg2009-0 n=512 0.7s mean_nll_all=0.32068
+[nll_tf] 34/80 G1/pg2009-1 n=513 0.7s mean_nll_all=0.38274
+[nll_tf] 35/80 G1/pg2009-2 n=511 0.7s mean_nll_all=0.35618
+[nll_tf] 36/80 G1/pg2009-3 n=513 0.7s mean_nll_all=0.33378
+[nll_tf] 37/80 G1/pg1232-0 n=512 0.7s mean_nll_all=0.18148
+[nll_tf] 38/80 G1/pg1232-1 n=512 0.7s mean_nll_all=0.18221
+[nll_tf] 39/80 G1/pg1232-2 n=511 0.7s mean_nll_all=0.11213
+[nll_tf] 40/80 G1/pg1232-3 n=513 0.7s mean_nll_all=0.08672
+[nll_tf] 41/80 G1rep/pg1342-0 n=513 0.7s mean_nll_all=0.20272
+[nll_tf] 42/80 G1rep/pg1342-1 n=512 0.7s mean_nll_all=0.18215
+[nll_tf] 43/80 G1rep/pg1342-2 n=513 0.7s mean_nll_all=0.15218
+[nll_tf] 44/80 G1rep/pg1342-3 n=513 0.7s mean_nll_all=0.21805
+[nll_tf] 45/80 G1rep/pg84-0 n=513 0.7s mean_nll_all=0.14773
+[nll_tf] 46/80 G1rep/pg84-1 n=513 0.7s mean_nll_all=0.12228
+[nll_tf] 47/80 G1rep/pg84-2 n=513 0.7s mean_nll_all=0.13156
+[nll_tf] 48/80 G1rep/pg84-3 n=513 0.7s mean_nll_all=0.21575
+[nll_tf] 49/80 G1rep/pg2701-0 n=512 0.7s mean_nll_all=0.13721
+[nll_tf] 50/80 G1rep/pg2701-1 n=513 0.7s mean_nll_all=0.10798
+[nll_tf] 51/80 G1rep/pg2701-2 n=513 0.7s mean_nll_all=0.17133
+[nll_tf] 52/80 G1rep/pg2701-3 n=513 0.7s mean_nll_all=0.12754
+[nll_tf] 53/80 G1rep/pg1661-0 n=513 0.7s mean_nll_all=0.15656
+[nll_tf] 54/80 G1rep/pg1661-1 n=513 0.7s mean_nll_all=0.26598
+[nll_tf] 55/80 G1rep/pg1661-2 n=512 0.7s mean_nll_all=0.25368
+[nll_tf] 56/80 G1rep/pg1661-3 n=513 0.7s mean_nll_all=0.15336
+[nll_tf] 57/80 G1rep/pg98-0 n=512 0.7s mean_nll_all=0.38758
+[nll_tf] 58/80 G1rep/pg98-1 n=513 0.7s mean_nll_all=0.26456
+[nll_tf] 59/80 G1rep/pg98-2 n=513 0.7s mean_nll_all=0.19778
+[nll_tf] 60/80 G1rep/pg98-3 n=513 0.7s mean_nll_all=0.27480
+[nll_tf] 61/80 G1rep/pg74-0 n=513 0.7s mean_nll_all=0.12591
+[nll_tf] 62/80 G1rep/pg74-1 n=513 0.7s mean_nll_all=0.22827
+[nll_tf] 63/80 G1rep/pg74-2 n=513 0.7s mean_nll_all=0.34056
+[nll_tf] 64/80 G1rep/pg74-3 n=513 0.7s mean_nll_all=0.31951
+[nll_tf] 65/80 G1rep/pg345-0 n=513 0.7s mean_nll_all=0.27450
+[nll_tf] 66/80 G1rep/pg345-1 n=512 0.7s mean_nll_all=0.30251
+[nll_tf] 67/80 G1rep/pg345-2 n=513 0.7s mean_nll_all=0.21798
+[nll_tf] 68/80 G1rep/pg345-3 n=513 0.7s mean_nll_all=0.24965
+[nll_tf] 69/80 G1rep/pg3300-0 n=513 0.7s mean_nll_all=0.28153
+[nll_tf] 70/80 G1rep/pg3300-1 n=513 0.6s mean_nll_all=0.22422
+[nll_tf] 71/80 G1rep/pg3300-2 n=513 0.7s mean_nll_all=0.28939
+[nll_tf] 72/80 G1rep/pg3300-3 n=513 0.7s mean_nll_all=0.16081
+[nll_tf] 73/80 G1rep/pg2009-0 n=512 0.6s mean_nll_all=0.32068
+[nll_tf] 74/80 G1rep/pg2009-1 n=513 0.7s mean_nll_all=0.38274
+[nll_tf] 75/80 G1rep/pg2009-2 n=511 0.7s mean_nll_all=0.35618
+[nll_tf] 76/80 G1rep/pg2009-3 n=513 0.6s mean_nll_all=0.33378
+[nll_tf] 77/80 G1rep/pg1232-0 n=512 0.7s mean_nll_all=0.18148
+[nll_tf] 78/80 G1rep/pg1232-1 n=512 0.6s mean_nll_all=0.18221
+[nll_tf] 79/80 G1rep/pg1232-2 n=511 0.7s mean_nll_all=0.11213
+[nll_tf] 80/80 G1rep/pg1232-3 n=513 0.7s mean_nll_all=0.08672
+[nll_tf] rank 0 done in 90.1s

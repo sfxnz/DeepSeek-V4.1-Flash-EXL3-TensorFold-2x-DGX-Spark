@@ -1,0 +1,34 @@
+[
+ {
+  "label": "",
+  "prompt": "fibonacci-raw",
+  "temperature": 1.0,
+  "tokens": 64,
+  "decode_tps_median": 47.31656913867042,
+  "decode_tps_all": [
+   47.32,
+   40.09,
+   64.82,
+   40.27,
+   52.13
+  ],
+  "ttft_s_median": 0.17950789700262249,
+  "sample": " Provide code.<\uff5cend\u2581of\u2581sentence\uff5c>\n\nWe can write a Python function to compute the Fibonacci sequence and explain it. The Fibonacci sequence is a series of number"
+ },
+ {
+  "label": "",
+  "prompt": "gpu-chat-no-think",
+  "temperature": 1.0,
+  "tokens": 64,
+  "decode_tps_median": 44.3166542562193,
+  "decode_tps_all": [
+   38.94,
+   42.19,
+   44.32,
+   46.42,
+   44.81
+  ],
+  "ttft_s_median": 0.1796400889288634,
+  "sample": "# How a GPU Does Matrix Multiplication (Plain English)\n\n## The big idea\n\nA CPU is like a few very smart professors working on one problem. A GPU is like thousan"
+ }
+]

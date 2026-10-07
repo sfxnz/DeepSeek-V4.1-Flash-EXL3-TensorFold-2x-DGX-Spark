@@ -1,0 +1,66 @@
+[
+ {
+  "label": "s5-bootE",
+  "prompt": "fibonacci-raw",
+  "temperature": 1.0,
+  "tokens": 64,
+  "decode_tps_median": 44.08839993132745,
+  "decode_tps_all": [
+   25.75,
+   39.82,
+   53.51,
+   48.36,
+   44.09
+  ],
+  "ttft_s_median": 0.06897372310049832,
+  "sample": "<\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of\u2581sentence\uff5c><\uff5cend\u2581of"
+ },
+ {
+  "label": "s5-bootE",
+  "prompt": "gpu-chat-no-think",
+  "temperature": 1.0,
+  "tokens": 64,
+  "decode_tps_median": 40.46090499379154,
+  "decode_tps_all": [
+   33.07,
+   37.16,
+   40.46,
+   43.12,
+   50.82
+  ],
+  "ttft_s_median": 0.07258072891272604,
+  "sample": "# How a GPU Does Matrix Multiplication (Plain English)\n\n## The big picture\n\nMultiplying two matrices means computing a *lot* of little independent dot products."
+ },
+ {
+  "label": "s5-bootE",
+  "prompt": "fibonacci-raw",
+  "temperature": 0.0,
+  "tokens": 64,
+  "decode_tps_median": 64.29245101584037,
+  "decode_tps_all": [
+   63.68,
+   64.38,
+   64.42,
+   63.79,
+   64.29
+  ],
+  "ttft_s_median": 0.06644627405330539,
+  "sample": " The Fibonacci sequence is a series of numbers in which each number is the sum of the two preceding ones, usually starting with 0 and 1. Write a Python function"
+ },
+ {
+  "label": "s5-bootE",
+  "prompt": "gpu-chat-no-think",
+  "temperature": 0.0,
+  "tokens": 64,
+  "decode_tps_median": 40.931392699739874,
+  "decode_tps_all": [
+   41.0,
+   41.01,
+   40.89,
+   40.82,
+   40.93
+  ],
+  "ttft_s_median": 0.0647900439798832,
+  "sample": "# How Matrix Multiplication Uses a GPU (Plain English)\n\n## The Big Idea\n\nA GPU is like a warehouse full of thousands of tiny workers (called **cores**). A CPU i"
+ }
+]

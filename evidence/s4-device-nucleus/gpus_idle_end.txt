@@ -1,0 +1,20 @@
+2026-10-05T03:39:30Z
+== spark1 containers (running)
+conduit matrixconduit/matrix-conduit:latest
+== spark1 tf-dsv41 containers (any state)
+== spark1 GPU
+0 %
+pid, process_name
+== spark2 containers (running)
+== spark2 tf-dsv41 containers (any state)
+== spark2 GPU
+0 %
+pid, process_name
+== free spark1
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       8.2Gi        95Gi       264Ki        19Gi       113Gi
+Swap:           15Gi       4.4Gi        11Gi
+== free spark2
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       5.0Gi       105Gi       276Ki        12Gi       116Gi
+Swap:           15Gi       1.9Gi        14Gi

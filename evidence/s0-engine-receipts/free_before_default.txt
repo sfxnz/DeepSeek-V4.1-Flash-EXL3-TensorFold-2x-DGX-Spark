@@ -1,0 +1,8 @@
+== rank0
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       7.7Gi        91Gi       288Ki        24Gi       114Gi
+Swap:           15Gi       4.6Gi        11Gi
+== rank1
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       5.1Gi        94Gi       272Ki        23Gi       116Gi
+Swap:           15Gi       1.9Gi        14Gi

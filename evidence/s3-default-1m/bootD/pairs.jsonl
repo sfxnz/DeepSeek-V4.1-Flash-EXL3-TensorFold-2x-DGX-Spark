@@ -1,0 +1,14 @@
+{"case": "nofields prompt0 drafted", "seed": 1234, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "7d1dc35680a6", "rounds": 48, "accepted": 111, "drafted": 144, "prefill_s": 0.193, "decode_s": 3.059, "tok_s": 52.3, "stages_ms": {"engram": 4.712, "sampling": 2.742, "markov": 0.132, "launch": 0.431, "device": 55.594}}
+{"case": "nofields prompt0 draft:false", "seed": 1234, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "7d1dc35680a6", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.127, "decode_s": 6.038, "tok_s": 26.5, "stages_ms": {"engram": 1.677, "sampling": 0.891, "markov": 0.0, "launch": 0.323, "device": 34.965}}
+{"check": "nofields prompt0 drafted == draft:false", "equal": true}
+{"check": "nofields prompt0 == s2 top_p1 prompt0 (7d1dc35680a6)", "equal": true}
+{"case": "nofields prompt1 drafted", "seed": 1234, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "22480b3cd4c8", "rounds": 56, "accepted": 103, "drafted": 165, "prefill_s": 0.197, "decode_s": 3.546, "tok_s": 45.12, "stages_ms": {"engram": 3.863, "sampling": 3.24, "markov": 0.141, "launch": 0.473, "device": 55.476}}
+{"case": "nofields prompt1 draft:false", "seed": 1234, "draft": false, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "22480b3cd4c8", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.13, "decode_s": 6.062, "tok_s": 26.39, "stages_ms": {"engram": 1.562, "sampling": 1.077, "markov": 0.0, "launch": 0.314, "device": 35.058}}
+{"check": "nofields prompt1 drafted == draft:false", "equal": true}
+{"check": "nofields prompt1 == s2 top_p1 prompt1 (22480b3cd4c8)", "equal": true}
+{"case": "nofields prompt2 drafted", "seed": 1234, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "65f2c13cd1dc", "rounds": 52, "accepted": 107, "drafted": 154, "prefill_s": 0.194, "decode_s": 3.281, "tok_s": 48.76, "stages_ms": {"engram": 4.716, "sampling": 3.051, "markov": 0.138, "launch": 0.464, "device": 54.604}}
+{"case": "nofields prompt2 draft:false", "seed": 1234, "draft": false, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "65f2c13cd1dc", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.128, "decode_s": 6.021, "tok_s": 26.57, "stages_ms": {"engram": 1.498, "sampling": 0.887, "markov": 0.0, "launch": 0.329, "device": 35.048}}
+{"check": "nofields prompt2 drafted == draft:false", "equal": true}
+{"check": "nofields prompt2 == s2 top_p1 prompt2 (65f2c13cd1dc)", "equal": true}
+{"section": "pairs_default", "failures": 0}
+rc=0

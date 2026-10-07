@@ -1,0 +1,6 @@
+# tools/bench_concurrent.py at 903a1e8af62c8f46eceee6b95481706ada30ae49 (/home/sfxnz/projects/code/TensorFold), host venv, 2026-10-06T16:41:33Z
+{"label": "s5-bootE", "prompt": "code", "temperature": 1.0, "streams": 4, "failed": 0, "unmeasured": 0, "aggregate_tps": 46.7, "per_stream_tps": 49.7, "ttft_s_max": 17.87, "alone": {"equal": 12, "unequal": 0, "failed": 0}, "serial": {"equal": 4, "unequal": 0, "failed": 0}}
+{"label": "s5-bootE", "prompt": "chat", "temperature": 1.0, "streams": 4, "failed": 0, "unmeasured": 0, "aggregate_tps": 48.5, "per_stream_tps": 46.7, "ttft_s_max": 18.63, "alone": {"equal": 12, "unequal": 0, "failed": 0}, "serial": {"equal": 4, "unequal": 0, "failed": 0}}
+{"label": "s5-bootE", "prompt": "code", "temperature": 0.0, "streams": 4, "failed": 0, "unmeasured": 0, "aggregate_tps": 82.2, "per_stream_tps": 84.8, "ttft_s_max": 13.17, "alone": {"equal": 12, "unequal": 0, "failed": 0}, "serial": {"equal": 1, "unequal": 0, "failed": 0}}
+{"label": "s5-bootE", "prompt": "chat", "temperature": 0.0, "streams": 4, "failed": 0, "unmeasured": 0, "aggregate_tps": 42.0, "per_stream_tps": 46.0, "ttft_s_max": 18.86, "alone": {"equal": 12, "unequal": 0, "failed": 0}, "serial": {"equal": 1, "unequal": 0, "failed": 0}}
+rc=0

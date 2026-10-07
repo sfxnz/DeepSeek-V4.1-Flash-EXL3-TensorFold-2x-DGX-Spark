@@ -1,0 +1,2 @@
+{"label": "", "prompt": "gpu-chat-no-think", "temperature": 0.0, "tokens": 64, "decode_tps_median": 41.084848611108, "decode_tps_all": [40.88, 40.81, 41.08, 41.9, 41.47], "ttft_s_median": 0.0659492970444262, "sample": "# How Matrix Multiplication Uses a GPU (Plain English)\n\n## The Big Idea\n\nA GPU is like a warehouse full of thousands of tiny workers (called **cores**). A CPU i", "texts_identical": true}
+rc=0

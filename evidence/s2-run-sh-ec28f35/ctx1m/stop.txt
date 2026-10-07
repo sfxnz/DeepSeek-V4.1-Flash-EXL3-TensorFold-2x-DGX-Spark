@@ -1,0 +1,6 @@
+2026-10-04T20:52:01Z ./stop.sh
+Stopping tf-dsv41-flash on spark1
+Stopped tf-dsv41-flash on spark1
+Stopping tf-dsv41-flash on spark2
+Stopped tf-dsv41-flash on spark2
+rc=0

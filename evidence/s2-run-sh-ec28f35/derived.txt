@@ -1,0 +1,44 @@
+# Derived README numbers, s2-run-sh-ec28f35. Inputs are files in this directory or ../s0-engine-receipts.
+
+## Window table: ctx1m/needles.jsonl (min_avail_mib_* / 1024; prompt tok/s = prompt_tokens / prefill_s)
+prompt_tokens=130171 depth=0.1 prefill_s=214.2865 file_prefill_tok_s=607.5 -> tok/s 607.463 = 607; min_avail head 25389 MiB = 24.79 GiB, worker 27320 MiB = 26.68 GiB
+prompt_tokens=130541 depth=0.5 prefill_s=215.1075 file_prefill_tok_s=606.9 -> tok/s 606.864 = 607; min_avail head 25233 MiB = 24.64 GiB, worker 28095 MiB = 27.44 GiB
+prompt_tokens=129076 depth=0.9 prefill_s=212.8106 file_prefill_tok_s=606.5 -> tok/s 606.530 = 607; min_avail head 25398 MiB = 24.80 GiB, worker 28073 MiB = 27.42 GiB
+prompt_tokens=257955 depth=0.5 prefill_s=439.8121 file_prefill_tok_s=586.5 -> tok/s 586.512 = 587; min_avail head 25147 MiB = 24.56 GiB, worker 27687 MiB = 27.04 GiB
+prompt_tokens=523681 depth=0.5 prefill_s=946.8932 file_prefill_tok_s=553.1 -> tok/s 553.052 = 553; min_avail head 23920 MiB = 23.36 GiB, worker 27327 MiB = 26.69 GiB
+prompt_tokens=1039528 depth=0.5 prefill_s=2077.7576 file_prefill_tok_s=500.3 -> tok/s 500.312 = 500; min_avail head 22635 MiB = 22.10 GiB, worker 27326 MiB = 26.69 GiB
+longest prefill 2077.8 s = 34.6 min
+
+## Memory minimum over the CONTEXT=1048576 boot: ctx1m/memwatch.tsv
+samples=953 from 2026-10-04T19:26:42Z to 2026-10-04T20:52:09Z max_gap_s=6
+head: min MemAvailable 22635 MiB = 22.10 GiB at 2026-10-04T20:26:33Z
+worker: min MemAvailable 27320 MiB = 26.68 GiB at 2026-10-04T19:30:28Z
+
+## Gaps against vLLM: 100 * (1 - this / vLLM)
+bench_decode prose: 45.6704 (decode.txt) vs 50.6902 (round36-headline.json cells.V.bench_prose_c1_tok_s) -> 9.9% lower
+bench_decode structured: 64.1693 (decode.txt) vs 84.2790 (round36-headline.json cells.V.structured_c1_tok_s) -> 23.9% lower
+bench_decode prose_long: 34.4294 (decode.txt) vs 43.7957 (round36-headline.json cells.V.prose_long_c1_tok_s) -> 21.4% lower
+bench_openai fibonacci-raw t=1: 41.2238 (bootA/bench_openai.json) vs 47.3166 (vllm-sibling/G7_vllm-bench*.json) -> 12.9% lower
+bench_openai gpu-chat-no-think t=1: 37.0621 (bootA/bench_openai.json) vs 44.3167 (vllm-sibling/G7_vllm-bench*.json) -> 16.4% lower
+bench_openai gpu-chat-no-think t=0: 41.2124 (bootA/bench_openai.json) vs 43.1358 (vllm-sibling/G7_vllm-bench*.json) -> 4.5% lower
+decode range: 4.5-23.9% lower
+prefill_cold 2048: 499.4 (bootA/prefill_cold.json) vs 777.8 (G7_vllm-prefill.json) -> 35.8% lower
+prefill_cold 8192: 527.2 (bootA/prefill_cold.json) vs 769.4 (G7_vllm-prefill.json) -> 31.5% lower
+prefill_cold 16384: 549.0 (bootA/prefill_cold.json) vs 771.8 (G7_vllm-prefill.json) -> 28.9% lower
+prefill_cold 32768: 533.9 (bootA/prefill_cold.json) vs 777.2 (G7_vllm-prefill.json) -> 31.3% lower
+prefill_cold 65536: 537.2 (bootA/prefill_cold.json) vs 773.6 (G7_vllm-prefill.json) -> 30.6% lower
+prompt tok/s range: 28.9-35.8% lower
+
+## Durations
+IMAGE_ONLY=1 ./run.sh: image-only.txt 2026-10-04T18:49:46Z to 2026-10-04T18:53:20Z = 214 s = 3 min 34 s
+bootA ./run.sh to ready: bootA/run.txt start 2026-10-04T18:53:32Z end 2026-10-04T18:56:33Z = 181 s = 3 min 1 s
+bootB ./run.sh to ready: bootB/run.txt start 2026-10-04T19:19:13Z end 2026-10-04T19:20:15Z = 62 s = 1 min 2 s
+ctx1m ./run.sh to ready: ctx1m/run.txt start 2026-10-04T19:26:52Z end 2026-10-04T19:27:43Z = 51 s = 0 min 51 s
+
+## Admission reserve: ../s0-engine-receipts/free_before_s65538.txt (free -h total, rounded by free)
+MemTotal 121Gi -> reserve max(4, 121 / 10) = 12.1 GiB
+MemTotal 121Gi -> reserve max(4, 121 / 10) = 12.1 GiB
+gate floor: native-window estimate 79.09 GiB (ctx1m/run.txt) + 12.1 = 91.19 GiB
+
+## Bench requests with thinking off: bootA/gate/docker-head.log
+done lines=32 thinking=False=32

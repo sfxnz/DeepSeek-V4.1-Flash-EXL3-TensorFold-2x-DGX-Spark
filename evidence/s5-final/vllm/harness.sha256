@@ -1,0 +1,4 @@
+3172cbc4558ae9c18a2a5844b824129c0cd9ab4d0371c148c1c31a0999708813  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/bench_decode.py
+3172cbc4558ae9c18a2a5844b824129c0cd9ab4d0371c148c1c31a0999708813  /home/sfxnz/projects/ai-lab/recipes/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark/bench_decode.py
+07f2f7bb5d4fec0e6af2ef8955630bf153c0174086632e4527a90344e6e29216  /home/sfxnz/projects/ai-lab/recipes/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark/tools/measure_lail_prose.py
+61e6d4291fff2e796532c24e1e19c208c7decc034af4c27a88fb7c5e04d07461  /home/sfxnz/projects/data/tf-dsv41/goldens/G7_prefill_prompts.json

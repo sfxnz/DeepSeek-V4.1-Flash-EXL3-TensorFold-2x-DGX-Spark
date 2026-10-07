@@ -1,0 +1,15 @@
+2026-10-06T16:33:09.314Z session_gate: evidence dir /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s5-final/bootE/gate
+2026-10-06T16:33:10.357Z session_gate: start smoke-chat
+2026-10-06T16:33:11.131Z session_gate: end smoke-chat rc=0
+2026-10-06T16:33:11.133Z session_gate: start smoke-count
+2026-10-06T16:33:18.460Z session_gate: end smoke-count rc=0
+2026-10-06T16:33:18.462Z session_gate: start bench-frozen
+2026-10-06T16:34:18.386Z session_gate: end bench-frozen rc=0
+2026-10-06T16:34:18.388Z session_gate: start bench-prose-long
+2026-10-06T16:35:10.095Z session_gate: end bench-prose-long rc=0
+finished_at=2026-10-06T16:35:11.018Z
+smoke-chat=0
+smoke-count=0
+bench-frozen=0
+bench-prose-long=0
+GATE=PASS

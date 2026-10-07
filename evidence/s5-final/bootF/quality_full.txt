@@ -1,0 +1,17 @@
+[selfcons] 42.8s {"prompts": 12, "max_tokens": 128, "identical": 12}
+[gsm8k] 327.7s {"acc": {"k": 97, "n": 100, "rate": 0.97, "ci95": [0.9155, 0.9897]}, "mean_completion_tokens": 202.8}
+[gsm8k_think] 215.0s {"acc": {"k": 39, "n": 40, "rate": 0.975, "ci95": [0.8712, 0.9956]}, "mean_completion_tokens": 315.5}
+[mmlu] 73.6s {"acc": {"k": 204, "n": 228, "rate": 0.8947, "ci95": [0.8482, 0.9282]}}
+[tools] 43.1s {"json_valid": {"k": 22, "n": 22, "rate": 1.0, "ci95": [0.8513, 1.0]}, "exact_args": {"k": 22, "n": 22, "rate": 1.0, "ci95": [0.8513, 1.0]}, "no_call": {"k": 8, "n": 8, "rate": 1.0, "ci95": [0.6756, 1.0]}}
+[needle] 276.2s {"found": 9, "total": 9}
+PASS selfcons.golden_hazard value=0.01307 limit=0.01936
+PASS selfcons.aa_hazard value=0.0 limit=0.01936
+PASS tools.json_valid value=1.0 limit=1.0
+PASS tools.exact_args value=1.0 limit=1.0
+PASS tools.no_call value=1.0 limit=1.0
+PASS gsm8k.acc value=0.97 limit=0.97
+PASS gsm8k_think.acc value=0.975 limit=0.975
+PASS mmlu.acc value=0.8947 limit=0.8991
+PASS needle.found value=9 limit=9
+QUALITY {"mode": "full", "pass": true, "elapsed_s": 978.4, "tools_exact": 1.0, "tools_json": 1.0, "tools_nocall": 1.0, "needle": 9, "selfcons_identical": 12, "selfcons_aa_hazard": 0.0, "selfcons_golden_hazard": 0.01307, "gsm8k": 0.97, "gsm8k_think": 0.975, "mmlu": 0.8947}
+rc=0
