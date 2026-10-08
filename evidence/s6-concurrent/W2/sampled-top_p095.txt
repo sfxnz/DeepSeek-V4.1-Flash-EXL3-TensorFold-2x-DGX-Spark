@@ -1,0 +1,7 @@
+# 2026-10-08T03:36:59Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label top_p095 --runs 1 --temperature 1.0 --top-p 0.95 --concurrency 1 2 4
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=1 concurrency=[1, 2, 4] sampling={"temperature": 1.0, "top_p": 0.95}
+phase=top_p095 c=1 run=1 wall=5.44s agg=37.20 tok/s per_stream=[37.21] shas=dae740142762
+phase=top_p095 c=2 run=1 wall=10.52s agg=50.90 tok/s per_stream=[38.37,38.35] shas=dae740142762,dae740142762
+phase=top_p095 c=4 run=1 wall=21.09s agg=60.59 tok/s per_stream=[38.34,38.48,37.91,38.37] shas=dae740142762,dae740142762,dae740142762,dae740142762
+SUMMARY [{"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 1, "n": 1, "median_agg_tok_s": 37.202615743919836, "median_decode_tok_s": 37.208141511919955, "ttft_s_p50": 0.08893084712326527, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 2, "n": 2, "median_agg_tok_s": 50.89734053205664, "median_decode_tok_s": 38.356049751156746, "ttft_s_p50": 2.6955261804396287, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 4, "n": 4, "median_agg_tok_s": 60.592627221612304, "median_decode_tok_s": 38.355953629211555, "ttft_s_p50": 7.951515435473993, "token_shas": ["dae740142762"]}]
+rc=0

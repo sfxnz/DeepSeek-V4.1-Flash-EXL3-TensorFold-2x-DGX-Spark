@@ -1,0 +1,13 @@
+# 2026-10-08T06:10:59Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label nofields --runs 9 --concurrency 1
+label=nofields url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1] sampling={}
+phase=nofields c=1 run=1 wall=4.78s agg=43.05 tok/s per_stream=[43.05] shas=4e0fa4daff89
+phase=nofields c=1 run=2 wall=4.69s agg=43.02 tok/s per_stream=[43.03] shas=4e0fa4daff89
+phase=nofields c=1 run=3 wall=4.71s agg=42.90 tok/s per_stream=[42.91] shas=4e0fa4daff89
+phase=nofields c=1 run=4 wall=4.70s agg=42.96 tok/s per_stream=[42.96] shas=4e0fa4daff89
+phase=nofields c=1 run=5 wall=4.67s agg=43.35 tok/s per_stream=[43.35] shas=4e0fa4daff89
+phase=nofields c=1 run=6 wall=4.69s agg=43.09 tok/s per_stream=[43.10] shas=4e0fa4daff89
+phase=nofields c=1 run=7 wall=4.70s agg=42.96 tok/s per_stream=[42.97] shas=4e0fa4daff89
+phase=nofields c=1 run=8 wall=4.69s agg=43.06 tok/s per_stream=[43.06] shas=4e0fa4daff89
+phase=nofields c=1 run=9 wall=4.70s agg=42.99 tok/s per_stream=[43.00] shas=4e0fa4daff89
+SUMMARY [{"phase": "nofields", "sampling": {}, "concurrency": 1, "n": 9, "median_agg_tok_s": 43.023372840848, "median_decode_tok_s": 43.02922769465781, "ttft_s_p50": 0.06787786306813359, "token_shas": ["4e0fa4daff89"]}]
+rc=0

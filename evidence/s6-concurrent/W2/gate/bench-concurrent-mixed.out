@@ -1,0 +1,2 @@
+{"label": "", "prompt": "mixed", "temperature": 1.0, "streams": 2, "failed": 0, "unmeasured": 0, "aggregate_tps": 51.3, "per_stream_tps": 52.5, "ttft_s_max": 3.69, "alone": {"equal": 6, "unequal": 0, "failed": 0}}
+{"label": "", "prompt": "mixed", "temperature": 1.0, "streams": 4, "failed": 0, "unmeasured": 0, "aggregate_tps": 49.0, "per_stream_tps": 47.3, "ttft_s_max": 9.59, "alone": {"equal": 12, "unequal": 0, "failed": 0}}

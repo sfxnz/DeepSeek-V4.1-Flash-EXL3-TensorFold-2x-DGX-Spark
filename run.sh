@@ -11,9 +11,9 @@ HF_HOME_IN_CONTAINER=/cache/huggingface
 # BEGIN generated from recipe.yaml — edit recipe.yaml and run kit/render.py
 MODEL="${MODEL:-sfxnz/DeepSeek-V4.1-Flash-EXL3}"
 SERVED_NAME="${SERVED_NAME:-deepseek-ai/DeepSeek-V4.1-Flash}"
-IMAGE="${IMAGE:-tf-dsv41-flash:0.6.4-903a1e8}"
+IMAGE="${IMAGE:-tf-dsv41-flash:0.6.4-b86514a}"
 TF_REPO="${TF_REPO:-https://github.com/sfxnz/TensorFold.git}"
-TF_SHA="${TF_SHA:-903a1e8af62c8f46eceee6b95481706ada30ae49}"
+TF_SHA="${TF_SHA:-b86514a5ac8700b32e7b24f1095349df4ce2b922}"
 CONTAINER_NAME="${CONTAINER_NAME:-tf-dsv41-flash}"
 PORT="${PORT:-8000}"
 MASTER_PORT="${MASTER_PORT:-29571}"
@@ -23,6 +23,8 @@ IFACE="${IFACE:-enp1s0f1np1}"
 HCA="${HCA:-rocep1s0f1,roceP2p1s0f1}"
 TP="${TP:-2}"
 CONTEXT="${CONTEXT:-1048576}"
+PARALLEL="${PARALLEL:-4}"
+DECODE_SHARE="${DECODE_SHARE:-0.5}"
 MTP_DRAFTS="${MTP_DRAFTS:-5}"
 MTP_CONFIDENCE="${MTP_CONFIDENCE:-0.15}"
 THINKING="${THINKING:-0}"
@@ -66,9 +68,6 @@ RECIPE_LABEL=ai-lab.recipe=dsv41-tensorfold
 NATIVE_CONTEXT=1048576
 # DSpark drafts at most 5 tokens a round (families/deepseek_v41/cuda BLOCK).
 MAX_MTP_DRAFTS=5
-# Admission grants MemAvailable less max(4 GiB, MemTotal / 10), 12.1 GiB on a Spark; the default window's startup
-# estimate is 81.32 GiB at TF_SHA (evidence/s5-final/bootE/gate/startup.txt). Below this gate it cannot fit.
-MIN_MEM_GATE_GIB=94
 # Every NAME="${NAME:-…}" line of the generated block. The engine knobs (TF_DSV41_*) go to both ranks as
 # `-e KEY=VALUE` (container_env), and the worker gets every name forwarded (worker_env).
 mapfile -t GENERATED_VARS < <(sed -n '/^# BEGIN generated from recipe.yaml/,/^# END generated/s/^\([A-Z][A-Z0-9_]*\)="\${.*/\1/p' "${BASH_SOURCE[0]}")
@@ -101,6 +100,8 @@ done
 [[ "$OOM_SCORE_ADJ" =~ ^(-?[1-9][0-9]*|0)$ ]] && (( OOM_SCORE_ADJ >= -1000 && OOM_SCORE_ADJ <= 1000 )) || die "OOM_SCORE_ADJ=$OOM_SCORE_ADJ must be an integer in [-1000, 1000]."
 [[ -z "$MTP_CONFIDENCE" || "$MTP_CONFIDENCE" =~ ^(0\.[0-9]*[1-9][0-9]*|1(\.0+)?)$ ]] || die "MTP_CONFIDENCE=$MTP_CONFIDENCE must be empty or a decimal in (0, 1], e.g. 0.70."
 [[ "$TOP_P" =~ ^(0\.[0-9]*[1-9][0-9]*|1(\.0+)?)$ ]] || die "TOP_P=$TOP_P must be a decimal in (0, 1], e.g. 1.0 or 0.95."
+[[ "$PARALLEL" =~ ^[1-4]$ ]] || die "PARALLEL=$PARALLEL must be 1, 2, 3 or 4: the family decodes at most 4 requests together (MAX_LANES)."
+[[ "$DECODE_SHARE" =~ ^(0(\.[0-9]+)?|1(\.0+)?)$ ]] || die "DECODE_SHARE=$DECODE_SHARE must be a decimal in [0, 1], e.g. 0.5."
 [[ "$TF_SHA" =~ ^[0-9a-f]{40}$ ]] || die "TF_SHA=$TF_SHA is not a 40-hex TensorFold commit."
 [[ "$TF_REPO" =~ ^https://[A-Za-z0-9./_-]+\.git$ ]] || die "TF_REPO=$TF_REPO must be an https git URL ending .git."
 [[ "$SNAPSHOT_SHA" =~ ^[0-9a-f]{40}$ ]] || die "SNAPSHOT_SHA=$SNAPSHOT_SHA is not a 40-hex snapshot revision."
@@ -120,8 +121,16 @@ case "$ORCHESTRATE" in auto | 0) ;; *) die "ORCHESTRATE=$ORCHESTRATE must be aut
 (( MTP_DRAFTS <= MAX_MTP_DRAFTS )) || die "MTP_DRAFTS=$MTP_DRAFTS exceeds $MAX_MTP_DRAFTS, the most DSpark drafts a round."
 (( PORT <= 65535 && MASTER_PORT <= 65535 )) || die "PORT=$PORT / MASTER_PORT=$MASTER_PORT must be at most 65535."
 (( PORT != MASTER_PORT )) || die "PORT=$PORT collides with MASTER_PORT=$MASTER_PORT."
+# The memory-gate floor for PARALLEL windows of CONTEXT, in GiB, rounded up: resident 75.99 + max(staging 5.33,
+# geometry 3.71 + 0.95 a further lane per 1048576-token window) + admission's reserve 12.1 (MemAvailable less
+# max(4 GiB, MemTotal / 10) on a Spark). 94 at PARALLEL=1 and 95 at 4 x 1048576: s6 measured the startup estimate
+# 81.32 GiB at one lane and 82.55 GiB at 4 x 1048576 on both ranks, the formula's values, so the constants stand
+# (evidence/s6-concurrent/1A/startup.txt, 2B/startup.txt; abba_table.txt section 6). Integer math in GiB/100 x 1048576.
+MIN_MEM_GATE_GIB=$(( 371 * 1048576 + 95 * (PARALLEL - 1) * CONTEXT ))
+(( MIN_MEM_GATE_GIB >= 533 * 1048576 )) || MIN_MEM_GATE_GIB=$(( 533 * 1048576 ))
+MIN_MEM_GATE_GIB=$(( ((7599 + 1210) * 1048576 + MIN_MEM_GATE_GIB + 100 * 1048576 - 1) / (100 * 1048576) ))
 if (( MEM_GATE_GIB < MIN_MEM_GATE_GIB )) && [[ "$FORCE_UNSAFE_MEM_GATE" != 1 ]]; then
-  die "MEM_GATE_GIB=$MEM_GATE_GIB is below $MIN_MEM_GATE_GIB GiB: the engine's admission cannot fit the default window below it. FORCE_UNSAFE_MEM_GATE=1 for one boot, and record it."
+  die "MEM_GATE_GIB=$MEM_GATE_GIB is below $MIN_MEM_GATE_GIB GiB: the engine's admission cannot fit PARALLEL=$PARALLEL windows of CONTEXT=$CONTEXT below it. FORCE_UNSAFE_MEM_GATE=1 for one boot, and record it."
 fi
 [[ "$SERVED_NAME" =~ ^[A-Za-z0-9._/:-]+$ ]] || die "SERVED_NAME=$SERVED_NAME must be one word of A-Z a-z 0-9 . _ / : -."
 
@@ -154,14 +163,14 @@ done
 # --- EXTRA_ARGS must not re-set a flag run.sh builds; argparse keeps the last value, so a duplicate would bypass the
 # guard on its variable or desynchronise the two ranks. TensorFold's parser expands unambiguous prefixes (--cont means
 # --context), so any prefix of a guarded flag is refused too.
-OWNED_FLAGS="--tp --rank --master --master-port --host --port --name --context --mtp-drafts --mtp-confidence --no-drafts --thinking --no-thinking --max-tokens --top-p --no-update-check"
+OWNED_FLAGS="--tp --rank --master --master-port --host --port --name --context --parallel --decode-share --mtp-drafts --mtp-confidence --no-drafts --thinking --no-thinking --max-tokens --top-p --no-update-check"
 # The family refuses these at startup or per request, or ignores them (docs/recipes/deepseek-v4.1-flash.md).
-REFUSED_FLAGS="--parallel --prefill-fp8 --no-prefill-fp8 --drafter --thinking-budget --vision --vision-urls --kv-dtype"
+REFUSED_FLAGS="--prefill-fp8 --no-prefill-fp8 --drafter --thinking-budget --vision --vision-urls --kv-dtype"
 for w in $EXTRA_ARGS; do
   f="${w%%=*}"
   [[ "$f" == --?* ]] || continue
   for g in $OWNED_FLAGS; do
-    [[ "$g" == "$f"* ]] && die "EXTRA_ARGS sets $w (argparse reads it as $g), which run.sh passes itself. Use TP, PORT, MASTER_PORT, SERVED_NAME, CONTEXT, MTP_DRAFTS, MTP_CONFIDENCE, THINKING, MAX_TOKENS or TOP_P instead."
+    [[ "$g" == "$f"* ]] && die "EXTRA_ARGS sets $w (argparse reads it as $g), which run.sh passes itself. Use TP, PORT, MASTER_PORT, SERVED_NAME, CONTEXT, PARALLEL, DECODE_SHARE, MTP_DRAFTS, MTP_CONFIDENCE, THINKING, MAX_TOKENS or TOP_P instead."
   done
   for g in $REFUSED_FLAGS; do
     [[ "$g" == "$f"* ]] && die "EXTRA_ARGS sets $w ($g): the deepseek_v41 family refuses or ignores it (README 'Not supported')."
@@ -175,7 +184,9 @@ serve_args() {
   # The `tensorfold serve` flags after the model directory, for one rank. Both ranks get theirs from here.
   local rank="$1"
   local args=(--tp "$TP" --rank "$rank" --master "$HEAD_IP" --master-port "$MASTER_PORT" --name "$SERVED_NAME"
-    --context "$CONTEXT" --mtp-drafts "$MTP_DRAFTS" --top-p "$TOP_P" --no-update-check)
+    --context "$CONTEXT" --parallel "$PARALLEL" --mtp-drafts "$MTP_DRAFTS" --top-p "$TOP_P" --no-update-check)
+  # The share has no effect on one lane: passed only when prompts can fill between other requests' rounds.
+  if (( PARALLEL >= 2 )); then args+=(--decode-share "$DECODE_SHARE"); fi
   [[ -n "$MTP_CONFIDENCE" ]] && args+=(--mtp-confidence "$MTP_CONFIDENCE")
   if [[ "$THINKING" == 1 ]]; then args+=(--thinking); else args+=(--no-thinking); fi
   if [[ "$rank" == 0 ]]; then
@@ -201,9 +212,9 @@ container_env() {
 if [[ "${VALIDATE_ONLY:-0}" != 0 ]]; then
   case "$VALIDATE_ONLY" in
     1)
-      printf '==> validate-only image=%s tf=%s repo=%s snapshot=%s tp=%s ctx=%s drafts=%s confidence=%s thinking=%s max_tokens=%s top_p=%s hca=%s host=%s mem_gate=%s engine_env=%s\n' \
+      printf '==> validate-only image=%s tf=%s repo=%s snapshot=%s tp=%s ctx=%s drafts=%s confidence=%s thinking=%s max_tokens=%s top_p=%s parallel=%s decode_share=%s hca=%s host=%s mem_gate=%s engine_env=%s\n' \
         "$IMAGE" "$TF_SHA" "$TF_REPO" "$SNAPSHOT_SHA" "$TP" "$CONTEXT" "$MTP_DRAFTS" "${MTP_CONFIDENCE:-none}" "$THINKING" \
-        "$MAX_TOKENS" "$TOP_P" "$HCA" "$API_HOST" "$MEM_GATE_GIB" "$(container_env | grep -c '^TF_DSV41_' || true)"
+        "$MAX_TOKENS" "$TOP_P" "$PARALLEL" "$DECODE_SHARE" "$HCA" "$API_HOST" "$MEM_GATE_GIB" "$(container_env | grep -c '^TF_DSV41_' || true)"
       ;;
     args)
       # Both ranks' argv and the shared container env, to diff against another launcher.

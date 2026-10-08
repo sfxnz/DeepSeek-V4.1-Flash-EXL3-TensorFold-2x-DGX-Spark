@@ -1,0 +1,56 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=1 concurrency=[2, 4] phases=['prose_long']
+phase=prose_long c=2 run=1 wall=9.74s agg=55.01 tok/s per_stream=[41.54,41.44] ttft=[0.069,4.934] acc=nan ms_step=[]
+phase=prose_long c=4 run=1 wall=19.45s agg=65.85 tok/s per_stream=[41.54,41.61,41.37,41.61] ttft=[0.075,4.937,9.785,14.664] acc=nan ms_step=[]
+natural phase=prose_long completion_tokens=200 finish_reason=length
+SUMMARY [
+  {
+    "phase": "prose_long",
+    "concurrency": 2,
+    "median_decode_tok_s": 41.49070829155773,
+    "median_ttft_s": 2.5014669344527647,
+    "median_agg_tok_s": 55.006864739005714,
+    "median_completion_tokens": 200.0,
+    "n": 2,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 2.5014669344527647,
+    "ttft_s_p90": 4.4473604373401034,
+    "ttft_s_p99": 4.885186475489754,
+    "inter_chunk_ms_p50": 51.16945400368422,
+    "inter_chunk_ms_p90": 58.61233652103692,
+    "inter_chunk_ms_p99": 62.937706464435905,
+    "finish_reasons": {
+      "length": 2
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  },
+  {
+    "phase": "prose_long",
+    "concurrency": 4,
+    "median_decode_tok_s": 41.57310453536269,
+    "median_ttft_s": 7.360899370512925,
+    "median_agg_tok_s": 65.84986374125563,
+    "median_completion_tokens": 200.0,
+    "n": 4,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 7.360899370512925,
+    "ttft_s_p90": 13.200474793044851,
+    "ttft_s_p99": 14.517987321149558,
+    "inter_chunk_ms_p50": 50.99327804055065,
+    "inter_chunk_ms_p90": 58.5243099136278,
+    "inter_chunk_ms_p99": 62.547731599770486,
+    "finish_reasons": {
+      "length": 4
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  }
+]

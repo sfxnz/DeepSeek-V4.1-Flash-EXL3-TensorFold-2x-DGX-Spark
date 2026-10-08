@@ -1,0 +1,19 @@
+2026-10-08T02:47:28Z
+== spark1 docker ps
+conduit	matrixconduit/matrix-conduit:latest	Up 2 weeks
+== spark2 docker ps
+== spark1 GPU processes
+== spark2 GPU processes
+== spark1 free -h
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       7.8Gi        81Gi       636Ki        34Gi       113Gi
+Swap:           15Gi       3.7Gi        12Gi
+== spark2 free -h
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       4.5Gi       103Gi       656Ki        14Gi       117Gi
+Swap:           15Gi       1.9Gi        14Gi
+== recipe git
+b55aac8 Bump TensorFold to b86514a (concurrent requests) and add the PARALLEL / DECODE_SHARE knobs
+== images
+sha256:6cae36d4f51f1d502bc69f960cfc5e24ab856f78bbb7492ffcccf9ae46ab7fa7 b86514a5ac8700b32e7b24f1095349df4ce2b922
+sha256:6cae36d4f51f1d502bc69f960cfc5e24ab856f78bbb7492ffcccf9ae46ab7fa7 b86514a5ac8700b32e7b24f1095349df4ce2b922

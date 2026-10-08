@@ -1,0 +1,7 @@
+# 2026-10-08T03:05:46Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label nofields --runs 1 --concurrency 1 2 4
+label=nofields url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=1 concurrency=[1, 2, 4] sampling={}
+phase=nofields c=1 run=1 wall=4.79s agg=42.27 tok/s per_stream=[42.28] shas=4e0fa4daff89
+phase=nofields c=2 run=1 wall=6.63s agg=61.22 tok/s per_stream=[30.51,30.90] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=1 wall=9.12s agg=89.88 tok/s per_stream=[22.22,22.38,22.66,22.84] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+SUMMARY [{"phase": "nofields", "sampling": {}, "concurrency": 1, "n": 1, "median_agg_tok_s": 42.27472670368897, "median_decode_tok_s": 42.281133815334684, "ttft_s_p50": 0.08340534404851496, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 2, "n": 2, "median_agg_tok_s": 61.224616454823526, "median_decode_tok_s": 30.703767091001605, "ttft_s_p50": 0.13032259058672935, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 4, "n": 4, "median_agg_tok_s": 89.87833669889326, "median_decode_tok_s": 22.520934735529842, "ttft_s_p50": 0.2651731054065749, "token_shas": ["4e0fa4daff89"]}]
+rc=0

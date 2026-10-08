@@ -1,0 +1,53 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 26.07 (build 373437299)
+PyTorch Version 2.13.0a0+9186a08
+Container image Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+NOTE: CUDA Forward Compatibility mode ENABLED.
+  Using CUDA 13.3 driver version 610.43.02 with kernel driver version 580.173.02.
+  See https://docs.nvidia.com/deploy/cuda-compatibility/ for details.
+
+[tensorfold] DeepSeek-V4.1-Flash runs on two NVIDIA GPUs with 128 GB each (two DGX Sparks): pull it on both and serve with --tp 2 on both (docs/recipes/deepseek-v4.1-flash.md)
+[tensorfold] loading deepseek-ai/DeepSeek-V4.1-Flash: DeepSeek-V4.1-Flash (deepseek_v41) on CUDA, rank 1 of 2
+[n11probe] patched tensorfold.families.deepseek_v41.cuda.engine
+[n11probe] {"event": "before", "what": "DeepSeekV41Engine.__init__", "host": "spark2", "pid": 56, "memavail": 116.545}
+[n11probe] patched tensorfold.families.deepseek_v41.cuda.graphs
+
+[2026-10-08 05:47:06] spark2:56:56 [0] init.cc:449 NCCL WARN Spectrum-X (SPCX) NCCL plugin is not supported on device:rocep1s0f1, skipping ..
+
+[2026-10-08 05:47:06] spark2:56:56 [0] init.cc:449 NCCL WARN Spectrum-X (SPCX) NCCL plugin is not supported on device:roceP2p1s0f1, skipping ..
+
+[2026-10-08 05:47:06] spark2:56:56 [0] misc/ibvwrap.cc:402 (wrap_ibv_query_port_speed) NCCL WARN Call to ibv_query_port_speed failed with error Protocol not supported errno 93
+
+[2026-10-08 05:47:06] spark2:56:56 [0] misc/ibvwrap.cc:402 (wrap_ibv_query_port_speed) NCCL WARN Call to ibv_query_port_speed failed with error Protocol not supported errno 93
+[tensorfold] CUDA rank 1 startup estimate 81.32 GiB within 101.79 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+[tensorfold] rank 1 of 2: 40 layers and DSpark, 76.07 GiB of weights in 25.2 s
+[n11probe] {"event": "before", "what": "Graphs.warm", "host": "spark2", "pid": 56, "reserved": 82.004, "allocated": 79.779, "dev_free": 9.815, "dev_total": 121.69, "memavail": 29.71}
+[n11probe] {"event": "after", "what": "Graphs.warm", "host": "spark2", "pid": 56, "reserved": 82.006, "allocated": 79.779, "dev_free": 8.729, "dev_total": 121.69, "memavail": 29.302, "seconds": 2.336, "d_reserved": 0.002, "d_allocated": 0.0, "d_dev_free": -1.086, "d_memavail": -0.407, "returned": 22}
+[n11probe] {"event": "before", "what": "DeepSeekV41Engine._warm", "host": "spark2", "pid": 56, "reserved": 85.006, "allocated": 82.779, "dev_free": 5.691, "dev_total": 121.69, "memavail": 26.265}
+[n11probe] {"event": "after", "what": "DeepSeekV41Engine._warm", "host": "spark2", "pid": 56, "reserved": 85.109, "allocated": 82.779, "dev_free": 4.823, "dev_total": 121.69, "memavail": 25.42, "seconds": 2.574, "d_reserved": 0.104, "d_allocated": 0.0, "d_dev_free": -0.868, "d_memavail": -0.845}
+[n11probe] {"event": "after", "what": "DeepSeekV41Engine.__init__", "host": "spark2", "pid": 56, "reserved": 85.109, "allocated": 82.779, "dev_free": 4.823, "dev_total": 121.69, "memavail": 25.42, "seconds": 41.24, "d_memavail": -91.125, "slots": 1, "concurrent": false}
+[tensorfold] rank 1 ready in 42.5s, following rank 0

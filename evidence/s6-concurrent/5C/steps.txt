@@ -1,0 +1,6 @@
+2026-10-08T06:19:23Z 5C run.sh PARALLEL=4 DECODE_SHARE=0.25
+2026-10-08T06:20:20Z 5C warm pass (discarded)
+2026-10-08T06:20:30Z 5C ttft cells reps=3
+2026-10-08T06:24:19Z 5C pairs_concurrent
+2026-10-08T06:24:55Z 5C logs and stop
+2026-10-08T06:25:10Z 5C done

@@ -1,0 +1,19 @@
+# TF = median of the B boots' per-boot medians (decode.txt); vLLM = 7V, one boot. tok/s; TTFT s; inter-chunk ms.
+cell                    c |  TF dec vLLM dec  ratio |  TF agg vLLM agg  ratio | TF ttft vLLM ttft | TF ic p50/p90 vLLM ic p50/p90
+prose                   1 |   56.29    49.29  1.142 |   56.28    49.28  1.142 |   0.066     0.231 |         54/62           47/54
+prose                   2 |   41.34    41.14  1.005 |   82.19    81.29  1.011 |   0.131     0.258 |         72/86           58/67
+prose                   4 |   29.11    39.91  0.729 |  115.65   102.10  1.133 |   0.277     2.602 |        99/123           58/68
+structured              1 |   97.68    84.00  1.163 |   97.66    83.97  1.163 |   0.067     0.215 |         60/63           47/50
+structured              2 |   72.51    77.95  0.930 |  144.02   155.85  0.924 |   0.128     0.230 |         80/83           51/54
+structured              4 |   50.60    78.23  0.647 |  200.65   201.80  0.994 |   0.262     1.620 |       114/119           51/53
+prose_long              1 |   41.24    46.24  0.892 |   41.24    46.23  0.892 |   0.066     0.273 |         51/59           48/52
+prose_long              2 |   30.60    35.28  0.867 |   60.96    69.42  0.878 |   0.126     0.310 |         69/79           61/67
+prose_long              4 |   21.80    35.00  0.623 |   87.09    87.61  0.994 |   0.272     3.119 |        97/113           61/71
+sampled (no field)      1 |   42.99    44.98  0.956 |   42.98    44.98  0.956 |   0.067     0.213 |           -/-             -/-
+sampled (no field)      2 |   31.65    34.66  0.913 |   63.31    65.42  0.968 |   0.133     0.263 |           -/-             -/-
+sampled (no field)      4 |   22.40    34.44  0.650 |   89.84    82.27  1.092 |   0.266     2.940 |           -/-             -/-
+sampled (top_p 0.95)    1 |   37.91    43.56  0.870 |   37.91    43.55  0.870 |   0.067     0.246 |           -/-             -/-
+sampled (top_p 0.95)    2 |   28.62    36.30  0.788 |   57.16    68.17  0.838 |   0.130     0.259 |           -/-             -/-
+sampled (top_p 0.95)    4 |   20.54    34.15  0.602 |   82.41    82.95  0.993 |   0.287     2.903 |           -/-             -/-
+files: decode.txt (2B, 3B gate/bench-*.out, sampled-*.txt); 7V/bench-frozen.out, 7V/bench-prose-long.out, 7V/sampled-*.out. vLLM serves 2 sequences (MAX_NUM_SEQS=2): its c=4 waves queue 2 of 4 streams.
+aggregate gain over c=1, TF: prose c=2 x1.46; prose c=4 x2.05; structured c=2 x1.47; structured c=4 x2.05; prose_long c=2 x1.48; prose_long c=4 x2.11

@@ -1,0 +1,27 @@
+# 2026-10-08T03:06:30Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/pairs_nucleus.py http://127.0.0.1:8000 deepseek-ai/DeepSeek-V4.1-Flash /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s2-run-sh-ec28f35/bootA/pairs.jsonl
+{"case": "top_p 0.95 prompt0 drafted", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "2e35c52cda08", "rounds": 37, "accepted": 122, "drafted": 163, "prefill_s": 0.069, "decode_s": 2.537, "tok_s": 63.07, "stages_ms": null}
+{"case": "top_p 0.95 prompt0 draft:false", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "2e35c52cda08", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.112, "decode_s": 5.705, "tok_s": 28.04, "stages_ms": null}
+{"check": "top_p 0.95 prompt0 drafted == draft:false", "equal": true}
+{"check": "top_p 0.95 prompt0 == s2 default prompt0 (2e35c52cda08)", "equal": true}
+{"case": "top_p 0.95 prompt1 drafted", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "prompt_tokens": 22, "completion": 160, "cached": 21, "token_sha": "75ad34c67f94", "rounds": 45, "accepted": 114, "drafted": 175, "prefill_s": 0.063, "decode_s": 2.711, "tok_s": 59.02, "stages_ms": null}
+{"case": "top_p 0.95 prompt1 draft:false", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "draft": false, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "75ad34c67f94", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.122, "decode_s": 5.745, "tok_s": 27.85, "stages_ms": null}
+{"check": "top_p 0.95 prompt1 drafted == draft:false", "equal": true}
+{"check": "top_p 0.95 prompt1 == s2 default prompt1 (75ad34c67f94)", "equal": true}
+{"case": "top_p 0.95 prompt2 drafted", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "prompt_tokens": 20, "completion": 160, "cached": 19, "token_sha": "14f0fa7d7629", "rounds": 43, "accepted": 116, "drafted": 165, "prefill_s": 0.064, "decode_s": 2.677, "tok_s": 59.76, "stages_ms": null}
+{"case": "top_p 0.95 prompt2 draft:false", "temperature": 1.0, "top_p": 0.95, "seed": 1234, "draft": false, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "14f0fa7d7629", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.117, "decode_s": 5.766, "tok_s": 27.75, "stages_ms": null}
+{"check": "top_p 0.95 prompt2 drafted == draft:false", "equal": true}
+{"check": "top_p 0.95 prompt2 == s2 default prompt2 (14f0fa7d7629)", "equal": true}
+{"case": "top_p 1.0 prompt0 drafted", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "7d1dc35680a6", "rounds": 38, "accepted": 121, "drafted": 169, "prefill_s": 0.063, "decode_s": 2.414, "tok_s": 66.29, "stages_ms": null}
+{"case": "top_p 1.0 prompt0 draft:false", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "7d1dc35680a6", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.112, "decode_s": 6.45, "tok_s": 24.81, "stages_ms": null}
+{"check": "top_p 1.0 prompt0 drafted == draft:false", "equal": true}
+{"check": "top_p 1.0 prompt0 == s2 top_p1 prompt0 (7d1dc35680a6)", "equal": true}
+{"case": "top_p 1.0 prompt1 drafted", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "prompt_tokens": 22, "completion": 160, "cached": 21, "token_sha": "22480b3cd4c8", "rounds": 49, "accepted": 110, "drafted": 182, "prefill_s": 0.083, "decode_s": 3.068, "tok_s": 52.14, "stages_ms": null}
+{"case": "top_p 1.0 prompt1 draft:false", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "draft": false, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "22480b3cd4c8", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.127, "decode_s": 5.588, "tok_s": 28.63, "stages_ms": null}
+{"check": "top_p 1.0 prompt1 drafted == draft:false", "equal": true}
+{"check": "top_p 1.0 prompt1 == s2 top_p1 prompt1 (22480b3cd4c8)", "equal": true}
+{"case": "top_p 1.0 prompt2 drafted", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "prompt_tokens": 20, "completion": 160, "cached": 19, "token_sha": "65f2c13cd1dc", "rounds": 44, "accepted": 115, "drafted": 174, "prefill_s": 0.061, "decode_s": 2.764, "tok_s": 57.88, "stages_ms": null}
+{"case": "top_p 1.0 prompt2 draft:false", "temperature": 1.0, "top_p": 1.0, "seed": 1234, "draft": false, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "65f2c13cd1dc", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.117, "decode_s": 5.612, "tok_s": 28.51, "stages_ms": null}
+{"check": "top_p 1.0 prompt2 drafted == draft:false", "equal": true}
+{"check": "top_p 1.0 prompt2 == s2 top_p1 prompt2 (65f2c13cd1dc)", "equal": true}
+{"section": "pairs_nucleus", "failures": 0}
+rc=0

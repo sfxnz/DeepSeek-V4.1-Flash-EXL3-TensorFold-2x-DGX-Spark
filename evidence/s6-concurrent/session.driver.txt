@@ -1,0 +1,9 @@
+2026-10-08T03:44:08Z boot.sh W2 rc=0
+2026-10-08T04:16:36Z boot.sh 1A rc=0
+2026-10-08T05:13:08Z boot.sh 2B rc=0
+2026-10-08T05:46:52Z boot.sh 3B rc=0
+2026-10-08T06:19:23Z boot.sh 4A rc=0
+2026-10-08T06:25:10Z boot.sh 5C rc=0
+2026-10-08T06:30:58Z boot.sh 6D rc=0
+2026-10-08T06:58:15Z vllm.sh 7V rc=0
+2026-10-08T06:58:15Z session done

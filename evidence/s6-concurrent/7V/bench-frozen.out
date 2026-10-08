@@ -1,0 +1,281 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=9 concurrency=[1, 2, 4] phases=['prose', 'structured']
+phase=prose c=1 run=1 wall=4.14s agg=50.58 tok/s per_stream=[50.59] ttft=[0.204] acc=2.469 ms_step=[48.8]
+phase=prose c=1 run=2 wall=4.35s agg=48.41 tok/s per_stream=[48.42] ttft=[0.243] acc=2.326 ms_step=[48.0]
+phase=prose c=1 run=3 wall=4.23s agg=49.90 tok/s per_stream=[49.91] ttft=[0.240] acc=2.398 ms_step=[48.0]
+phase=prose c=1 run=4 wall=4.28s agg=49.28 tok/s per_stream=[49.29] ttft=[0.240] acc=2.405 ms_step=[48.8]
+phase=prose c=1 run=5 wall=4.00s agg=52.35 tok/s per_stream=[52.36] ttft=[0.201] acc=2.544 ms_step=[48.6]
+phase=prose c=1 run=6 wall=4.48s agg=46.83 tok/s per_stream=[46.83] ttft=[0.231] acc=2.295 ms_step=[49.0]
+phase=prose c=1 run=7 wall=4.40s agg=47.37 tok/s per_stream=[47.38] ttft=[0.202] acc=2.427 ms_step=[51.2]
+phase=prose c=1 run=8 wall=4.40s agg=47.62 tok/s per_stream=[47.62] ttft=[0.219] acc=2.261 ms_step=[47.5]
+phase=prose c=1 run=9 wall=4.23s agg=49.87 tok/s per_stream=[49.88] ttft=[0.237] acc=2.369 ms_step=[47.5]
+phase=prose c=2 run=1 wall=6.36s agg=77.20 tok/s per_stream=[38.95,38.60] ttft=[1.208,1.207] acc=2.329 ms_step=[59.8,60.3]
+phase=prose c=2 run=2 wall=5.10s agg=82.30 tok/s per_stream=[42.10,41.16] ttft=[0.262,0.262] acc=2.445 ms_step=[58.1,59.4]
+phase=prose c=2 run=3 wall=5.55s agg=76.55 tok/s per_stream=[40.14,39.44] ttft=[0.203,0.508] acc=2.416 ms_step=[60.2,61.3]
+phase=prose c=2 run=4 wall=5.09s agg=82.24 tok/s per_stream=[43.14,41.13] ttft=[0.250,0.250] acc=2.430 ms_step=[56.3,59.1]
+phase=prose c=2 run=5 wall=5.02s agg=83.51 tok/s per_stream=[45.55,41.76] ttft=[0.258,0.258] acc=2.632 ms_step=[57.8,63.0]
+phase=prose c=2 run=6 wall=4.97s agg=84.36 tok/s per_stream=[42.73,42.19] ttft=[0.253,0.253] acc=2.484 ms_step=[58.1,58.9]
+phase=prose c=2 run=7 wall=5.16s agg=81.29 tok/s per_stream=[42.46,40.65] ttft=[0.260,0.260] acc=2.475 ms_step=[58.3,60.9]
+phase=prose c=2 run=8 wall=5.31s agg=78.63 tok/s per_stream=[46.90,39.32] ttft=[0.249,0.249] acc=2.541 ms_step=[54.2,64.6]
+phase=prose c=2 run=9 wall=5.30s agg=80.10 tok/s per_stream=[39.89,41.11] ttft=[0.204,0.457] acc=2.475 ms_step=[62.1,60.2]
+phase=prose c=4 run=1 wall=11.16s agg=98.06 tok/s per_stream=[41.02,36.89,36.98,37.65] ttft=[0.483,0.212,5.606,5.874] acc=2.382 ms_step=[58.1,64.6,64.4,63.3]
+phase=prose c=4 run=2 wall=10.16s agg=104.75 tok/s per_stream=[45.78,42.55,45.87,40.12] ttft=[0.256,0.256,4.871,5.201] acc=2.541 ms_step=[55.5,59.7,55.4,63.3]
+phase=prose c=4 run=3 wall=10.61s agg=102.98 tok/s per_stream=[40.98,37.47,44.62,37.80] ttft=[0.210,0.418,6.011,5.346] acc=2.484 ms_step=[60.6,66.3,55.7,65.7]
+phase=prose c=4 run=4 wall=10.14s agg=103.99 tok/s per_stream=[47.30,37.90,46.62,36.74] ttft=[0.248,0.248,5.777,4.721] acc=2.567 ms_step=[54.3,67.7,55.1,69.9]
+phase=prose c=4 run=5 wall=10.66s agg=102.10 tok/s per_stream=[40.50,37.88,42.74,38.27] ttft=[0.266,0.266,5.791,5.456] acc=2.419 ms_step=[59.7,63.9,56.6,63.2]
+phase=prose c=4 run=6 wall=10.69s agg=99.54 tok/s per_stream=[43.14,39.11,39.09,39.32] ttft=[0.249,0.249,5.143,5.630] acc=2.446 ms_step=[56.7,62.6,62.6,62.2]
+phase=prose c=4 run=7 wall=11.16s agg=96.93 tok/s per_stream=[40.21,39.19,35.06,37.35] ttft=[0.213,0.469,5.427,5.830] acc=2.399 ms_step=[59.7,61.2,68.4,64.2]
+phase=prose c=4 run=8 wall=10.72s agg=99.60 tok/s per_stream=[42.51,39.70,38.58,38.28] ttft=[0.250,0.249,5.199,5.516] acc=2.444 ms_step=[57.5,61.5,63.3,63.8]
+phase=prose c=4 run=9 wall=10.03s agg=108.70 tok/s per_stream=[42.72,42.72,43.25,40.95] ttft=[0.251,0.251,5.173,5.173] acc=2.468 ms_step=[57.8,57.8,57.1,60.3]
+natural phase=prose completion_tokens=90 finish_reason=stop
+phase=structured c=1 run=1 wall=3.56s agg=81.74 tok/s per_stream=[81.77] ttft=[1.123] acc=4.000 ms_step=[48.9]
+phase=structured c=1 run=2 wall=2.59s agg=84.20 tok/s per_stream=[84.22] ttft=[0.224] acc=4.000 ms_step=[47.5]
+phase=structured c=1 run=3 wall=2.58s agg=84.08 tok/s per_stream=[84.10] ttft=[0.212] acc=4.000 ms_step=[47.6]
+phase=structured c=1 run=4 wall=2.74s agg=78.70 tok/s per_stream=[78.72] ttft=[0.215] acc=4.000 ms_step=[50.8]
+phase=structured c=1 run=5 wall=2.59s agg=83.97 tok/s per_stream=[84.00] ttft=[0.218] acc=4.000 ms_step=[47.6]
+phase=structured c=1 run=6 wall=2.58s agg=84.12 tok/s per_stream=[84.14] ttft=[0.211] acc=4.000 ms_step=[47.5]
+phase=structured c=1 run=7 wall=2.60s agg=83.84 tok/s per_stream=[83.86] ttft=[0.222] acc=4.000 ms_step=[47.7]
+phase=structured c=1 run=8 wall=2.60s agg=83.55 tok/s per_stream=[83.58] ttft=[0.214] acc=4.000 ms_step=[47.9]
+phase=structured c=1 run=9 wall=2.57s agg=84.24 tok/s per_stream=[84.28] ttft=[0.211] acc=4.000 ms_step=[47.5]
+phase=structured c=2 run=1 wall=2.76s agg=156.85 tok/s per_stream=[78.45,78.45] ttft=[0.220,0.220] acc=4.000 ms_step=[51.0,51.0]
+phase=structured c=2 run=2 wall=2.78s agg=155.80 tok/s per_stream=[77.92,77.92] ttft=[0.226,0.225] acc=4.000 ms_step=[51.3,51.3]
+phase=structured c=2 run=3 wall=2.79s agg=155.17 tok/s per_stream=[77.60,77.62] ttft=[0.226,0.227] acc=4.000 ms_step=[51.5,51.5]
+phase=structured c=2 run=4 wall=2.77s agg=156.37 tok/s per_stream=[78.22,78.22] ttft=[0.222,0.223] acc=4.000 ms_step=[51.1,51.1]
+phase=structured c=2 run=5 wall=2.79s agg=155.85 tok/s per_stream=[77.96,77.95] ttft=[0.236,0.237] acc=4.000 ms_step=[51.3,51.3]
+phase=structured c=2 run=6 wall=2.79s agg=155.76 tok/s per_stream=[77.91,77.91] ttft=[0.237,0.238] acc=4.000 ms_step=[51.3,51.3]
+phase=structured c=2 run=7 wall=2.95s agg=146.08 tok/s per_stream=[73.06,73.06] ttft=[0.230,0.230] acc=4.000 ms_step=[54.8,54.8]
+phase=structured c=2 run=8 wall=2.79s agg=156.26 tok/s per_stream=[78.16,78.16] ttft=[0.238,0.239] acc=4.000 ms_step=[51.2,51.2]
+phase=structured c=2 run=9 wall=2.78s agg=156.33 tok/s per_stream=[78.19,78.19] ttft=[0.233,0.233] acc=4.000 ms_step=[51.2,51.2]
+phase=structured c=4 run=1 wall=5.54s agg=202.41 tok/s per_stream=[78.53,78.52,78.33,78.33] ttft=[0.216,0.215,2.997,2.996] acc=4.000 ms_step=[50.9,50.9,51.1,51.1]
+phase=structured c=4 run=2 wall=5.57s agg=201.65 tok/s per_stream=[78.14,78.13,77.94,77.93] ttft=[0.227,0.227,3.011,3.011] acc=4.000 ms_step=[51.2,51.2,51.3,51.3]
+phase=structured c=4 run=3 wall=5.56s agg=202.76 tok/s per_stream=[77.79,77.80,78.87,78.87] ttft=[0.234,0.233,3.035,3.036] acc=4.000 ms_step=[51.4,51.4,50.7,50.7]
+phase=structured c=4 run=4 wall=5.58s agg=201.51 tok/s per_stream=[78.28,78.28,77.78,77.78] ttft=[0.243,0.243,3.023,3.023] acc=4.000 ms_step=[51.1,51.1,51.4,51.4]
+phase=structured c=4 run=5 wall=5.74s agg=193.37 tok/s per_stream=[78.07,78.05,73.11,73.12] ttft=[0.229,0.229,3.016,3.017] acc=4.000 ms_step=[51.2,51.3,54.7,54.7]
+phase=structured c=4 run=6 wall=5.56s agg=202.17 tok/s per_stream=[78.31,78.29,78.40,78.40] ttft=[0.225,0.224,3.019,3.019] acc=4.000 ms_step=[51.1,51.1,51.0,51.0]
+phase=structured c=4 run=7 wall=5.57s agg=201.80 tok/s per_stream=[78.37,78.36,77.94,77.93] ttft=[0.232,0.232,3.010,3.010] acc=4.000 ms_step=[51.0,51.0,51.3,51.3]
+phase=structured c=4 run=8 wall=5.58s agg=201.66 tok/s per_stream=[77.73,77.73,78.19,78.18] ttft=[0.228,0.227,3.028,3.029] acc=4.000 ms_step=[51.5,51.5,51.2,51.2]
+phase=structured c=4 run=9 wall=5.56s agg=202.47 tok/s per_stream=[78.29,78.29,78.47,78.45] ttft=[0.236,0.236,3.023,3.022] acc=4.000 ms_step=[51.1,51.1,51.0,51.0]
+natural phase=structured completion_tokens=200 finish_reason=length
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "median_decode_tok_s": 49.28903858450554,
+    "median_ttft_s": 0.23087252513505518,
+    "median_agg_tok_s": 49.27962780095916,
+    "median_completion_tokens": 200,
+    "n": 9,
+    "acceptance_len": 2.385430463576159,
+    "draft_acceptance_rate": 0.4618101545253863,
+    "run_acceptance_len": [
+      2.4691,
+      2.3256,
+      2.3976,
+      2.4048,
+      2.5443,
+      2.2955,
+      2.4268,
+      2.2614,
+      2.369
+    ],
+    "median_run_acceptance_len": 2.397590361445783,
+    "median_ms_per_step": 48.596426162958906,
+    "ttft_s_p50": 0.23087252513505518,
+    "ttft_s_p90": 0.2405813790857792,
+    "ttft_s_p99": 0.2431961994431913,
+    "inter_chunk_ms_p50": 47.0512539613992,
+    "inter_chunk_ms_p90": 53.894259734079235,
+    "inter_chunk_ms_p99": 95.34701422322539,
+    "finish_reasons": {
+      "length": 9
+    },
+    "natural_completion_tokens": 90,
+    "natural_finish_reason": "stop",
+    "natural_covers_max": false,
+    "post_eos_fraction": 0.55
+  },
+  {
+    "phase": "prose",
+    "concurrency": 2,
+    "median_decode_tok_s": 41.143704890113995,
+    "median_ttft_s": 0.25818842300213873,
+    "median_agg_tok_s": 81.29445276191889,
+    "median_completion_tokens": 200.0,
+    "n": 18,
+    "acceptance_len": 2.4671682626538987,
+    "draft_acceptance_rate": 0.4890560875512996,
+    "run_acceptance_len": [
+      2.3295,
+      2.4451,
+      2.4157,
+      2.4303,
+      2.6316,
+      2.4845,
+      2.4753,
+      2.5414,
+      2.4753
+    ],
+    "median_run_acceptance_len": 2.4753086419753085,
+    "median_ms_per_step": 59.6053954374769,
+    "ttft_s_p50": 0.25818842300213873,
+    "ttft_s_p90": 0.7175964215304708,
+    "ttft_s_p99": 1.2075983423972503,
+    "inter_chunk_ms_p50": 58.32482548430562,
+    "inter_chunk_ms_p90": 66.66591707617044,
+    "inter_chunk_ms_p99": 76.49605402722958,
+    "finish_reasons": {
+      "length": 18
+    },
+    "natural_completion_tokens": 90,
+    "natural_finish_reason": "stop",
+    "natural_covers_max": false,
+    "post_eos_fraction": 0.55
+  },
+  {
+    "phase": "prose",
+    "concurrency": 4,
+    "median_decode_tok_s": 39.912357732227335,
+    "median_ttft_s": 2.6023991759866476,
+    "median_agg_tok_s": 102.0961637544673,
+    "median_completion_tokens": 200.0,
+    "n": 36,
+    "acceptance_len": 2.459911293074036,
+    "draft_acceptance_rate": 0.4866370976913454,
+    "run_acceptance_len": [
+      2.3821,
+      2.5411,
+      2.4845,
+      2.5673,
+      2.4187,
+      2.4465,
+      2.3994,
+      2.4438,
+      2.4677
+    ],
+    "median_run_acceptance_len": 2.4464831804281344,
+    "median_ms_per_step": 61.3896111248461,
+    "ttft_s_p50": 2.6023991759866476,
+    "ttft_s_p90": 5.784170410595834,
+    "ttft_s_p99": 5.962952422746457,
+    "inter_chunk_ms_p50": 58.475921978242695,
+    "inter_chunk_ms_p90": 68.37269684765488,
+    "inter_chunk_ms_p99": 128.4173792018555,
+    "finish_reasons": {
+      "length": 36
+    },
+    "natural_completion_tokens": 90,
+    "natural_finish_reason": "stop",
+    "natural_covers_max": false,
+    "post_eos_fraction": 0.55
+  },
+  {
+    "phase": "structured",
+    "concurrency": 1,
+    "median_decode_tok_s": 84.0032730083867,
+    "median_ttft_s": 0.2151763690635562,
+    "median_agg_tok_s": 83.9707955534132,
+    "median_completion_tokens": 200,
+    "n": 9,
+    "acceptance_len": 4.0,
+    "draft_acceptance_rate": 1.0,
+    "run_acceptance_len": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+    ],
+    "median_run_acceptance_len": 4.0,
+    "median_ms_per_step": 47.617192244409914,
+    "ttft_s_p50": 0.2151763690635562,
+    "ttft_s_p90": 0.4036583880428226,
+    "ttft_s_p99": 1.0514047249313443,
+    "inter_chunk_ms_p50": 47.369255451485515,
+    "inter_chunk_ms_p90": 49.83712101820856,
+    "inter_chunk_ms_p99": 68.310913243331,
+    "finish_reasons": {
+      "length": 9
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  },
+  {
+    "phase": "structured",
+    "concurrency": 2,
+    "median_decode_tok_s": 77.95372265412249,
+    "median_ttft_s": 0.23016625095624477,
+    "median_agg_tok_s": 155.84513608043144,
+    "median_completion_tokens": 200.0,
+    "n": 18,
+    "acceptance_len": 4.0,
+    "draft_acceptance_rate": 1.0,
+    "run_acceptance_len": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+    ],
+    "median_run_acceptance_len": 4.0,
+    "median_ms_per_step": 51.31249498557206,
+    "ttft_s_p50": 0.23016625095624477,
+    "ttft_s_p90": 0.23771588921081274,
+    "ttft_s_p99": 0.23849881688831373,
+    "inter_chunk_ms_p50": 50.96439749468118,
+    "inter_chunk_ms_p90": 53.54472203180194,
+    "inter_chunk_ms_p99": 73.56919432990253,
+    "finish_reasons": {
+      "length": 18
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  },
+  {
+    "phase": "structured",
+    "concurrency": 4,
+    "median_decode_tok_s": 78.23293956242478,
+    "median_ttft_s": 1.6198444704059511,
+    "median_agg_tok_s": 201.80057928259444,
+    "median_completion_tokens": 200.0,
+    "n": 36,
+    "acceptance_len": 4.0,
+    "draft_acceptance_rate": 1.0,
+    "run_acceptance_len": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+    ],
+    "median_run_acceptance_len": 4.0,
+    "median_ms_per_step": 51.129373731138415,
+    "ttft_s_p50": 1.6198444704059511,
+    "ttft_s_p90": 3.0258452330017462,
+    "ttft_s_p99": 3.035836164152715,
+    "inter_chunk_ms_p50": 50.887100980617106,
+    "inter_chunk_ms_p90": 53.33984224125743,
+    "inter_chunk_ms_p99": 56.507624180521816,
+    "finish_reasons": {
+      "length": 36
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  }
+]

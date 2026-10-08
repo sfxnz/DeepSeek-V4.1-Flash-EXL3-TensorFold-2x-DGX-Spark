@@ -1,0 +1,25 @@
+# 2026-10-08T04:41:10Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/q2_receipts.py http://127.0.0.1:8000 deepseek-ai/DeepSeek-V4.1-Flash /home/sfxnz/projects/data/tf-dsv41/receipts/final/prompts.json pairs
+{"case": "prompt0 t=0.0 drafted", "temperature": 0.0, "top_k": 20, "seed": 1234, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "6185c62d4baf", "rounds": 37, "accepted": 122, "drafted": 170, "prefill_s": 0.063, "decode_s": 2.315, "stages_ms": null}
+{"case": "prompt0 t=0.0 draft:false", "temperature": 0.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "6185c62d4baf", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.116, "decode_s": 5.522, "stages_ms": null}
+{"check": "prompt0 t=0.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "prompt0 t=1.0 drafted", "temperature": 1.0, "top_k": 20, "seed": 1234, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "7d1dc35680a6", "rounds": 38, "accepted": 121, "drafted": 169, "prefill_s": 0.061, "decode_s": 2.424, "stages_ms": null}
+{"case": "prompt0 t=1.0 draft:false", "temperature": 1.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "7d1dc35680a6", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.114, "decode_s": 5.521, "stages_ms": null}
+{"check": "prompt0 t=1.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "prompt1 t=0.0 drafted", "temperature": 0.0, "top_k": 20, "seed": 1234, "prompt_tokens": 22, "completion": 160, "cached": 21, "token_sha": "1715d87a4dc0", "rounds": 63, "accepted": 96, "drafted": 172, "prefill_s": 0.061, "decode_s": 3.422, "stages_ms": null}
+{"case": "prompt1 t=0.0 draft:false", "temperature": 0.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "1715d87a4dc0", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.122, "decode_s": 5.481, "stages_ms": null}
+{"check": "prompt1 t=0.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "prompt1 t=1.0 drafted", "temperature": 1.0, "top_k": 20, "seed": 1234, "prompt_tokens": 22, "completion": 160, "cached": 21, "token_sha": "22480b3cd4c8", "rounds": 49, "accepted": 110, "drafted": 182, "prefill_s": 0.063, "decode_s": 2.834, "stages_ms": null}
+{"case": "prompt1 t=1.0 draft:false", "temperature": 1.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 22, "completion": 160, "cached": 0, "token_sha": "22480b3cd4c8", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.119, "decode_s": 5.555, "stages_ms": null}
+{"check": "prompt1 t=1.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "prompt2 t=0.0 drafted", "temperature": 0.0, "top_k": 20, "seed": 1234, "prompt_tokens": 20, "completion": 160, "cached": 19, "token_sha": "d1b27a633415", "rounds": 35, "accepted": 124, "drafted": 154, "prefill_s": 0.061, "decode_s": 2.11, "stages_ms": null}
+{"case": "prompt2 t=0.0 draft:false", "temperature": 0.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "d1b27a633415", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.116, "decode_s": 5.521, "stages_ms": null}
+{"check": "prompt2 t=0.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "prompt2 t=1.0 drafted", "temperature": 1.0, "top_k": 20, "seed": 1234, "prompt_tokens": 20, "completion": 160, "cached": 19, "token_sha": "65f2c13cd1dc", "rounds": 43, "accepted": 116, "drafted": 170, "prefill_s": 0.061, "decode_s": 2.656, "stages_ms": null}
+{"case": "prompt2 t=1.0 draft:false", "temperature": 1.0, "top_k": 20, "seed": 1234, "draft": false, "prompt_tokens": 20, "completion": 160, "cached": 0, "token_sha": "65f2c13cd1dc", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.12, "decode_s": 5.557, "stages_ms": null}
+{"check": "prompt2 t=1.0 top_k=20 drafted == draft:false", "equal": true}
+{"case": "top_k omitted drafted", "temperature": 1.0, "seed": 99, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "d12cf170e284", "rounds": 40, "accepted": 119, "drafted": 172, "prefill_s": 0.061, "decode_s": 2.576, "stages_ms": null}
+{"case": "top_k omitted draft:false", "temperature": 1.0, "seed": 99, "draft": false, "prompt_tokens": 18, "completion": 160, "cached": 0, "token_sha": "d12cf170e284", "rounds": 159, "accepted": 0, "drafted": 0, "prefill_s": 0.112, "decode_s": 5.599, "stages_ms": null}
+{"case": "top_k omitted resend", "temperature": 1.0, "seed": 99, "prompt_tokens": 18, "completion": 160, "cached": 17, "token_sha": "d12cf170e284", "rounds": 40, "accepted": 119, "drafted": 172, "prefill_s": 0.066, "decode_s": 2.46, "stages_ms": null}
+{"check": "top_k omitted: drafted == draft:false == resend, resend cached > 0", "equal": true}
+{"section": "pairs", "failures": 0}
+rc=0

@@ -1,0 +1,26 @@
+rank0 [n11probe] patched tensorfold.families.deepseek_v41.cuda.engine
+rank0 [n11probe] {"event": "before", "what": "DeepSeekV41Engine.__init__", "host": "spark1", "pid": 56, "memavail": 113.522}
+rank0 [n11probe] patched tensorfold.families.deepseek_v41.cuda.graphs
+rank0 [tensorfold] CUDA rank 0 startup estimate 82.55 GiB within 98.80 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+rank0 [tensorfold] rank 0 of 2: 40 layers and DSpark, 76.07 GiB of weights in 25.1 s
+rank0 [n11probe] {"event": "before", "what": "DeepSeekV41Engine._lanes", "host": "spark1", "pid": 56, "reserved": 80.465, "allocated": 76.569, "dev_free": 12.933, "dev_total": 121.69, "memavail": 28.589}
+rank0 [n11probe] {"event": "before", "what": "LaneGraphs.warm", "host": "spark1", "pid": 56, "reserved": 87.891, "allocated": 85.631, "dev_free": 5.666, "dev_total": 121.69, "memavail": 21.322}
+rank0 [n11probe] {"event": "after", "what": "LaneGraphs.warm", "host": "spark1", "pid": 56, "reserved": 87.893, "allocated": 85.631, "dev_free": 4.791, "dev_total": 121.69, "memavail": 20.451, "seconds": 2.803, "d_reserved": 0.002, "d_allocated": 0.0, "d_dev_free": -0.875, "d_memavail": -0.871, "returned": 88}
+rank0 [n11probe] {"event": "before", "what": "DeepSeekV41Engine._warm_lanes", "host": "spark1", "pid": 56, "reserved": 87.893, "allocated": 85.631, "dev_free": 4.791, "dev_total": 121.69, "memavail": 20.451}
+rank0 [n11probe] {"event": "after", "what": "DeepSeekV41Engine._warm_lanes", "host": "spark1", "pid": 56, "reserved": 88.004, "allocated": 85.631, "dev_free": 3.9, "dev_total": 121.69, "memavail": 19.56, "seconds": 4.049, "d_reserved": 0.111, "d_allocated": 0.0, "d_dev_free": -0.891, "d_memavail": -0.891}
+rank0 [n11probe] {"event": "after", "what": "DeepSeekV41Engine._lanes", "host": "spark1", "pid": 56, "reserved": 88.004, "allocated": 85.631, "dev_free": 3.9, "dev_total": 121.69, "memavail": 19.56, "seconds": 7.429, "d_reserved": 7.539, "d_allocated": 9.062, "d_dev_free": -9.033, "d_memavail": -9.029}
+rank0 [n11probe] {"event": "after", "what": "DeepSeekV41Engine.__init__", "host": "spark1", "pid": 56, "reserved": 88.004, "allocated": 85.631, "dev_free": 3.9, "dev_total": 121.69, "memavail": 19.56, "seconds": 40.246, "d_memavail": -93.961, "slots": 4, "concurrent": true}
+rank0 [tensorfold] serving deepseek-ai/DeepSeek-V4.1-Flash at http://0.0.0.0:8000/v1 on CUDA, rank 0 of 2 (sampling: top_p 1.0; drafts: on; prompts: bf16 activations; context: 1048576; loaded in 41.8s)
+rank1 [n11probe] patched tensorfold.families.deepseek_v41.cuda.engine
+rank1 [n11probe] {"event": "before", "what": "DeepSeekV41Engine.__init__", "host": "spark2", "pid": 55, "memavail": 116.0}
+rank1 [n11probe] patched tensorfold.families.deepseek_v41.cuda.graphs
+rank1 [tensorfold] CUDA rank 1 startup estimate 82.55 GiB within 101.35 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+rank1 [tensorfold] rank 1 of 2: 40 layers and DSpark, 76.06 GiB of weights in 24.5 s
+rank1 [n11probe] {"event": "before", "what": "DeepSeekV41Engine._lanes", "host": "spark2", "pid": 55, "reserved": 80.357, "allocated": 76.563, "dev_free": 13.29, "dev_total": 121.69, "memavail": 31.155}
+rank1 [n11probe] {"event": "before", "what": "LaneGraphs.warm", "host": "spark2", "pid": 55, "reserved": 87.783, "allocated": 85.625, "dev_free": 5.701, "dev_total": 121.69, "memavail": 23.565}
+rank1 [n11probe] {"event": "after", "what": "LaneGraphs.warm", "host": "spark2", "pid": 55, "reserved": 87.785, "allocated": 85.625, "dev_free": 4.92, "dev_total": 121.69, "memavail": 22.787, "seconds": 3.061, "d_reserved": 0.002, "d_allocated": 0.0, "d_dev_free": -0.78, "d_memavail": -0.778, "returned": 88}
+rank1 [n11probe] {"event": "before", "what": "DeepSeekV41Engine._warm_lanes", "host": "spark2", "pid": 55, "reserved": 87.785, "allocated": 85.625, "dev_free": 4.92, "dev_total": 121.69, "memavail": 22.787}
+rank1 [n11probe] {"event": "after", "what": "DeepSeekV41Engine._warm_lanes", "host": "spark2", "pid": 55, "reserved": 87.896, "allocated": 85.625, "dev_free": 4.16, "dev_total": 121.69, "memavail": 22.026, "seconds": 4.049, "d_reserved": 0.111, "d_allocated": 0.0, "d_dev_free": -0.761, "d_memavail": -0.761}
+rank1 [n11probe] {"event": "after", "what": "DeepSeekV41Engine._lanes", "host": "spark2", "pid": 55, "reserved": 87.896, "allocated": 85.625, "dev_free": 4.16, "dev_total": 121.69, "memavail": 22.026, "seconds": 7.428, "d_reserved": 7.539, "d_allocated": 9.062, "d_dev_free": -9.13, "d_memavail": -9.128}
+rank1 [n11probe] {"event": "after", "what": "DeepSeekV41Engine.__init__", "host": "spark2", "pid": 55, "reserved": 87.896, "allocated": 85.625, "dev_free": 4.16, "dev_total": 121.69, "memavail": 22.026, "seconds": 46.41, "d_memavail": -93.973, "slots": 4, "concurrent": true}
+rank1 [tensorfold] rank 1 ready in 47.4s, following rank 0

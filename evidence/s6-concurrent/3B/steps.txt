@@ -1,0 +1,9 @@
+2026-10-08T05:13:08Z 3B run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T05:14:05Z 3B warm pass (discarded)
+2026-10-08T05:14:15Z 3B gate RUNS=9
+2026-10-08T05:30:41Z 3B sampled cells c=1 2 4
+2026-10-08T05:37:10Z 3B pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T05:39:02Z 3B ttft cells reps=3
+2026-10-08T05:42:59Z 3B prefill_cold
+2026-10-08T05:46:38Z 3B logs and stop
+2026-10-08T05:46:52Z 3B done

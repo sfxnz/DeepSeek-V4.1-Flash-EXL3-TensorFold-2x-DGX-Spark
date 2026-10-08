@@ -1,0 +1,36 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=2 concurrency=[1] phases=['prose']
+phase=prose c=1 run=1 wall=5.03s agg=50.67 tok/s per_stream=[50.68] ttft=[1.100] acc=2.439 ms_step=[48.1]
+phase=prose c=1 run=2 wall=4.55s agg=46.06 tok/s per_stream=[46.07] ttft=[0.227] acc=2.287 ms_step=[49.7]
+natural phase=prose completion_tokens=82 finish_reason=stop
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "median_decode_tok_s": 48.374606061696625,
+    "median_ttft_s": 0.6632346383994445,
+    "median_agg_tok_s": 48.365148185674826,
+    "median_completion_tokens": 200.0,
+    "n": 2,
+    "acceptance_len": 2.3609467455621305,
+    "draft_acceptance_rate": 0.4536489151873767,
+    "run_acceptance_len": [
+      2.439,
+      2.2874
+    ],
+    "median_run_acceptance_len": 2.3631903560414917,
+    "median_ms_per_step": 48.88844525632111,
+    "ttft_s_p50": 0.6632346383994445,
+    "ttft_s_p90": 1.0126037531299517,
+    "ttft_s_p99": 1.0912118039443157,
+    "inter_chunk_ms_p50": 47.79290501028299,
+    "inter_chunk_ms_p90": 52.057714713737376,
+    "inter_chunk_ms_p99": 83.94003563094891,
+    "finish_reasons": {
+      "length": 2
+    },
+    "natural_completion_tokens": 82,
+    "natural_finish_reason": "stop",
+    "natural_covers_max": false,
+    "post_eos_fraction": 0.59
+  }
+]

@@ -1,0 +1,56 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=1 concurrency=[2, 4] phases=['prose_long']
+phase=prose_long c=2 run=1 wall=6.64s agg=61.20 tok/s per_stream=[30.48,30.90] ttft=[0.076,0.200] acc=nan ms_step=[]
+phase=prose_long c=4 run=1 wall=9.32s agg=87.84 tok/s per_stream=[21.76,21.89,22.29,22.12] ttft=[0.073,0.193,0.390,0.325] acc=nan ms_step=[]
+natural phase=prose_long completion_tokens=200 finish_reason=length
+SUMMARY [
+  {
+    "phase": "prose_long",
+    "concurrency": 2,
+    "median_decode_tok_s": 30.68920168530434,
+    "median_ttft_s": 0.1380878360942006,
+    "median_agg_tok_s": 61.2019043141536,
+    "median_completion_tokens": 200.0,
+    "n": 2,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.1380878360942006,
+    "ttft_s_p90": 0.18769751936197282,
+    "ttft_s_p99": 0.19885969809722154,
+    "inter_chunk_ms_p50": 68.62883712165058,
+    "inter_chunk_ms_p90": 79.26423044409603,
+    "inter_chunk_ms_p99": 81.8821300403215,
+    "finish_reasons": {
+      "length": 2
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  },
+  {
+    "phase": "prose_long",
+    "concurrency": 4,
+    "median_decode_tok_s": 22.007683881369598,
+    "median_ttft_s": 0.25874014501459897,
+    "median_agg_tok_s": 87.83866229807408,
+    "median_completion_tokens": 200.0,
+    "n": 4,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.25874014501459897,
+    "ttft_s_p90": 0.3706266421824694,
+    "ttft_s_p99": 0.3884117848519236,
+    "inter_chunk_ms_p50": 96.75768751185387,
+    "inter_chunk_ms_p90": 110.37497245706618,
+    "inter_chunk_ms_p99": 122.52221369184585,
+    "finish_reasons": {
+      "length": 4
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  }
+]

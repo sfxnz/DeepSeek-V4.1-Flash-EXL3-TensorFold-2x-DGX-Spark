@@ -1,0 +1,9 @@
+2026-10-08T03:22:07Z W2 run.sh PARALLEL=1 DECODE_SHARE=0.5
+2026-10-08T03:23:04Z W2 warm pass (discarded)
+2026-10-08T03:23:13Z W2 gate RUNS=1
+2026-10-08T03:36:26Z W2 sampled cells c=1 2 4
+2026-10-08T03:37:36Z W2 pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T03:39:25Z W2 ttft alone reps=1
+2026-10-08T03:40:20Z W2 prefill_cold
+2026-10-08T03:43:54Z W2 logs and stop
+2026-10-08T03:44:08Z W2 done

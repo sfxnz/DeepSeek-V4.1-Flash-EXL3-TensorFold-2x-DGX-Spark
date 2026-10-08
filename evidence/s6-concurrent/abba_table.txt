@@ -1,0 +1,165 @@
+# N11 ABBA table (receipts/n11). A = ./run.sh PARALLEL=1, B = ./run.sh (PARALLEL=4 DECODE_SHARE=0.5), both at CONTEXT=1048576 and the recipe defaults, image tf-dsv41-flash:0.6.4-b86514a (TF b86514a), recipe b55aac8.
+# Boot order 1A 2B 3B 4A, then 5C (share 0.25), 6D (share 1), 7V (vLLM sibling, MAX_NUM_SEQS=2), after two warm-up boots W1 (PARALLEL=4) and W2 (PARALLEL=1) that filled the new Triton cache (not counted).
+# Arm value = median of per-boot medians. c=1 ruler cells: median per-stream decode tok/s (as the recipe rows); c>=2: median wave aggregate tok/s (bench_decode.py's median_agg_tok_s).
+
+## 1. c = 1: B (PARALLEL=4, a lone lane) against A (PARALLEL=1, legacy). Gate: B within 3% of A.
+cell                                   A 1A     A 4A        A     B 2B     B 3B        B   B/A-1  gate
+ruler prose                           56.55    56.48    56.51    56.24    56.34    56.29  -0.39%  PASS
+ruler structured                      98.04    97.97    98.00    98.47    96.90    97.68  -0.33%  PASS
+ruler prose_long                      41.59    41.25    41.42    41.24    41.24    41.24  -0.43%  PASS
+sampled nofields                      43.20    43.03    43.12    42.76    43.21    42.99  -0.30%  (reported)
+sampled top_p095                      38.23    38.18    38.21    37.95    37.87    37.91  -0.78%  (reported)
+prefill_cold 2048                   1148.50  1143.40  1145.95  1164.00  1137.40  1150.70   0.41%  PASS
+prefill_cold 8192                   1568.80  1586.10  1577.45  1602.00  1573.70  1587.85   0.66%  PASS
+prefill_cold 16384                  1728.70  1725.00  1726.85  1728.00  1685.30  1706.65  -1.17%  PASS
+prefill_cold 32768                  1794.60  1789.40  1792.00  1779.00  1775.20  1777.10  -0.83%  PASS
+prefill_cold 65536                  1830.10  1827.50  1828.80  1828.10  1781.50  1804.80  -1.31%  PASS
+files: <boot>/gate/bench-frozen.out, <boot>/gate/bench-prose-long.out, <boot>/sampled-<label>.txt, <boot>/prefill_cold.json (prefill_cold tok/s per length, median of 3 reps)
+c=1 gate (ruler and prefill_cold cells): PASS
+B against s5 (55.8 / 97.3 / 40.7, evidence/s5-final/decode.txt): 56.29 / 97.68 / 41.24
+
+## 2. Concurrent aggregates (tok/s) against vLLM and the restated predictions (conc-design R15.mp1)
+cell                        c     B 2B     B 3B        B A (queued)  vLLM 7V  B/vLLM     R36  prediction
+ruler prose                 2    82.42    81.97    82.19      74.55    81.29   1.011   81.02  0.92-0.97x vLLM; B/R36 1.014
+ruler prose                 4   115.27   116.03   115.65      88.95   102.10   1.133       -  93-104 tok/s
+ruler structured            2   143.88   144.16   144.02     129.41   155.85   0.924  156.29  about 0.85x vLLM; B/R36 0.922
+ruler structured            4   200.90   200.41   200.65     153.44   201.80   0.994       -  
+ruler prose_long            2    61.02    60.90    60.96      55.09    69.42   0.878       -  
+ruler prose_long            4    87.54    86.64    87.09      65.80    87.61   0.994       -  
+sampled nofields            2    63.36    63.26    63.31          -    65.42   0.968       -  
+sampled nofields            4    90.12    89.56    89.84          -    82.27   1.092       -  
+sampled top_p095            2    57.24    57.08    57.16          -    68.17   0.838       -  
+sampled top_p095            4    82.57    82.24    82.41          -    82.95   0.993       -  
+files: <boot>/gate/bench-frozen-conc.out, <boot>/gate/bench-prose-long-conc.out, <boot>/sampled-<label>.txt; 7V/bench-frozen.out, 7V/bench-prose-long.out, 7V/sampled-<label>.out. vLLM c=4 queues behind MAX_NUM_SEQS=2. A (PARALLEL=1) queues every request: its c>=2 'aggregate' is serial decoding.
+vLLM c=1 (7V; s5-final same-session vLLM was 47.88 / 82.57 / 43.32, evidence/s5-final/vllm): prose 49.29, structured 84.00, prose_long 46.24
+per-stream decode tok/s, B: prose c=1 56.29; prose c=2 41.34; prose c=4 29.11; structured c=1 97.68; structured c=2 72.51; structured c=4 50.60; prose_long c=1 41.24; prose_long c=2 30.60; prose_long c=4 21.80
+TTFT p50 s, B: prose c=1 0.066; prose c=2 0.131; prose c=4 0.277; structured c=1 0.067; structured c=2 0.128; structured c=4 0.262 | vLLM: prose c=1 0.231; prose c=2 0.258; prose c=4 2.602; structured c=1 0.215; structured c=2 0.230; structured c=4 1.620
+
+## 3. Exactness
+1A bench_concurrent plain + --mixed --stagger-ms 2000: exit 0: every request equal to its alone run  (1A/gate/conc-check.out)
+   alone checks summed over both files: {'equal': 102, 'unequal': 0, 'failed': 0}
+4A bench_concurrent plain + --mixed --stagger-ms 2000: exit 0: every request equal to its alone run  (4A/gate/conc-check.out)
+   alone checks summed over both files: {'equal': 102, 'unequal': 0, 'failed': 0}
+2B bench_concurrent plain + --mixed --stagger-ms 2000: exit 0: every request equal to its alone run  (2B/gate/conc-check.out)
+   alone checks summed over both files: {'equal': 102, 'unequal': 0, 'failed': 0}
+3B bench_concurrent plain + --mixed --stagger-ms 2000: exit 0: every request equal to its alone run  (3B/gate/conc-check.out)
+   alone checks summed over both files: {'equal': 102, 'unequal': 0, 'failed': 0}
+pairs_concurrent 2B vs 1A: unequal 0 of 4 (rc 0)  (1A/gate/pairs_concurrent.jsonl, 2B/gate/pairs_concurrent.jsonl)
+pairs_concurrent 2B vs 4A: unequal 0 of 4 (rc 0)  (4A/gate/pairs_concurrent.jsonl, 2B/gate/pairs_concurrent.jsonl)
+pairs_concurrent 3B vs 1A: unequal 0 of 4 (rc 0)  (1A/gate/pairs_concurrent.jsonl, 3B/gate/pairs_concurrent.jsonl)
+pairs_concurrent 3B vs 4A: unequal 0 of 4 (rc 0)  (4A/gate/pairs_concurrent.jsonl, 3B/gate/pairs_concurrent.jsonl)
+pairs_concurrent 5C vs 1A: unequal 0 of 4 (rc 0)  (1A/gate/pairs_concurrent.jsonl, 5C/pairs_concurrent.jsonl)
+pairs_concurrent 5C vs 4A: unequal 0 of 4 (rc 0)  (4A/gate/pairs_concurrent.jsonl, 5C/pairs_concurrent.jsonl)
+pairs_concurrent 6D vs 1A: unequal 0 of 4 (rc 0)  (1A/gate/pairs_concurrent.jsonl, 6D/pairs_concurrent.jsonl)
+pairs_concurrent 6D vs 4A: unequal 0 of 4 (rc 0)  (4A/gate/pairs_concurrent.jsonl, 6D/pairs_concurrent.jsonl)
+   1A: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+   4A: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+   2B: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+   3B: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+   5C: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+   6D: short greedy d583c605443d (20 prompt), medium keyed 36420ceb06ec (749 prompt), short keyed a4bc38138de8 (18 prompt), long greedy c7b6a22de5c1 (25061 prompt)
+A references (ttft_alone.jsonl): BG ['f9b4f63c556d']; FILL(r0) ['4b501c119a01']; FILL(r1) ['546c7567f6f5']; FILL(r2) ['ace3ae8de6b3']; FILL(yield) ['c59da1c09254']; LIVE ['eabac0f20758']
+ttft cells 2B: 17 streams, 0 unequal to A  (2B/ttft_cells.jsonl)
+ttft cells 3B: 17 streams, 0 unequal to A  (3B/ttft_cells.jsonl)
+ttft cells 5C: 17 streams, 0 unequal to A  (5C/ttft_cells.jsonl)
+ttft cells 6D: 17 streams, 0 unequal to A  (6D/ttft_cells.jsonl)
+1A pairs_nucleus vs s5 bootF/pairs.jsonl: 12 equal, 0 differ
+1A q2 pairs vs receipts/c7/*/pairs.jsonl (4 boots), shared (greedy) cells: 6 equal, 0 differ; not shared (c7 served without --top-p, so its t=1.0 requests drew at the family's top_p 0.95; the recipe serves --top-p 1.0): [('prompt0 t=1.0 drafted', '7d1dc35680a6', ['2e35c52cda08']), ('prompt0 t=1.0 draft:false', '7d1dc35680a6', ['2e35c52cda08']), ('prompt1 t=1.0 drafted', '22480b3cd4c8', ['75ad34c67f94']), ('prompt1 t=1.0 draft:false', '22480b3cd4c8', ['75ad34c67f94']), ('prompt2 t=1.0 drafted', '65f2c13cd1dc', ['14f0fa7d7629']), ('prompt2 t=1.0 draft:false', '65f2c13cd1dc', ['14f0fa7d7629']), ('top_k omitted drafted', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted draft:false', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted resend', 'd12cf170e284', ['bd50e30b4d41'])]
+4A pairs_nucleus vs s5 bootF/pairs.jsonl: 12 equal, 0 differ
+4A q2 pairs vs receipts/c7/*/pairs.jsonl (4 boots), shared (greedy) cells: 6 equal, 0 differ; not shared (c7 served without --top-p, so its t=1.0 requests drew at the family's top_p 0.95; the recipe serves --top-p 1.0): [('prompt0 t=1.0 drafted', '7d1dc35680a6', ['2e35c52cda08']), ('prompt0 t=1.0 draft:false', '7d1dc35680a6', ['2e35c52cda08']), ('prompt1 t=1.0 drafted', '22480b3cd4c8', ['75ad34c67f94']), ('prompt1 t=1.0 draft:false', '22480b3cd4c8', ['75ad34c67f94']), ('prompt2 t=1.0 drafted', '65f2c13cd1dc', ['14f0fa7d7629']), ('prompt2 t=1.0 draft:false', '65f2c13cd1dc', ['14f0fa7d7629']), ('top_k omitted drafted', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted draft:false', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted resend', 'd12cf170e284', ['bd50e30b4d41'])]
+2B pairs_nucleus vs s5 bootF/pairs.jsonl: 12 equal, 0 differ
+2B q2 pairs vs receipts/c7/*/pairs.jsonl (4 boots), shared (greedy) cells: 6 equal, 0 differ; not shared (c7 served without --top-p, so its t=1.0 requests drew at the family's top_p 0.95; the recipe serves --top-p 1.0): [('prompt0 t=1.0 drafted', '7d1dc35680a6', ['2e35c52cda08']), ('prompt0 t=1.0 draft:false', '7d1dc35680a6', ['2e35c52cda08']), ('prompt1 t=1.0 drafted', '22480b3cd4c8', ['75ad34c67f94']), ('prompt1 t=1.0 draft:false', '22480b3cd4c8', ['75ad34c67f94']), ('prompt2 t=1.0 drafted', '65f2c13cd1dc', ['14f0fa7d7629']), ('prompt2 t=1.0 draft:false', '65f2c13cd1dc', ['14f0fa7d7629']), ('top_k omitted drafted', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted draft:false', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted resend', 'd12cf170e284', ['bd50e30b4d41'])]
+3B pairs_nucleus vs s5 bootF/pairs.jsonl: 12 equal, 0 differ
+3B q2 pairs vs receipts/c7/*/pairs.jsonl (4 boots), shared (greedy) cells: 6 equal, 0 differ; not shared (c7 served without --top-p, so its t=1.0 requests drew at the family's top_p 0.95; the recipe serves --top-p 1.0): [('prompt0 t=1.0 drafted', '7d1dc35680a6', ['2e35c52cda08']), ('prompt0 t=1.0 draft:false', '7d1dc35680a6', ['2e35c52cda08']), ('prompt1 t=1.0 drafted', '22480b3cd4c8', ['75ad34c67f94']), ('prompt1 t=1.0 draft:false', '22480b3cd4c8', ['75ad34c67f94']), ('prompt2 t=1.0 drafted', '65f2c13cd1dc', ['14f0fa7d7629']), ('prompt2 t=1.0 draft:false', '65f2c13cd1dc', ['14f0fa7d7629']), ('top_k omitted drafted', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted draft:false', 'd12cf170e284', ['bd50e30b4d41']), ('top_k omitted resend', 'd12cf170e284', ['bd50e30b4d41'])]
+1A sampled shas: nofields c=1 ['4e0fa4daff89']; top_p095 c=1 ['dae740142762']  (s5 bootF: nofields ['4e0fa4daff89'], top_p095 ['dae740142762'])
+4A sampled shas: nofields c=1 ['4e0fa4daff89']; top_p095 c=1 ['dae740142762']  (s5 bootF: nofields ['4e0fa4daff89'], top_p095 ['dae740142762'])
+2B sampled shas: nofields c=1 ['4e0fa4daff89']; nofields c=2 ['4e0fa4daff89']; nofields c=4 ['4e0fa4daff89']; top_p095 c=1 ['dae740142762']; top_p095 c=2 ['dae740142762']; top_p095 c=4 ['dae740142762']  (s5 bootF: nofields ['4e0fa4daff89'], top_p095 ['dae740142762'])
+3B sampled shas: nofields c=1 ['4e0fa4daff89']; nofields c=2 ['4e0fa4daff89']; nofields c=4 ['4e0fa4daff89']; top_p095 c=1 ['dae740142762']; top_p095 c=2 ['dae740142762']; top_p095 c=4 ['dae740142762']  (s5 bootF: nofields ['4e0fa4daff89'], top_p095 ['dae740142762'])
+rank 0 done lines, ruler prompts (prompt tokens, completion tokens): sha per boot (count)
+   (26, 200): 1A {'608709a2ada9': 65}; 4A {'608709a2ada9': 65}; 2B {'608709a2ada9': 65}; 3B {'608709a2ada9': 65}
+   (29, 200): 1A {'b819a030b2cc': 65, '4e0fa4daff89': 9, 'dae740142762': 9}; 4A {'b819a030b2cc': 65, '4e0fa4daff89': 9, 'dae740142762': 9}; 2B {'b819a030b2cc': 65, '4e0fa4daff89': 63, 'dae740142762': 63}; 3B {'b819a030b2cc': 65, '4e0fa4daff89': 63, 'dae740142762': 63}
+   (42, 200): 1A {'d9f74497fa72': 65}; 4A {'d9f74497fa72': 65}; 2B {'d9f74497fa72': 65}; 3B {'d9f74497fa72': 65}
+
+## 4. TTFT of a 16k prompt arriving while 3 lanes decode (ttft.py), by --decode-share
+A alone: 16k FILL TTFT median 9.58 s over 8; LIVE alone tok/s [38.15, 38.97]
+5C share 0.25    r0: fill TTFT 15.23 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [4.41, 4.41, 4.41], max gap [0.781, 0.78, 0.779] s; live tok/s whole [17.91, 17.93, 17.96]
+5C share 0.25    r1: fill TTFT 14.98 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [4.23, 4.23, 4.23], max gap [0.791, 0.79, 0.791] s; live tok/s whole [17.69, 17.69, 17.72]
+5C share 0.25    r2: fill TTFT 14.96 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [4.24, 4.24, 4.24], max gap [0.792, 0.793, 0.793] s; live tok/s whole [17.75, 17.75, 17.79]
+5C share 0.25 yield: fill TTFT 15.01 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [4.22, 4.22, 4.22], max gap [0.79, 0.791, 0.789] s; live tok/s whole [16.85, 16.86, 16.89]; BG sha f9b4f63c556d max gap 18.68 s wall 30.986 s
+5C share 0.25: median fill TTFT of the no-yield reps 14.98 s  (5C/ttft_cells.jsonl)
+2B share 0.5    r0: fill TTFT 18.19 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.18, 7.18, 7.18], max gap [0.729, 0.729, 0.728] s; live tok/s whole [17.56, 17.57, 17.61]
+2B share 0.5    r1: fill TTFT 17.97 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.26, 7.26, 7.26], max gap [0.727, 0.726, 0.725] s; live tok/s whole [17.67, 17.67, 17.71]
+2B share 0.5    r2: fill TTFT 17.98 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.26, 7.26, 7.26], max gap [0.73, 0.731, 0.73] s; live tok/s whole [17.74, 17.74, 17.78]
+2B share 0.5 yield: fill TTFT 18.12 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.09, 7.09, 7.09], max gap [0.738, 0.737, 0.736] s; live tok/s whole [16.74, 16.74, 16.78]; BG sha f9b4f63c556d max gap 21.742 s wall 33.972 s
+2B share 0.5: median fill TTFT of the no-yield reps 17.98 s  (2B/ttft_cells.jsonl)
+3B share 0.5    r0: fill TTFT 18.66 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.31, 7.31, 7.31], max gap [0.737, 0.737, 0.737] s; live tok/s whole [16.83, 16.83, 16.86]
+3B share 0.5    r1: fill TTFT 17.95 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.27, 7.27, 7.27], max gap [0.735, 0.735, 0.736] s; live tok/s whole [17.49, 17.49, 17.52]
+3B share 0.5    r2: fill TTFT 19.19 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [6.9, 6.9, 6.9], max gap [0.771, 0.769, 0.77] s; live tok/s whole [17.14, 17.14, 17.17]
+3B share 0.5 yield: fill TTFT 19.44 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [7.02, 7.02, 7.02], max gap [1.246, 1.246, 1.246] s; live tok/s whole [16.32, 16.32, 16.35]; BG sha f9b4f63c556d max gap 22.987 s wall 35.24 s
+3B share 0.5: median fill TTFT of the no-yield reps 18.66 s  (3B/ttft_cells.jsonl)
+6D share 1.0    r0: fill TTFT 24.02 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [11.51, 11.5, 11.51], max gap [0.747, 0.749, 0.749] s; live tok/s whole [17.97, 17.98, 18.02]
+6D share 1.0    r1: fill TTFT 24.04 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [11.25, 11.25, 11.25], max gap [0.759, 0.761, 0.759] s; live tok/s whole [17.76, 17.77, 17.8]
+6D share 1.0    r2: fill TTFT 24.06 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [11.27, 11.27, 11.27], max gap [0.746, 0.747, 0.747] s; live tok/s whole [17.82, 17.82, 17.85]
+6D share 1.0 yield: fill TTFT 24.05 s (16386 tok); live tok/s in fill (rounds/s x tokens/round) [11.25, 11.25, 11.25], max gap [0.752, 0.752, 0.752] s; live tok/s whole [16.88, 16.88, 16.91]; BG sha f9b4f63c556d max gap 27.687 s wall 39.928 s
+6D share 1.0: median fill TTFT of the no-yield reps 24.04 s  (6D/ttft_cells.jsonl)
+
+## 5. Memory. memwatch.tsv every 2 s on both nodes; GiB = MiB / 1024. Predictions (conc-memory-perf §4, 4 x 1M): head 14.8 serving, 11.7 worst case; worker 21.9. Gate: head >= 5 GiB.
+1A: boot/load min head 20.11 worker 22.61; serving min head 23.11 worker 25.15  (1A/memwatch.tsv)
+4A: boot/load min head 19.37 worker 22.30; serving min head 23.26 worker 25.31  (4A/memwatch.tsv)
+2B: boot/load min head 19.40 worker 22.50; serving min head 17.42 worker 21.90; 1M needle with 3 lanes decoding: head 17.42 worker 21.90  (2B/memwatch.tsv)
+3B: boot/load min head 19.61 worker 22.04; serving min head 19.01 worker 22.06  (3B/memwatch.tsv)
+5C: boot/load min head 19.09 worker 21.92; serving min head 19.04 worker 21.90  (5C/memwatch.tsv)
+6D: boot/load min head 19.52 worker 22.00; serving min head 19.17 worker 22.01  (6D/memwatch.tsv)
+Startup estimate and probe (n11probe around graph warm; GiB; seconds include Triton compiles only in W1/W2):
+1A: startup estimate [('0', '81.32', '99.66'), ('1', '81.32', '101.81')] (rank, estimate, budget), window ['1048576', '1048576']  (1A/startup.txt)
+   rank0 Graphs.warm: 22 graphs in 2.119 s; memory_reserved 82.229 (d 0.002), allocated d 0.0, mem_get_info free 11.195 (d -0.483), MemAvailable 27.322 (d -0.374)
+   rank0 DeepSeekV41Engine._warm: 2.591 s; reserved d 0.104, mem_get_info free d -0.842, MemAvailable d -0.839 -> 23.463
+   rank1 Graphs.warm: 22 graphs in 2.117 s; memory_reserved 82.393 (d 0.002), allocated d 0.0, mem_get_info free 9.929 (d -1.115), MemAvailable 29.711 (d -0.41)
+   rank1 DeepSeekV41Engine._warm: 2.597 s; reserved d 0.104, mem_get_info free d -0.852, MemAvailable d -0.823 -> 25.843
+4A: startup estimate [('0', '81.32', '98.83'), ('1', '81.32', '101.79')] (rank, estimate, budget), window ['1048576', '1048576']  (4A/startup.txt)
+   rank0 Graphs.warm: 22 graphs in 2.339 s; memory_reserved 82.027 (d 0.002), allocated d 0.0, mem_get_info free 9.286 (d -1.062), MemAvailable 26.806 (d -0.409)
+   rank0 DeepSeekV41Engine._warm: 2.566 s; reserved d 0.104, mem_get_info free d -0.681, MemAvailable d 0.033 -> 23.858
+   rank1 Graphs.warm: 22 graphs in 2.336 s; memory_reserved 82.006 (d 0.002), allocated d 0.0, mem_get_info free 8.729 (d -1.086), MemAvailable 29.302 (d -0.407)
+   rank1 DeepSeekV41Engine._warm: 2.574 s; reserved d 0.104, mem_get_info free d -0.868, MemAvailable d -0.845 -> 25.42
+2B: startup estimate [('0', '82.55', '99.67'), ('1', '82.55', '102.05')] (rank, estimate, budget), window ['1048576', '1048576']  (2B/startup.txt)
+   rank0 LaneGraphs.warm: 88 graphs in 4.614 s; memory_reserved 87.99 (d 0.002), allocated d 0.0, mem_get_info free 5.007 (d -0.717), MemAvailable 20.335 (d -0.693)
+   rank0 DeepSeekV41Engine._warm_lanes: 4.401 s; reserved d 0.111, mem_get_info free d -0.872, MemAvailable d -0.843 -> 19.492
+   rank0 DeepSeekV41Engine._lanes: 9.346 s; reserved d 7.539, mem_get_info free d -8.843, MemAvailable d -9.93 -> 19.492
+   rank1 LaneGraphs.warm: 88 graphs in 4.438 s; memory_reserved 87.672 (d 0.002), allocated d 0.0, mem_get_info free 4.824 (d 0.54), MemAvailable 23.338 (d -0.806)
+   rank1 DeepSeekV41Engine._warm_lanes: 4.401 s; reserved d 0.111, mem_get_info free d -0.169, MemAvailable d -0.819 -> 22.519
+   rank1 DeepSeekV41Engine._lanes: 9.345 s; reserved d 7.539, mem_get_info free d -6.777, MemAvailable d -9.642 -> 22.519
+3B: startup estimate [('0', '82.55', '98.96'), ('1', '82.55', '101.94')] (rank, estimate, budget), window ['1048576', '1048576']  (3B/startup.txt)
+   rank0 LaneGraphs.warm: 88 graphs in 3.88 s; memory_reserved 87.971 (d 0.002), allocated d 0.0, mem_get_info free 2.376 (d -1.005), MemAvailable 20.167 (d -0.805)
+   rank0 DeepSeekV41Engine._warm_lanes: 5.955 s; reserved d 0.111, mem_get_info free d 0.096, MemAvailable d 0.224 -> 20.39
+   rank0 DeepSeekV41Engine._lanes: 10.154 s; reserved d 7.539, mem_get_info free d -8.451, MemAvailable d -8.353 -> 20.39
+   rank1 LaneGraphs.warm: 88 graphs in 3.868 s; memory_reserved 87.857 (d 0.002), allocated d 0.0, mem_get_info free 2.262 (d -1.336), MemAvailable 23.135 (d -0.76)
+   rank1 DeepSeekV41Engine._warm_lanes: 5.953 s; reserved d 0.111, mem_get_info free d 0.334, MemAvailable d -0.381 -> 22.754
+   rank1 DeepSeekV41Engine._lanes: 10.153 s; reserved d 7.539, mem_get_info free d -8.324, MemAvailable d -9.046 -> 22.754
+5C: startup estimate [('0', '82.55', '99.68'), ('1', '82.55', '101.27')] (rank, estimate, budget), window ['1048576', '1048576']  (5C/startup.txt)
+   rank0 LaneGraphs.warm: 88 graphs in 3.8 s; memory_reserved 88.129 (d 0.002), allocated d 0.0, mem_get_info free 4.719 (d -1.241), MemAvailable 20.134 (d -0.835)
+   rank0 DeepSeekV41Engine._warm_lanes: 4.409 s; reserved d 0.111, mem_get_info free d -0.922, MemAvailable d -0.913 -> 19.22
+   rank0 DeepSeekV41Engine._lanes: 8.901 s; reserved d 7.539, mem_get_info free d -9.288, MemAvailable d -9.989 -> 19.216
+   rank1 LaneGraphs.warm: 88 graphs in 4.154 s; memory_reserved 87.975 (d 0.002), allocated d 0.0, mem_get_info free 6.048 (d -1.496), MemAvailable 22.987 (d -1.07)
+   rank1 DeepSeekV41Engine._warm_lanes: 4.409 s; reserved d 0.111, mem_get_info free d -0.844, MemAvailable d -1.003 -> 21.984
+   rank1 DeepSeekV41Engine._lanes: 8.9 s; reserved d 7.539, mem_get_info free d -9.933, MemAvailable d -9.695 -> 21.984
+6D: startup estimate [('0', '82.55', '98.80'), ('1', '82.55', '101.35')] (rank, estimate, budget), window ['1048576', '1048576']  (6D/startup.txt)
+   rank0 LaneGraphs.warm: 88 graphs in 2.803 s; memory_reserved 87.893 (d 0.002), allocated d 0.0, mem_get_info free 4.791 (d -0.875), MemAvailable 20.451 (d -0.871)
+   rank0 DeepSeekV41Engine._warm_lanes: 4.049 s; reserved d 0.111, mem_get_info free d -0.891, MemAvailable d -0.891 -> 19.56
+   rank0 DeepSeekV41Engine._lanes: 7.429 s; reserved d 7.539, mem_get_info free d -9.033, MemAvailable d -9.029 -> 19.56
+   rank1 LaneGraphs.warm: 88 graphs in 3.061 s; memory_reserved 87.785 (d 0.002), allocated d 0.0, mem_get_info free 4.92 (d -0.78), MemAvailable 22.787 (d -0.778)
+   rank1 DeepSeekV41Engine._warm_lanes: 4.049 s; reserved d 0.111, mem_get_info free d -0.761, MemAvailable d -0.761 -> 22.026
+   rank1 DeepSeekV41Engine._lanes: 7.428 s; reserved d 7.539, mem_get_info free d -9.13, MemAvailable d -9.128 -> 22.026
+2B needle: prompt 1039528 tokens, found True, token_sha 4dfbacf6d86b (s5 bootF alone: 4dfbacf6d86b), answer wall 1370.6 s = 758.4 prompt tok/s (s5 bootF alone: wall 756.6 s, prefill 754.3 s, 1378.1 tok/s); its tensorfold prefill_s field reads 48.4 s under lanes  (2B/needle_lanes.jsonl)
+   live requests 24 (24 overlapping the needle), errors [], shas ['b12cd40d927d'], tok/s of overlapping [7.96, 7.96, 7.94, 8.06, 8.06, 8.06, 8.64, 8.64, 8.64, 8.81, 8.8, 8.81, 8.22, 8.2, 8.2, 8.22, 8.22, 8.22, 8.86, 8.84, 8.84, 10.54, 10.55, 10.55], max gap 2.131 s; needle rc 0, 1374.6 s
+
+## 6. MIN_MEM_GATE_GIB for N12b (run.sh mp5 formula: 75.99 + max(5.33, 3.71 + 0.95 (P-1) CONTEXT/1048576) + 12.1, rounded up)
+   P=1 at 1M: formula estimate 81.32 GiB, floor 94
+   P=2 at 1M: formula estimate 81.32 GiB, floor 94
+   P=3 at 1M: formula estimate 81.60 GiB, floor 94
+   P=4 at 1M: formula estimate 82.55 GiB, floor 95
+   1A measured estimate ['81.32', '81.32'] -> floor [94, 94]  (1A/startup.txt)
+   4A measured estimate ['81.32', '81.32'] -> floor [94, 94]  (4A/startup.txt)
+   2B measured estimate ['82.55', '82.55'] -> floor [95, 95]  (2B/startup.txt)
+   3B measured estimate ['82.55', '82.55'] -> floor [95, 95]  (3B/startup.txt)
+   5C measured estimate ['82.55', '82.55'] -> floor [95, 95]  (5C/startup.txt)
+   6D measured estimate ['82.55', '82.55'] -> floor [95, 95]  (6D/startup.txt)

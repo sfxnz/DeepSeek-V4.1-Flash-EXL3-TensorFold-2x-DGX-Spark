@@ -34,9 +34,11 @@ VERBATIM = {
     "smoke_chat.py": "e1516eb218e5b5e16aeaf65eea2fe7dd195bdbe4dc62d403cd3cb6a712685e96",
     "tests/test_bench_decode.py": "bab0efee6373df8f14a77d3aa50ecdc9a69fb07786f59d8559336ea01fe020e8",
     "tests/test_smoke_chat.py": "7dbd9d977db194c349e7b12992d986cbf758c203224412c5bc52334ed367d35f",
+    # TensorFold's tools/bench_concurrent.py at TF_SHA (sfxnz/TensorFold branch dsv41-recipe-engine4).
+    "tools/bench_concurrent.py": "262e5323e3ba439056b2794f96edf85caf5a81ea2790dd2ac374069b7dbed501",
 }
 TF_REPO = "https://github.com/sfxnz/TensorFold.git"
-TF_SHA = "903a1e8af62c8f46eceee6b95481706ada30ae49"
+TF_SHA = "b86514a5ac8700b32e7b24f1095349df4ce2b922"
 SNAPSHOT_SHA = "982b70452f399814f56b46272fd30394ae10d58c"
 CONFIG_SHA256 = "6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5"
 INDEX_SHA256 = "91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03"
@@ -56,6 +58,15 @@ def _defaults() -> dict[str, str]:
     """run.sh's generated defaults (rendered from recipe.yaml; render --check keeps them equal)."""
     block = _read("run.sh").split("# BEGIN generated", 1)[1].split("# END generated", 1)[0]
     return dict(re.findall(r'^([A-Z][A-Z0-9_]*)="\$\{\1:-(.*)\}"$', block, re.M))
+
+
+def _gate(parallel: int, context: int) -> int:
+    """run.sh's memory-gate floor (mp5): resident 75.99 + max(5.33, 3.71 + 0.95 (P - 1) CONTEXT / 1048576) + 12.1 GiB,
+    rounded up, in exact fractions."""
+    from fractions import Fraction
+    geometry = Fraction(371, 100) + Fraction(95, 100) * (parallel - 1) * Fraction(context, 1048576)
+    total = Fraction(7599, 100) + max(Fraction(533, 100), geometry) + Fraction(1210, 100)
+    return -(-total.numerator // total.denominator)
 
 
 def _receipt_serve_argv() -> list[str]:
@@ -138,6 +149,7 @@ class GuardTests(unittest.TestCase):
         for want in (f"tf={TF_SHA}", f"repo={TF_REPO}", f"snapshot={SNAPSHOT_SHA}",
                      f"tp=2 ctx={d['CONTEXT']} drafts={d['MTP_DRAFTS']}", f"confidence={d['MTP_CONFIDENCE']}", "thinking=0",
                      f"max_tokens={d['MAX_TOKENS']}", "host=0.0.0.0", f"mem_gate={d['MEM_GATE_GIB']}",
+                     f"parallel={d['PARALLEL']} decode_share={d['DECODE_SHARE']}",
                      "engine_env=0", f"image={d['IMAGE']}"):
             self.assertIn(want, out)
 
@@ -191,10 +203,34 @@ class GuardTests(unittest.TestCase):
         self.assertIn("top_p=0.95", self.accepted(TOP_P="0.95").stdout)
 
     def test_memory_gate_floor(self) -> None:
-        self.refused("is below 94 GiB", MEM_GATE_GIB="64")
-        self.refused("is below 94 GiB", MEM_GATE_GIB="0")
+        # The floor follows PARALLEL and CONTEXT (mp5): 94 at one lane, 95 at 4 x 1048576 (the defaults).
+        self.assertEqual(_gate(1, 1048576), 94)
+        self.assertEqual(_gate(4, 1048576), 95)
+        d = _defaults()
+        self.assertEqual(_gate(int(d["PARALLEL"]), int(d["CONTEXT"])), 95)
+        self.refused("is below 95 GiB", MEM_GATE_GIB="64")
+        self.refused("is below 95 GiB", MEM_GATE_GIB="0")
         self.assertIn("mem_gate=0", self.accepted(MEM_GATE_GIB="0", FORCE_UNSAFE_MEM_GATE="1").stdout)
         self.assertIn("mem_gate=110", self.accepted(MEM_GATE_GIB="110").stdout)
+        for parallel in range(1, 5):
+            for context in (4096, 65536, 524288, 917504, 1048576):
+                floor = _gate(parallel, context)
+                env = {"PARALLEL": str(parallel), "CONTEXT": str(context)}
+                self.refused(f"is below {floor} GiB: the engine's admission cannot fit PARALLEL={parallel} windows "
+                             f"of CONTEXT={context}", MEM_GATE_GIB=str(floor - 1), **env)
+                self.accepted(MEM_GATE_GIB=str(floor), **env)
+
+    def test_parallel_and_decode_share(self) -> None:
+        d = _defaults()
+        self.assertEqual((d["PARALLEL"], d["DECODE_SHARE"]), ("4", "0.5"))
+        for bad in ("0", "5", "04", "8", "-1", "2.0", "auto"):
+            self.refused("must be 1, 2, 3 or 4", PARALLEL=bad)
+        for bad in ("1.5", "-0.1", ".5", "2", "0.5 ", "1e-1"):
+            self.refused("must be a decimal in [0, 1]", DECODE_SHARE=bad)
+        for share in ("0", "0.25", "0.5", "1", "1.0"):
+            self.assertIn(f"decode_share={share} ", self.accepted(DECODE_SHARE=share).stdout)
+        for parallel in ("1", "2", "3", "4"):
+            self.assertIn(f"parallel={parallel} ", self.accepted(PARALLEL=parallel).stdout)
 
     def test_modes(self) -> None:
         self.refused("ORCHESTRATE=yes must be auto or 0", ORCHESTRATE="yes")
@@ -239,9 +275,9 @@ class GuardTests(unittest.TestCase):
     def test_extra_args_cannot_reset_owned_flags(self) -> None:
         for flag in ("--tp", "--context=8192", "--mtp-drafts", "--mtp-confidence", "--no-drafts", "--max-tokens",
                      "--port", "--name", "--master", "--master-port", "--host", "--thinking", "--no-thinking",
-                     "--top-p", "--top-p=0.9"):
+                     "--top-p", "--top-p=0.9", "--parallel", "--parallel=2", "--decode-share", "--decode-share=0"):
             self.refused("which run.sh passes itself", EXTRA_ARGS=f"{flag} 1")
-        for flag in ("--parallel", "--prefill-fp8", "--drafter", "--thinking-budget", "--vision", "--kv-dtype"):
+        for flag in ("--prefill-fp8", "--drafter", "--thinking-budget", "--vision", "--kv-dtype"):
             self.refused("refuses or ignores it", EXTRA_ARGS=f"{flag} 1")
         self.accepted(EXTRA_ARGS="--temperature 0.6 --top-k 20")
 
@@ -268,6 +304,7 @@ class GuardTests(unittest.TestCase):
         run = _read("run.sh")
         exit_at = run.index('if [[ "${VALIDATE_ONLY:-0}" != 0 ]]')
         for needle in ('die "TP=', "exceeds the native window", "is below $MIN_MEM_GATE_GIB", "which run.sh passes itself",
+                       "PARALLEL=$PARALLEL must be", "DECODE_SHARE=$DECODE_SHARE must be", "MIN_MEM_GATE_GIB=$((",
                        "refuses or ignores it", "which run.sh sets itself", "has a space or a quote", "not a 64-hex"):
             self.assertLess(run.index(needle), exit_at, needle)
 
@@ -422,7 +459,16 @@ class RankIdentityTests(unittest.TestCase):
         self.assertNotIn("--top-k", f1)
         for argv in self.args_out(TOP_P="0.95")[:2]:
             self.assertEqual(self.flags(argv)["--top-p"], ["0.95"])
-        self.assertNotIn("--parallel", f1)
+        # The lanes and the fill share, identical on both ranks; the share only where it acts (L3).
+        self.assertEqual((f0["--parallel"], f0["--decode-share"]), (["4"], ["0.5"]))
+        self.assertEqual((f1["--parallel"], f1["--decode-share"]), (["4"], ["0.5"]))
+        for parallel in ("2", "3"):
+            for argv in self.args_out(PARALLEL=parallel, DECODE_SHARE="0.25")[:2]:
+                f = self.flags(argv)
+                self.assertEqual((f["--parallel"], f["--decode-share"]), ([parallel], ["0.25"]))
+        for argv in self.args_out(PARALLEL="1", DECODE_SHARE="0.25")[:2]:
+            self.assertEqual(self.flags(argv)["--parallel"], ["1"])
+            self.assertNotIn("--decode-share", argv)
         self.assertNotIn("--kv-dtype", f1)
         thinking = self.flags(self.args_out(THINKING="1", MTP_CONFIDENCE="0.5")[1])
         self.assertIn("--thinking", thinking)
@@ -924,7 +970,11 @@ class RenderTests(unittest.TestCase):
         env["STOP_TIMEOUT"] = re.search(r'STOP_TIMEOUT="\$\{STOP_TIMEOUT:-(\d+)\}"', _read("stop.sh")).group(1)
         switches = {"ORCHESTRATE", "BENCH_ONLY", "SKIP_DOWNLOAD", "THINKING", "MEMGUARD", "MTP_CONFIDENCE",
                     "EXTRA_ARGS", "EXTRA_ENV"}
-        floor = re.search(r"^MIN_MEM_GATE_GIB=(\d+)$", _read("run.sh"), re.M).group(1)
+        # The gate floor at the defaults, in both files.
+        floor = str(_gate(int(env["PARALLEL"]), int(env["CONTEXT"])))
+        floors = {"AGENTS.md": floor, "README.md": floor}
+        self.assertIn(f"less than a floor it computes from `PARALLEL` and `CONTEXT`", _read("AGENTS.md"))
+        self.assertIn(f"rounded up: {floors['AGENTS.md']} at the defaults", _read("AGENTS.md"))
         checked = 0
         for rel in ("README.md", "AGENTS.md"):
             text = _read(rel)
@@ -939,7 +989,7 @@ class RenderTests(unittest.TestCase):
                     self.assertEqual(got, want, f"{rel}: {m.group(0)}")
                     checked += 1
             for m in re.finditer(r"below (\d+)(?: GiB)?", text):
-                self.assertEqual(m.group(1), floor, f"{rel}: {m.group(0)}")
+                self.assertEqual(m.group(1), floors[rel], f"{rel}: {m.group(0)}")
         self.assertGreater(checked, 10)
 
     def test_defaults_in_other_scripts_match_recipe_yaml(self) -> None:
@@ -1002,14 +1052,27 @@ class ToolsTests(unittest.TestCase):
             ok = subprocess.run([str(gate), str(tmp / "ev1")], capture_output=True, text=True, env=env, check=False)
             self.assertEqual(ok.returncode, 0, ok.stdout + ok.stderr)
             self.assertEqual((tmp / "ev1/gate.txt").read_text().splitlines()[-1], "GATE=PASS")
-            for name in ("smoke-chat", "smoke-count", "bench-frozen", "bench-prose-long"):
+            for name in ("smoke-chat", "smoke-count", "bench-frozen", "bench-prose-long", "bench-frozen-conc",
+                         "bench-prose-long-conc", "bench-concurrent", "bench-concurrent-mixed", "conc-check",
+                         "pairs-concurrent"):
                 self.assertEqual((tmp / f"ev1/{name}.exit").read_text().strip(), "0", name)
             calls = (tmp / "py-calls").read_text()
             self.assertIn("--phase both --concurrency 1 --max-tokens 200 --runs 9", calls)
             self.assertIn("--phase prose_long --concurrency 1 --max-tokens 200 --runs 5", calls)
+            self.assertIn("--phase both --concurrency 2 4 --max-tokens 200 --runs 9", calls)
+            self.assertIn("--phase prose_long --concurrency 2 4 --max-tokens 200 --runs 5", calls)
+            ev1 = tmp / "ev1"
+            self.assertIn(f"tools/bench_concurrent.py http://127.0.0.1:8000 {SERVED} --levels 1,2,4 --alone --serial "
+                          f"--output {ev1}/bench_concurrent.json", calls)
+            self.assertIn(f"tools/bench_concurrent.py http://127.0.0.1:8000 {SERVED} --mixed --stagger-ms 2000 "
+                          f"--levels 2,4 --alone --output {ev1}/bench_concurrent_mixed.json", calls)
+            self.assertIn(f"- {ev1}/bench_concurrent.json {ev1}/bench_concurrent_mixed.json", calls)
+            self.assertIn(f"tools/pairs_concurrent.py --url http://127.0.0.1:8000/v1/chat/completions --model {SERVED} "
+                          f"--output {ev1}/pairs_concurrent.jsonl", calls)
             self.assertIn("startup estimate", (tmp / "ev1/startup.txt").read_text())
             hashed = (tmp / "ev1/harness.sha256").read_text()
-            for rel in ("bench_decode.py", "run.sh", "stop.sh", "recipe.yaml"):
+            for rel in ("bench_decode.py", "tools/bench_concurrent.py", "tools/pairs_concurrent.py", "run.sh", "stop.sh",
+                        "recipe.yaml"):
                 self.assertIn(rel, hashed)
             for rank in (0, 1):
                 text = (tmp / f"ev1/env-rank{rank}.txt").read_text()
@@ -1021,6 +1084,80 @@ class ToolsTests(unittest.TestCase):
             self.assertEqual(bad.returncode, 1, bad.stdout + bad.stderr)
             self.assertEqual((tmp / "ev2/gate.txt").read_text().splitlines()[-1], "GATE=FAIL")
             self.assertIn("smoke-count=1", (tmp / "ev2/gate.txt").read_text())
+
+    def test_pairs_concurrent_requests_and_compare(self) -> None:
+        # A stub server records each request and answers with ids derived from it; the client's own logic runs.
+        import http.server
+        import threading
+        import time
+
+        seen: list[tuple[float, dict]] = []
+
+        class Stub(http.server.BaseHTTPRequestHandler):
+            def do_POST(self) -> None:  # noqa: N802 - http.server's name
+                body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                seen.append((time.perf_counter(), body))
+                text = body["messages"][0]["content"]
+                ids = [len(text) % 1000, body.get("seed") or 0, 7]
+                stats = {"token_sha": hashlib.sha256(",".join(map(str, ids)).encode()).hexdigest()[:12], "rounds": 1}
+                if body.get("return_token_ids"):
+                    stats["token_ids"] = ids
+                data = json.dumps({"choices": [{"finish_reason": "length"}], "tensorfold": stats,
+                                   "usage": {"prompt_tokens": len(text) // 4, "completion_tokens": 3,
+                                             "prompt_tokens_details": {"cached_tokens": 0}}}).encode()
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+
+            def log_message(self, *args) -> None:
+                pass
+
+        srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Stub)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        script = str(ROOT / "tools/pairs_concurrent.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "a.jsonl"
+            try:
+                proc = subprocess.run([sys.executable, script, "--url", f"http://127.0.0.1:{srv.server_port}/v1/chat/completions",
+                                       "--model", SERVED, "--stagger-ms", "100", "--output", str(out)],
+                                      capture_output=True, text=True, check=False, timeout=60)
+            finally:
+                srv.shutdown()
+                srv.server_close()
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            bodies = [b for _, b in sorted(seen, key=lambda x: x[0])]
+            self.assertEqual(len(bodies), 4)
+            for b in bodies:
+                self.assertNotIn("top_k", b)
+                self.assertNotIn("top_p", b)
+                self.assertTrue(b["return_token_ids"] and b["ignore_eos"])
+                self.assertEqual(b["model"], SERVED)
+                self.assertEqual("seed" in b, b["temperature"] > 0, b.get("seed"))
+            prompts = [b["messages"][0]["content"] for b in bodies]
+            self.assertEqual(len({len(p) for p in prompts}), 4, "distinct prompts of different lengths")
+            self.assertEqual({b["temperature"] for b in bodies}, {0.0, 1.0})
+            # Staggered, and the long prompt (over 16k tokens on the server: 25,057 with the model's tokenizer)
+            # arrives last, while the others decode.
+            arrivals = sorted(t for t, _ in seen)
+            self.assertTrue(all(b - a > 0.05 for a, b in zip(arrivals, arrivals[1:])), arrivals)
+            self.assertEqual(max(range(4), key=lambda i: len(prompts[i])), 3)
+            rows = [json.loads(l) for l in out.read_text().splitlines()]
+            self.assertEqual([r["case"] for r in rows[:4]], ["short greedy", "medium keyed", "short keyed", "long greedy"])
+            for r in rows[:4]:
+                self.assertTrue(r["sha_ok"] and r["token_ids"] and r["token_sha"], r)
+            self.assertEqual(rows[4]["failures"], [])
+            self.assertTrue(rows[4]["long_over_16k"])
+            # Two boots compare by token_sha per case.
+            same = subprocess.run([sys.executable, script, "--compare", str(out), str(out)], capture_output=True,
+                                  text=True, check=False)
+            self.assertEqual(same.returncode, 0, same.stdout)
+            other = Path(tmp) / "b.jsonl"
+            other.write_text(out.read_text().replace(rows[3]["token_sha"], "000000000000"))
+            diff = subprocess.run([sys.executable, script, "--compare", str(out), str(other)], capture_output=True,
+                                  text=True, check=False)
+            self.assertEqual(diff.returncode, 1, diff.stdout)
+            self.assertIn('"case": "long greedy", "a": "' + rows[3]["token_sha"], diff.stdout)
 
     def test_shell_tools_parse(self) -> None:
         for rel in ("run.sh", "stop.sh", "tools/session_gate.sh"):

@@ -1,0 +1,167 @@
+{
+ "label": "",
+ "tokens": 256,
+ "mixed": true,
+ "cells": [
+  {
+   "prompt": "mixed",
+   "temperature": 1.0,
+   "streams": 2,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 50.8,
+   "per_stream_tps": 51.9,
+   "ttft_s_max": 3.77,
+   "alone": {
+    "equal": 6,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 50.63603297476818,
+     "per_stream_tps": [
+      45.4,
+      58.2
+     ],
+     "ttft_s": [
+      0.08,
+      3.77
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 50.75867318770291,
+     "per_stream_tps": [
+      45.5,
+      58.4
+     ],
+     "ttft_s": [
+      0.06,
+      3.74
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 50.933601485023665,
+     "per_stream_tps": [
+      45.6,
+      58.6
+     ],
+     "ttft_s": [
+      0.07,
+      3.73
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "mixed",
+   "temperature": 1.0,
+   "streams": 4,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 48.7,
+   "per_stream_tps": 47.2,
+   "ttft_s_max": 11.72,
+   "alone": {
+    "equal": 12,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 48.642664312437915,
+     "per_stream_tps": [
+      45.4,
+      58.5,
+      47.9,
+      46.7
+     ],
+     "ttft_s": [
+      0.07,
+      3.76,
+      11.72,
+      4.19
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 48.69071882683492,
+     "per_stream_tps": [
+      45.8,
+      58.7,
+      47.4,
+      46.8
+     ],
+     "ttft_s": [
+      0.07,
+      9.15,
+      1.7,
+      9.57
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 48.74406653483735,
+     "per_stream_tps": [
+      45.5,
+      59.1,
+      47.4,
+      47.0
+     ],
+     "ttft_s": [
+      0.07,
+      3.74,
+      11.61,
+      4.12
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    }
+   ]
+  }
+ ]
+}
