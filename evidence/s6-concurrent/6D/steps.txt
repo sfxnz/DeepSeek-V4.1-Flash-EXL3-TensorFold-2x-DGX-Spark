@@ -1,0 +1,6 @@
+2026-10-08T06:25:10Z 6D run.sh PARALLEL=4 DECODE_SHARE=1
+2026-10-08T06:26:07Z 6D warm pass (discarded)
+2026-10-08T06:26:17Z 6D ttft cells reps=3
+2026-10-08T06:30:05Z 6D pairs_concurrent
+2026-10-08T06:30:44Z 6D logs and stop
+2026-10-08T06:30:58Z 6D done

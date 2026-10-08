@@ -1,0 +1,3 @@
+scripts/boot.sh: line 116: i: command not found
+scripts/boot.sh: line 117: syntax error near unexpected token `;;'
+scripts/boot.sh: line 117: `     prefill_cold ;;'

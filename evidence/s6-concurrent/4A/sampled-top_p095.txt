@@ -1,0 +1,13 @@
+# 2026-10-08T06:11:41Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label top_p095 --runs 9 --temperature 1.0 --top-p 0.95 --concurrency 1
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1] sampling={"temperature": 1.0, "top_p": 0.95}
+phase=top_p095 c=1 run=1 wall=5.31s agg=38.21 tok/s per_stream=[38.21] shas=dae740142762
+phase=top_p095 c=1 run=2 wall=5.29s agg=38.10 tok/s per_stream=[38.10] shas=dae740142762
+phase=top_p095 c=1 run=3 wall=5.27s agg=38.22 tok/s per_stream=[38.22] shas=dae740142762
+phase=top_p095 c=1 run=4 wall=5.27s agg=38.21 tok/s per_stream=[38.21] shas=dae740142762
+phase=top_p095 c=1 run=5 wall=5.28s agg=38.18 tok/s per_stream=[38.18] shas=dae740142762
+phase=top_p095 c=1 run=6 wall=5.29s agg=38.08 tok/s per_stream=[38.09] shas=dae740142762
+phase=top_p095 c=1 run=7 wall=5.31s agg=38.00 tok/s per_stream=[38.00] shas=dae740142762
+phase=top_p095 c=1 run=8 wall=5.26s agg=38.32 tok/s per_stream=[38.32] shas=dae740142762
+phase=top_p095 c=1 run=9 wall=5.31s agg=37.97 tok/s per_stream=[37.98] shas=dae740142762
+SUMMARY [{"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 1, "n": 9, "median_agg_tok_s": 38.179767733215726, "median_decode_tok_s": 38.184703985461624, "ttft_s_p50": 0.06694952305406332, "token_shas": ["dae740142762"]}]
+rc=0

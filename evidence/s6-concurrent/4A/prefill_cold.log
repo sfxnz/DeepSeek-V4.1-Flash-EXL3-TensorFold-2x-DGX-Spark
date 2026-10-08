@@ -1,0 +1,24 @@
+# tools/prefill_cold.py at b86514a5ac8700b32e7b24f1095349df4ce2b922 (/home/sfxnz/projects/code/TensorFold), host venv, prompts /home/sfxnz/projects/data/tf-dsv41/receipts/final/prompts.json sha256 6146d23dc53c365ae6424074e7487f744ae767ab0ae6bd0c6771db03b5a911db, 2026-10-08T06:15:35Z
+{"ttft_s": 1.1062, "prompt_tokens": 1024, "length": 1024, "rep": 0}
+{"ttft_s": 1.7476, "prompt_tokens": 2048, "length": 2048, "rep": 0}
+{"ttft_s": 1.7912, "prompt_tokens": 2048, "length": 2048, "rep": 1}
+{"ttft_s": 1.8142, "prompt_tokens": 2047, "length": 2048, "rep": 2}
+{"ttft_s": 5.1664, "prompt_tokens": 8192, "length": 8192, "rep": 0}
+{"ttft_s": 5.1318, "prompt_tokens": 8191, "length": 8192, "rep": 1}
+{"ttft_s": 5.1648, "prompt_tokens": 8192, "length": 8192, "rep": 2}
+{"ttft_s": 9.498, "prompt_tokens": 16384, "length": 16384, "rep": 0}
+{"ttft_s": 9.4693, "prompt_tokens": 16384, "length": 16384, "rep": 1}
+{"ttft_s": 9.5365, "prompt_tokens": 16384, "length": 16384, "rep": 2}
+{"ttft_s": 18.1914, "prompt_tokens": 32767, "length": 32768, "rep": 0}
+{"ttft_s": 18.3783, "prompt_tokens": 32767, "length": 32768, "rep": 1}
+{"ttft_s": 18.3115, "prompt_tokens": 32768, "length": 32768, "rep": 2}
+{"ttft_s": 35.6577, "prompt_tokens": 65536, "length": 65536, "rep": 0}
+{"ttft_s": 36.2077, "prompt_tokens": 65535, "length": 65536, "rep": 1}
+{"ttft_s": 35.8601, "prompt_tokens": 65536, "length": 65536, "rep": 2}
+{"length": 2048, "prompt_tokens": 2048, "ttft_s": 1.791, "tok_s": 1143.4, "ttft_all": [1.7476, 1.7912, 1.8142]}
+{"length": 8192, "prompt_tokens": 8192, "ttft_s": 5.165, "tok_s": 1586.1, "ttft_all": [5.1664, 5.1318, 5.1648]}
+{"length": 16384, "prompt_tokens": 16384, "ttft_s": 9.498, "tok_s": 1725.0, "ttft_all": [9.498, 9.4693, 9.5365]}
+{"length": 32768, "prompt_tokens": 32767, "ttft_s": 18.311, "tok_s": 1789.4, "ttft_all": [18.1914, 18.3783, 18.3115]}
+{"length": 65536, "prompt_tokens": 65536, "ttft_s": 35.86, "tok_s": 1827.5, "ttft_all": [35.6577, 36.2077, 35.8601]}
+rc=0
+2026-10-08T06:19:08Z

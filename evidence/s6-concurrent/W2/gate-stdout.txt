@@ -1,0 +1,33 @@
+2026-10-08T03:23:13.435Z session_gate: evidence dir /home/sfxnz/projects/data/tf-dsv41/receipts/n11/W2/gate
+2026-10-08T03:23:14.509Z session_gate: start smoke-chat
+2026-10-08T03:23:14.809Z session_gate: end smoke-chat rc=0
+2026-10-08T03:23:14.812Z session_gate: start smoke-count
+2026-10-08T03:23:21.490Z session_gate: end smoke-count rc=0
+2026-10-08T03:23:21.492Z session_gate: start bench-frozen
+2026-10-08T03:23:30.905Z session_gate: end bench-frozen rc=0
+2026-10-08T03:23:30.907Z session_gate: start bench-prose-long
+2026-10-08T03:23:40.992Z session_gate: end bench-prose-long rc=0
+2026-10-08T03:23:40.994Z session_gate: start bench-frozen-conc
+2026-10-08T03:24:18.761Z session_gate: end bench-frozen-conc rc=0
+2026-10-08T03:24:18.763Z session_gate: start bench-prose-long-conc
+2026-10-08T03:24:52.893Z session_gate: end bench-prose-long-conc rc=0
+2026-10-08T03:24:52.895Z session_gate: start bench-concurrent
+2026-10-08T03:33:48.817Z session_gate: end bench-concurrent rc=0
+2026-10-08T03:33:48.819Z session_gate: start bench-concurrent-mixed
+2026-10-08T03:35:43.493Z session_gate: end bench-concurrent-mixed rc=0
+2026-10-08T03:35:43.494Z session_gate: start conc-check
+2026-10-08T03:35:43.518Z session_gate: end conc-check rc=0
+2026-10-08T03:35:43.520Z session_gate: start pairs-concurrent
+2026-10-08T03:36:25.557Z session_gate: end pairs-concurrent rc=0
+finished_at=2026-10-08T03:36:26.288Z
+smoke-chat=0
+smoke-count=0
+bench-frozen=0
+bench-prose-long=0
+bench-frozen-conc=0
+bench-prose-long-conc=0
+bench-concurrent=0
+bench-concurrent-mixed=0
+conc-check=0
+pairs-concurrent=0
+GATE=PASS

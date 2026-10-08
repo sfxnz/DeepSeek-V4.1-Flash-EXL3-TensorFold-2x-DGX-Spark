@@ -2,40 +2,109 @@
 
 Serve [sfxnz/DeepSeek-V4.1-Flash-EXL3](https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8) across two NVIDIA DGX Spark (GB10) nodes at tensor-parallel 2 with [TensorFold](https://github.com/ashhart/TensorFold)'s `deepseek_v41` CUDA family. Not vLLM. The vLLM recipe for the same weights is [DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark](https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark); one repo per engine.
 
-**Status: measured through `run.sh` on this pair, and against vLLM in the same session.** Session [`s5-final`](evidence/README.md#s5-final-2026-10-06) bumped the engine to `903a1e8` (the speed units below), switched `run.sh` to the engine's default draft policy, built the image with `IMAGE_ONLY=1 ./run.sh`, and booted `./run.sh` twice at the shipped defaults (boots E and F) for the frozen ruler, L.A.I.L, sampled cells, `bench_openai`, a quiet `prefill_cold` and exactness; boot F also ran a 1,039,528-token needle and the full quality set, and the teacher-forced NLL ran after it. The same day it stopped TensorFold and booted the vLLM sibling recipe with its canonical command for the same cells. Earlier sessions: [`s2-run-sh-ec28f35`](evidence/README.md#s2-run-sh-ec28f35-2026-10-04) (first `run.sh` boots, needles to 1,039,528 tokens, quality), [`s3-default-1m`](evidence/README.md#s3-default-1m-2026-10-04) (`--top-p 1.0`, two boots at 1048576), [`s4-device-nucleus`](evidence/README.md#s4-device-nucleus-2026-10-05) (the device top_p cut). The window default is the native 1048576. The snapshot is the pinned `snapshots/982b704…` folder on both nodes; `run.sh`'s check passed on both at every boot.
+**Status: measured through `run.sh` on this pair, and against vLLM in the same session.** Session [`s6-concurrent`](evidence/README.md#s6-concurrent-2026-10-08) bumped the engine to `b86514a` (concurrent requests) and booted `./run.sh` six counted times in one session, after two warm-up boots: `--parallel 1` (boots 1A, 4A) against the shipped `--parallel 4` (2B, 3B) in ABBA order, then `--decode-share` 0.25 and 1 (5C, 6D), then the vLLM sibling (7V) on the same cells: the decode table at c=1, 2 and 4, exactness under load, prompts arriving while other requests decode, a 1,039,528-token needle beside three decoding requests, memory. Session [`s5-final`](evidence/README.md#s5-final-2026-10-06) bumped the engine to `903a1e8` (the speed units below), switched `run.sh` to the engine's default draft policy, built the image with `IMAGE_ONLY=1 ./run.sh`, and booted `./run.sh` twice at the shipped defaults (boots E and F) for the frozen ruler, L.A.I.L, sampled cells, `bench_openai`, a quiet `prefill_cold` and exactness; boot F also ran a 1,039,528-token needle and the full quality set, and the teacher-forced NLL ran after it. The same day it stopped TensorFold and booted the vLLM sibling recipe with its canonical command for the same cells. s5 is the source of the c=1 L.A.I.L, `bench_openai`, quality and NLL rows below. Earlier sessions: [`s2-run-sh-ec28f35`](evidence/README.md#s2-run-sh-ec28f35-2026-10-04) (first `run.sh` boots, needles to 1,039,528 tokens, quality), [`s3-default-1m`](evidence/README.md#s3-default-1m-2026-10-04) (`--top-p 1.0`, two boots at 1048576), [`s4-device-nucleus`](evidence/README.md#s4-device-nucleus-2026-10-05) (the device top_p cut). The window default is the native 1048576. The snapshot is the pinned `snapshots/982b704…` folder on both nodes; `run.sh`'s check passed on both at every boot.
 
-- **Engine.** TensorFold `903a1e8` from [sfxnz/TensorFold `dsv41-recipe-engine3`](https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine3): release v0.6.4 (`6ea5ade`); the `deepseek_v41` family of upstream PRs [#390](https://github.com/ashhart/TensorFold/pull/390) and [#391](https://github.com/ashhart/TensorFold/pull/391) (`e174ee0` has the tree of #391's tip `0d91389`); the device keyed draw for top-k-off rows (`0582d5f`, `3ab53da`; `db7f53e` has the tree of s4's pin `41306d5`); then seven speed units, each merged after its own receipts: C1 skips the decoder rows a prompt's result does not read, C3 a prompt-window EXL3 expert kernel, C2 decode fusion, C7 packed caches and a split decode index selection, C4 Engram I/O off the decode path with resident scale rows, C5 drafts drawn on the device and a confidence draft policy, C8 prompt chunks in two row halves with the kept snapshot taken inside its chunk. s2 and s3 ran `ec28f35`, s4 `41306d5`. Apache-2.0. The image builds from [`docker/Dockerfile`](docker/Dockerfile) on `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned).
+- **Engine.** TensorFold `b86514a` from [sfxnz/TensorFold `dsv41-recipe-engine4`](https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine4): release v0.6.4 (`6ea5ade`); the `deepseek_v41` family of upstream PRs [#390](https://github.com/ashhart/TensorFold/pull/390) and [#391](https://github.com/ashhart/TensorFold/pull/391) (`e174ee0` has the tree of #391's tip `0d91389`); the device keyed draw for top-k-off rows (`0582d5f`, `3ab53da`; `db7f53e` has the tree of s4's pin `41306d5`); then seven speed units, each merged after its own receipts: C1 skips the decoder rows a prompt's result does not read, C3 a prompt-window EXL3 expert kernel, C2 decode fusion, C7 packed caches and a split decode index selection, C4 Engram I/O off the decode path with resident scale rows, C5 drafts drawn on the device and a confidence draft policy, C8 prompt chunks in two row halves with the kept snapshot taken inside its chunk; then concurrent requests (units N0-N10): up to 4 requests share one verify forward a round, each in its own lane with a whole window, prompts fill between rounds, and every reply equals its solo run. s2 and s3 ran `ec28f35`, s4 `41306d5`, s5 `903a1e8`. Apache-2.0. The image builds from [`docker/Dockerfile`](docker/Dockerfile) on `nvcr.io/nvidia/pytorch:26.07-py3` (digest-pinned).
 - **Weights.** Revision `982b70452f399814f56b46272fd30394ae10d58c` (branch `2.0bpw-mcg-viterbi-lmhead-mxfp8`), 48 shards. The routed experts are EXL3 at 2 bits (`mcg` codebook). Everything else is DeepSeek's own bytes: FP8 with 32x32 block scales, an MXFP8 LM head, MXFP4 DSpark draft experts, and the two Engram tables in shards 47 and 48.
 - **Engram.** Each rank reads its half of every Engram row from the pack on its own local disk. No repacking, no second copy. Both nodes need the whole revision.
 - **Ranks.** Rank 1 runs on `spark2`, rank 0 serves HTTP on `spark1`. NCCL over the QSFP RoCE link.
 
 ## Upstream status
 
-TensorFold's Python engine is frozen at 0.6.5 ([ashhart/TensorFold#286](https://github.com/ashhart/TensorFold/issues/286)); new work goes to its Zig engine. For that reason the maintainer closed [#390](https://github.com/ashhart/TensorFold/pull/390), [#391](https://github.com/ashhart/TensorFold/pull/391) and [#408](https://github.com/ashhart/TensorFold/pull/408), and will rewrite the useful parts in Zig, with credit. So this recipe pins the fork: `sfxnz/TensorFold` branch `dsv41-recipe-engine3` at `903a1e8`, which `docker/Dockerfile` installs from git at the full commit. A later bump goes to another fork commit, or to an upstream release once one serves this family, and needs new evidence.
+TensorFold's Python engine is frozen at 0.6.5 ([ashhart/TensorFold#286](https://github.com/ashhart/TensorFold/issues/286)); new work goes to its Zig engine. For that reason the maintainer closed [#390](https://github.com/ashhart/TensorFold/pull/390), [#391](https://github.com/ashhart/TensorFold/pull/391) and [#408](https://github.com/ashhart/TensorFold/pull/408), and will rewrite the useful parts in Zig, with credit. So this recipe pins the fork: `sfxnz/TensorFold` branch `dsv41-recipe-engine4` at `b86514a`, which `docker/Dockerfile` installs from git at the full commit. A later bump goes to another fork commit, or to an upstream release once one serves this family, and needs new evidence.
 
 ## Measured on 2× DGX Spark (L.A.I.L lab)
 
-`python3 bench_decode.py`, byte-identical to the vLLM sibling's frozen ruler (sha256 `3172cbc4…`). It sends `ignore_eos` and `chat_template_kwargs {"thinking": false, "reasoning_effort": "low"}`; the server log shows `thinking=False` for every bench request (32 of 32 `done` lines in each boot's `docker-head.log`, [`bootE`](evidence/s5-final/bootE/gate/docker-head.log), [`bootF`](evidence/s5-final/bootF/gate/docker-head.log)). Do not copy community tok/s into this table.
+`python3 bench_decode.py`, byte-identical to the vLLM sibling's frozen ruler (sha256 `3172cbc4…`). It sends `ignore_eos` and `chat_template_kwargs {"thinking": false, "reasoning_effort": "low"}`; the server log shows `thinking=False` for every gate request (322 of 322 and 321 of 321 `done` lines in boots 2B and 3B, [`2B`](evidence/s6-concurrent/2B/gate/docker-head.log), [`3B`](evidence/s6-concurrent/3B/gate/docker-head.log)). Do not copy community tok/s into this table.
 
 <!-- BEGIN generated measured from recipe.yaml — edit recipe.yaml and run kit/render.py -->
-Conditions: frozen bench_decode.py (sha256 3172cbc4…), streamed greedy, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s5 bootE and bootF, 2026-10-06: TensorFold `903a1e8`, `--context 1048576`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`, no env override); each row is the median of the two per-boot medians (evidence/s5-final/decode.txt, which also gives each boot's and the pooled 18-run medians); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS_LONG=9; runs 2 to 9 of each cell resume the kept prompt, so TTFT p50 is a resumed prompt. Before (s3 bootC and bootD, TensorFold `ec28f35`, 3 drafts a round): prose 46.0, structured 64.1, prose_long 34.6 (evidence/s3-default-1m/decode.txt).
+Conditions: frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s6 boots 2B and 3B, 2026-10-08: TensorFold `b86514a`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`; the only env override, EXTRA_ENV, loaded a probe that logs memory around graph warm-up); each row is the median of the two per-boot medians (evidence/s6-concurrent/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s6-concurrent/scripts/sampled_conc.py). Before (s5 bootE and bootF, TensorFold `903a1e8`, one request at a time): prose 55.8, structured 97.3, prose_long 40.7 (evidence/s5-final/decode.txt).
 
 | Phase | Concurrency | Decode tok/s (median per stream) | Aggregate tok/s | TTFT p50 |
 |---|---|---:|---:|---:|
-| prose (note 1) | 1 | 55.8 | 55.8 | 0.07 s |
-| structured | 1 | 97.3 | 97.2 | 0.07 s |
-| prose_long | 1 | 40.7 | 40.7 | 0.07 s |
+| prose (note 1) | 1 | 56.3 | 56.3 | 0.07 s |
+| prose | 2 | 41.3 | 82.2 | 0.13 s |
+| prose | 4 | 29.1 | 115.7 | 0.28 s |
+| structured | 1 | 97.7 | 97.7 | 0.07 s |
+| structured | 2 | 72.5 | 144.0 | 0.13 s |
+| structured | 4 | 50.6 | 200.7 | 0.26 s |
+| prose_long | 1 | 41.2 | 41.2 | 0.07 s |
+| prose_long | 2 | 30.6 | 61.0 | 0.13 s |
+| prose_long | 4 | 21.8 | 87.1 | 0.27 s |
+| sampled (no field) | 1 | 43.0 | 43.0 | 0.07 s |
+| sampled (no field) | 2 | 31.6 | 63.3 | 0.13 s |
+| sampled (no field) | 4 | 22.4 | 89.8 | 0.27 s |
+| sampled (top_p 0.95) | 1 | 37.9 | 37.9 | 0.07 s |
+| sampled (top_p 0.95) | 2 | 28.6 | 57.2 | 0.13 s |
+| sampled (top_p 0.95) | 4 | 20.5 | 82.4 | 0.29 s |
 
 1. The prose reply ends at its end token after 74 tokens; ignore_eos decodes the other 126 (post_eos_fraction 0.63).
 <!-- END generated measured -->
 
-One request runs at a time: the family ignores `--parallel`, so there are no c=2 rows.
+`run.sh` serves `--parallel 4`: up to 4 requests decode together, each in its own lane holding a whole 1,048,576-token window, and each reply equals the same request served alone (Concurrent requests, below). A fifth request waits for a free lane.
 
-- Per boot (E / F): prose 55.76 / 55.85, structured 97.42 / 97.09, prose_long 40.45 / 40.91 tok/s. Pooled over both boots' 18 runs: 55.83, 97.385, 40.72 ([`decode.txt`](evidence/s5-final/decode.txt), from `gate/bench-*.out` of [`bootE`](evidence/s5-final/bootE/gate/) and [`bootF`](evidence/s5-final/bootF/gate/)). Inter-chunk p50 52-61 ms (about 61 ms at `ec28f35`). The ruler is greedy, so `--top-p` does not touch it.
-- Against s3 (`ec28f35`, 3 drafts a round, two boots): prose x1.21, structured x1.52, prose_long x1.18 ([`derived.txt`](evidence/s5-final/derived.txt)). That is the speed units and the draft policy together; the C5 receipts measure the policy alone (Draft policy, below).
-- Earlier tables: s3 at `ec28f35` 46.0 / 64.1 / 34.6 ([`s3 decode.txt`](evidence/s3-default-1m/decode.txt)); s2 at `--context 65538` 45.7 / 64.2 / 34.4 ([`s2 decode.txt`](evidence/s2-run-sh-ec28f35/decode.txt)); the engine's receipt run at `0d91389` 45.5 / 63.5 / 34.0 ([`s0`](evidence/s0-engine-receipts/s65538/bench_decode.log)).
+- Per boot (2B / 3B), c=1: prose 56.24 / 56.34, structured 98.47 / 96.90, prose_long 41.24 / 41.24 tok/s; inter-chunk p50 51-60 ms ([`decode.txt`](evidence/s6-concurrent/decode.txt)). The ruler is greedy, so `--top-p` does not touch it.
+- c=1 against `--parallel 1` in the same session (boots 1A and 4A: 56.51 / 98.00 / 41.42): -0.39%, -0.33%, -0.43%; cold prefill at 2k to 64k within -1.31% to +0.66%. The gate was 3% ([`abba_table.txt`](evidence/s6-concurrent/abba_table.txt) section 1). A lone request on 4 lanes runs at the one-lane speed.
+- Against s5 (`903a1e8`, one request at a time, two boots: 55.8 / 97.3 / 40.7, [`s5 decode.txt`](evidence/s5-final/decode.txt)): +0.9%, +0.4%, +1.3%.
+- Earlier tables: s3 at `ec28f35` 46.0 / 64.1 / 34.6 ([`s3 decode.txt`](evidence/s3-default-1m/decode.txt)); s2 at `--context 65538` 45.7 / 64.2 / 34.4 ([`s2 decode.txt`](evidence/s2-run-sh-ec28f35/decode.txt)); the engine's receipt run at `0d91389` 45.5 / 63.5 / 34.0 ([`s0`](evidence/s0-engine-receipts/s65538/bench_decode.log)). s5 against s3: prose x1.21, structured x1.52, prose_long x1.18, the speed units and the draft policy together ([`s5 derived.txt`](evidence/s5-final/derived.txt); Draft policy, below).
 
-### Against vLLM, same session (2026-10-06)
+### Concurrent requests (s6, 2026-10-08)
+
+Lanes: `PARALLEL=4` lanes, each holding a whole `CONTEXT` window (4 x 1,048,576 tokens), allocated at startup. A request takes a free lane and keeps it to its end; while all 4 are busy, further requests wait in the queue. Each round runs one shared verify forward over every decoding lane. A new prompt fills between those rounds, and the rounds take `DECODE_SHARE` (0.5) of each prompt span's time. Rows: the decode table above (boots 2B and 3B, the median of the per-boot medians).
+
+**Against vLLM, same session.** The vLLM sibling booted after the TensorFold boots with its canonical command (`env AUDIT=strict ./run.sh` at `3de9146`, image `dsv41-flash-exl3-sm121:canonical-e14`, `audit ok` on both ranks, `MAX_NUM_SEQS=2`), one boot, the same clients ([`7V/`](evidence/s6-concurrent/7V/), [`derived.txt`](evidence/s6-concurrent/derived.txt)). vLLM decodes 2 sequences at a time, so in its c=4 waves 2 streams wait for the first 2.
+
+| Cell | c | TF aggregate | vLLM aggregate | TF / vLLM | TF per stream | vLLM per stream |
+|---|---:|---:|---:|---:|---:|---:|
+| prose (greedy, 200 tokens) | 1 | 56.28 | 49.28 | 1.142 | 56.29 | 49.29 |
+| prose | 2 | 82.19 | 81.29 | 1.011 | 41.34 | 41.14 |
+| prose | 4 | 115.65 | 102.10 | 1.133 | 29.11 | 39.91 |
+| structured | 1 | 97.66 | 83.97 | 1.163 | 97.68 | 84.00 |
+| structured | 2 | 144.02 | 155.85 | 0.924 | 72.51 | 77.95 |
+| structured | 4 | 200.65 | 201.80 | 0.994 | 50.60 | 78.23 |
+| prose_long | 1 | 41.24 | 46.23 | 0.892 | 41.24 | 46.24 |
+| prose_long | 2 | 60.96 | 69.42 | 0.878 | 30.60 | 35.28 |
+| prose_long | 4 | 87.09 | 87.61 | 0.994 | 21.80 | 35.00 |
+| sampled, no sampling field | 2 | 63.31 | 65.42 | 0.968 | 31.65 | 34.66 |
+| sampled, no sampling field | 4 | 89.84 | 82.27 | 1.092 | 22.40 | 34.44 |
+| sampled, top_p 0.95 | 2 | 57.16 | 68.17 | 0.838 | 28.62 | 36.30 |
+| sampled, top_p 0.95 | 4 | 82.41 | 82.95 | 0.993 | 20.54 | 34.15 |
+
+- Aggregate over c=1: x1.46-1.48 at c=2 and x2.05-2.11 at c=4 on the ruler's cells.
+- TensorFold leads at c=4 prose (+13%) and no-field sampling (+9%), and ties vLLM within 1% at c=2 prose and at c=4 structured, prose_long and top_p 0.95. It trails at c=2: structured -7.6%, prose_long -12.2%, top_p 0.95 -16.2%, no-field sampling -3.2%.
+- Per stream, a TensorFold request at c=4 decodes at 52-54% of its c=1 rate: the 4 lanes share each round. vLLM's per-stream rate at c=4 counts only the 2 streams decoding at a time; the waiting 2 show up in its TTFT.
+- vLLM's c=2 prose and structured match its round-36 run (81.02 / 156.29). Its c=1 in s6: 49.29 / 84.00 / 46.24 (s5: 47.88 / 82.57 / 43.32).
+- vLLM draws a new reply each sampled run; TensorFold seeds an unseeded request from its prompt, so every sampled stream draws one reply. The sampled cells time different text.
+- At `--parallel 1` (boots 1A, 4A) the same waves queue: prose c=2 74.55, c=4 88.95 tok/s aggregate ([`abba_table.txt`](evidence/s6-concurrent/abba_table.txt) section 2).
+
+**TTFT and inter-token time under load** ([`derived.txt`](evidence/s6-concurrent/derived.txt)):
+
+- Short prompts sent together: TTFT p50 0.13 s at c=2 and 0.26-0.29 s at c=4 (0.07 s at c=1), each prompt filling between the others' rounds. vLLM: 0.23-0.31 s at c=2, 1.6-3.1 s at c=4 (queued).
+- Inter-chunk time, p50 / p90 over the ruler's cells: 51-60 / 59-63 ms at c=1, 69-80 / 79-86 ms at c=2, 97-114 / 113-123 ms at c=4. vLLM: 47-48 / 50-54 ms at c=1, 51-61 / 53-71 ms at c=2 and c=4. A TensorFold chunk carries a round's accepted tokens, so a longer gap still carries more tokens.
+- A 16,386-token prompt arriving while 3 lanes decode ([`ttft_cells.jsonl`](evidence/s6-concurrent/2B/ttft_cells.jsonl) in 2B, 3B, 5C, 6D; [`abba_table.txt`](evidence/s6-concurrent/abba_table.txt) section 4). Alone it reaches its first token in 9.58 s. Over each whole reply, fill included, the lanes decode at about 17.7 tok/s each.
+
+| `--decode-share` | Fill TTFT (median) | Each live lane during the fill | Largest gap between tokens |
+|---|---:|---:|---:|
+| 0.25 (boot 5C) | 14.98 s | about 4.2 tok/s | 0.79 s |
+| 0.5, shipped (2B / 3B) | 17.98 / 18.66 s | about 7.2 tok/s | 0.73-0.77 s |
+| 1 (6D) | 24.04 s | about 11.3 tok/s | 0.75 s |
+
+- A request sent with `"priority": "background"` (or a session-title request) yields its lane when all 4 are busy and a prompt waits. It replays its whole reply later and sends only the tokens it had not sent: its largest gap was 18.7-27.7 s, and its reply equals its solo run.
+- A 1,039,528-token needle beside 3 decoding lanes (boot 2B, [`needle_lanes.jsonl`](evidence/s6-concurrent/2B/needle_lanes.jsonl)): found, the same token hash as s5's needle alone, answered in 1370.6 s against 756.6 s alone. The 24 live replies overlapping it decoded at 7.9-10.6 tok/s, with a largest gap of 2.13 s, and all drew the same hash.
+
+**Exactness under load.** Boots 1A, 2B, 3B and 4A: `tools/bench_concurrent.py`, plain and `--mixed --stagger-ms 2000`, 102 of 102 replies equal to the same request alone ([`conc-check.out`](evidence/s6-concurrent/2B/gate/conc-check.out) per boot). `tools/pairs_concurrent.py` (4 staggered prompts of 18 to 25,061 tokens, greedy and keyed, no top_k or top_p field): boots 2B, 3B, 5C and 6D equal both `--parallel 1` boots on 4 of 4 token hashes. The 68 streams of the TTFT cells equal their solo runs. The sampled cells drew the same two hashes at c=1, 2 and 4 as s5 at c=1. In both arms the 12 nucleus pairs equal s5 bootF's ([`abba_table.txt`](evidence/s6-concurrent/abba_table.txt) section 3).
+
+**Memory.** `startup estimate 82.55 GiB` at 4 x 1,048,576 against 81.32 GiB at one lane, on both ranks ([`2B startup.txt`](evidence/s6-concurrent/2B/startup.txt), [`1A startup.txt`](evidence/s6-concurrent/1A/startup.txt)). MemAvailable, every 2 s on both nodes ([`memwatch.tsv`](evidence/s6-concurrent/2B/memwatch.tsv) per boot): at least 17.42 GiB on the head (during the needle) and 21.90 GiB on the worker over the 4-lane boots; 23.1 / 25.2 GiB at one lane. Four lanes cost 3.9 GiB on the head and about 3.3 GiB on the worker. Capturing the 88 lane graphs took 2.8-4.6 s at startup.
+
+**Limits.**
+
+- At most 4 requests decode at once (the family's limit). More wait for a free lane.
+- A client that disconnects stops its request after the next round. One that disconnects while its prompt fills is noticed only at its first token: the fill runs to its end and holds its lane until then.
+- `thinking_budget` stays refused (HTTP 400) at every `--parallel`, 2 to 4 included.
+- Under `--parallel` 2 or more, a reply's `prefill_s` (its `tensorfold` stats and rank 0's `done … prefill=` field) counts only the time spent launching prompt spans: the needle above read 48.4 s. Time prompts from the client, or read `ttft=`.
+- A routed-expert fp16 overflow in one lane, while the first forwards still check for it, fails that round for every live request (the family page). A failure on one rank in the middle of a round is not recovered: restart both with `./stop.sh && ./run.sh`.
+
+### Against vLLM at c=1, s5 (2026-10-06, `903a1e8`)
 
 Same pack, same pair, same clients, one day. TensorFold: boots E and F at the shipped defaults, each cell the median of the two per-boot medians. vLLM: the sibling recipe booted after them with its canonical command (`env AUDIT=strict ./run.sh` in its clean checkout at `3de9146`, image `dsv41-flash-exl3-sm121:canonical-e14` on both nodes, `audit ok` on both ranks, DSpark k=3), one boot, the same commands, then stopped gracefully ([`vllm/`](evidence/s5-final/vllm/), driver [`vllm.sh`](evidence/s5-final/scripts/vllm.sh)). Ratios in [`derived.txt`](evidence/s5-final/derived.txt).
 
@@ -73,9 +142,9 @@ Both servers got the same prompts: s2's `prompts.json` for TensorFold and the or
 
 **Where TensorFold trails.**
 
-- prose_long c=1: 40.68 against 43.32 tok/s (-6.1%). Its inter-chunk p50 is 52 ms against vLLM's 49 ms.
+- prose_long c=1: 40.68 against 43.32 tok/s (-6.1%). Its inter-chunk p50 is 52 ms against vLLM's 49 ms. In s6: 41.24 against 46.24 (-10.8%).
 - Short sampled and short greedy chat replies: top_k 20 -2.1%, `bench_openai` t=1 -2.7% and -3.8%, the 64-token greedy chat reply -12.4%, top_p 0.95 -10.6% (a reply with more rounds, above).
-- One request at a time. vLLM serves two (`MAX_NUM_SEQS=2`); a second request here waits for the first.
+- Two requests at once (s6): structured -7.6%, prose_long -12.2%, top_p 0.95 -16.2% aggregate against vLLM's 2 sequences. At c=4 each TensorFold stream decodes slower than vLLM's 2 running streams; vLLM queues the other 2 (Concurrent requests, above).
 - No images, structured outputs, `logprobs` or named tool choice (Not supported, below). vLLM serves images on the same pack.
 
 ### Draft policy
@@ -126,7 +195,7 @@ s2's needles at `ec28f35`, one at a time ([`needles.jsonl`](evidence/s2-run-sh-e
 | 523,681 | 0.5 | 946.9 | 553 | yes | 23.4 / 26.7 GiB |
 | 1,039,528 | 0.5 | 2077.8 | 500 | yes | 22.1 / 26.7 GiB |
 
-The server serves nothing else while it prefills. Memory stays flat after admission: the window is allocated at startup. Tested windows: 65538 (two boots, s2) and 1048576 (s2's boot with the needles, s3's two, s4's one, s5's two). The default is 1048576.
+At `--parallel 1` the server serves nothing else while it prefills. At `--parallel 4` the other lanes keep decoding between the prompt's spans (the needle beside 3 lanes, Concurrent requests, above). Memory stays flat after admission: every lane's window is allocated at startup. Tested windows: 65538 (two boots, s2) and 1048576 (s2's boot with the needles, s3's two, s4's one, s5's two, s6's six). The default is 1048576.
 
 ### Quality
 
@@ -139,7 +208,7 @@ Teacher-forced NLL on the 40 G1 passages (19,828 positions, both ranks, the reci
 - Two DGX Sparks on the QSFP RoCE link (`10.100.8.1` / `10.100.8.2` in this lab), both RoCE ports `ACTIVE`.
 - Docker + NVIDIA Container Toolkit on both nodes. SSH from the head to the worker (`spark2` here).
 - Exclusive GPUs. Do not start this recipe while another `--gpus all` serve is up; `run.sh` refuses to.
-- Disk on each node: the whole revision, 333 GiB ([`pins.json`](evidence/s1-snapshot-pins/pins.json), [family page](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/docs/recipes/deepseek-v4.1-flash.md#download-on-both-machines)), in the HF cache (`HF_CACHE`, default `~/.cache/huggingface`) on local NVMe, never NFS. Other revisions already in the same cache entry add to that. Plus the kernel cache under `TF_CACHE`.
+- Disk on each node: the whole revision, 333 GiB ([`pins.json`](evidence/s1-snapshot-pins/pins.json), [family page](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/docs/recipes/deepseek-v4.1-flash.md#download-on-both-machines)), in the HF cache (`HF_CACHE`, default `~/.cache/huggingface`) on local NVMe, never NFS. Other revisions already in the same cache entry add to that. Plus the kernel cache under `TF_CACHE`.
 
 ## Weights
 
@@ -172,7 +241,7 @@ The pins are in `recipe.yaml` (`model`), from the Hub at this revision ([`pins.j
 
 ## Image
 
-`run.sh` builds `tf-dsv41-flash:0.6.4-903a1e8` from [`docker/Dockerfile`](docker/Dockerfile) on the head when it is missing. It copies the image to the worker over the link when the worker's image ID differs (`docker save | ssh docker load`). Do both before the downtime, while another serve still holds the pair:
+`run.sh` builds `tf-dsv41-flash:0.6.4-b86514a` from [`docker/Dockerfile`](docker/Dockerfile) on the head when it is missing. It copies the image to the worker over the link when the worker's image ID differs (`docker save | ssh docker load`). Do both before the downtime, while another serve still holds the pair:
 
 ```bash
 IMAGE_ONLY=1 ./run.sh   # build on the head, copy to the worker; no GPU, no weights, no memory gate
@@ -255,11 +324,12 @@ Stop both ranks from the head:
 <!-- BEGIN generated defaults from recipe.yaml — edit recipe.yaml and run kit/render.py -->
 | Setting | Value |
 |---|---|
-| Engine | TensorFold `b86514a5ac8700b32e7b24f1095349df4ce2b922` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-b86514a` from `docker/Dockerfile` |
+| Engine | TensorFold `b86514a5ac8700b32e7b24f1095349df4ce2b922` (v0.6.4 + the deepseek_v41 CUDA family, its speed units and concurrent requests) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-b86514a` from `docker/Dockerfile` |
 | Model | `sfxnz/DeepSeek-V4.1-Flash-EXL3` at `982b70452f399814f56b46272fd30394ae10d58c`, served from the HF cache `$HOME/.cache/huggingface` (read-only) on each node |
 | Snapshot check | `config.json` sha256 `6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5`, index sha256 `91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03`, 48 shards, 357466041064 shard bytes, every shard's header ending at its size |
 | Ranks | `--tp 2`: rank 1 on `spark2` first, then rank 0 (HTTP) on the head; rendezvous `10.100.8.1:29571` |
 | `--context` | 1048576, the model's native window (tested through run.sh: needles at 130k, 258k, 524k and 1,039,528 prompt tokens, all found) |
+| Concurrency | `--parallel 4`: up to 4 requests decode together, each lane holding a whole `--context` window allocated at startup; more requests wait for a free lane. `--decode-share 0.5`: a new prompt fills between the other lanes' decode rounds, which take 0.5 of each prompt span's time (passed only at `PARALLEL` 2 or more) |
 | Drafting | `--mtp-drafts 5 --mtp-confidence 0.15`, the engine's default policy: up to 5 DSpark drafts a round, the chain stopping where the drafts' confidence product falls under 0.15 (`MTP_CONFIDENCE` empty: 5 drafts every round; 0 drafts: one token a round) |
 | Thinking | off (`--no-thinking`, `THINKING=0`) on both ranks; a request turns it on with `chat_template_kwargs.thinking` or an effort name |
 | `--max-tokens` | 4096 (the reply cap when a request sets none) |
@@ -271,43 +341,44 @@ Stop both ranks from the head:
 | Container | `tf-dsv41-flash` on each node |
 <!-- END generated defaults -->
 
-The serve flags match the receipt run's (`--tp 2 --master … --name deepseek-ai/DeepSeek-V4.1-Flash --no-thinking --no-update-check` on both ranks, and `--context`, 65538 there, [`environment.txt`](evidence/s0-engine-receipts/environment.txt)). `run.sh` also passes `--mtp-drafts 5 --mtp-confidence 0.15` to both ranks, and rank 0 also gets `--max-tokens 4096`: the engine's and the CLI's defaults at `903a1e8`, written out so a bump cannot change them silently ([`serve-argv.txt`](evidence/s5-final/bootE/gate/serve-argv.txt); the receipts ran 3 drafts a round, the default before C5, see Draft policy). Both ranks also get `--top-p 1.0`, which the receipts did not pass (their server default was 0.95; see Sampled decode). Rank 0 prints it: `serving … (sampling: top_p 1.0; …)` ([`startup.txt`](evidence/s5-final/bootE/gate/startup.txt)). A request that omits `temperature` gets the engine's 1.0 ([`cuda/server.py`](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/src/tensorfold/cuda/server.py#L92) at the pin; the family sets top-k off, [`app.py`](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/src/tensorfold/families/deepseek_v41/cuda/app.py#L36)). The container env adds `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0`, as the receipt run had: it keeps fp32 matmuls in fp32 whatever TF32 default the NGC image sets.
+The serve flags match the receipt run's (`--tp 2 --master … --name deepseek-ai/DeepSeek-V4.1-Flash --no-thinking --no-update-check` on both ranks, and `--context`, 65538 there, [`environment.txt`](evidence/s0-engine-receipts/environment.txt)). `run.sh` also passes `--parallel 4 --decode-share 0.5` and `--mtp-drafts 5 --mtp-confidence 0.15` to both ranks, and rank 0 also gets `--max-tokens 4096`. The drafting values and the reply cap are the engine's and the CLI's defaults, written out so a bump cannot change them silently ([`serve-argv.txt`](evidence/s6-concurrent/2B/serve-argv.txt); the receipts ran 3 drafts a round, the default before C5, see Draft policy). Both ranks also get `--top-p 1.0`, which the receipts did not pass (their server default was 0.95; see Sampled decode). Rank 0 prints it: `serving … (sampling: top_p 1.0; …)` ([`startup.txt`](evidence/s6-concurrent/2B/gate/startup.txt)). A request that omits `temperature` gets the engine's 1.0 ([`cuda/server.py`](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/src/tensorfold/cuda/server.py#L92) at the pin; the family sets top-k off, [`app.py`](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/src/tensorfold/families/deepseek_v41/cuda/app.py#L36)). The container env adds `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0`, as the receipt run had: it keeps fp32 matmuls in fp32 whatever TF32 default the NGC image sets.
 
 `run.sh` refuses, before `VALIDATE_ONLY` exits:
 
 - non-decimal or zero-padded integers, a `TF_SHA` / `SNAPSHOT_SHA` that is not 40 hex, a pinned sha256 that is not 64 hex, a `TF_REPO` that is not an https `.git` URL, a cache path that is relative or has a space or `:`
-- `TP` other than 2, `CONTEXT` above the native 1048576, `MTP_DRAFTS` above 5, `MTP_CONFIDENCE` outside (0, 1], `TOP_P` outside (0, 1], `PORT` equal to `MASTER_PORT`
-- `MEM_GATE_GIB` below 94, unless `FORCE_UNSAFE_MEM_GATE=1` for one boot
+- `TP` other than 2, `CONTEXT` above the native 1048576, `PARALLEL` outside 1 to 4, `DECODE_SHARE` outside [0, 1], `MTP_DRAFTS` above 5, `MTP_CONFIDENCE` outside (0, 1], `TOP_P` outside (0, 1], `PORT` equal to `MASTER_PORT`
+- `MEM_GATE_GIB` below the floor `run.sh` computes from `PARALLEL` and `CONTEXT`, unless `FORCE_UNSAFE_MEM_GATE=1` for one boot: it refuses below 95 at the defaults, 94 at `--parallel 1` (Memory, below)
 - a `CONTAINER_NAME` that does not match `tf-dsv41-[a-z0-9-]+`
 - `TF_DSV41_CACHE_GIB` / `TF_DSV41_CACHE_ENTRIES` that are not numbers; an exported `TF_DSV41_*` variable that is not a `recipe.yaml` knob or in `EXTRA_ENV` (it would never reach the containers)
-- `EXTRA_ARGS` that re-sets a flag `run.sh` builds (`--tp`, `--rank`, `--master*`, `--host`, `--port`, `--name`, `--context`, `--mtp-*`, `--no-drafts`, `--thinking`, `--no-thinking`, `--max-tokens`, `--top-p`, `--no-update-check`), or a prefix of one; flags the family refuses or ignores (`--parallel`, `--prefill-fp8`, `--drafter`, `--thinking-budget`, `--vision*`, `--kv-dtype`)
+- `EXTRA_ARGS` that re-sets a flag `run.sh` builds (`--tp`, `--rank`, `--master*`, `--host`, `--port`, `--name`, `--context`, `--parallel`, `--decode-share`, `--mtp-*`, `--no-drafts`, `--thinking`, `--no-thinking`, `--max-tokens`, `--top-p`, `--no-update-check`), or a prefix of one; flags the family refuses or ignores (`--prefill-fp8`, `--drafter`, `--thinking-budget`, `--vision*`, `--kv-dtype`)
 - `EXTRA_ENV` that is not `KEY=VALUE`, or that sets a variable `run.sh` already sets (every `recipe.yaml` key, `NCCL_IB_HCA`, `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE`, …)
 
 `BENCH_ONLY=1` binds the API to 127.0.0.1. The server's top_p is `TOP_P=1.0`, and `EXTRA_ARGS` may not set `--top-p`; `--temperature` and `--top-k` go through `EXTRA_ARGS`; other engine variables through `EXTRA_ENV` (`EXTRA_ENV="TENSORFOLD_MEMORY_RESERVE_GIB=8"`).
 
 ## Not supported (this engine, two ranks)
 
-From the family's [recipe page](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/docs/recipes/deepseek-v4.1-flash.md) at the pinned commit:
+From the family's [recipe page](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/docs/recipes/deepseek-v4.1-flash.md) at the pinned commit:
 
 - Other exports of the model. The family checks the checkpoint at startup and refuses EXL3 outside the routed experts or a BF16 LM head; other packs do not load.
 - One rank, one GPU, or a separate `--drafter`.
-- Concurrent streams. `--parallel` is ignored with a note; requests run one at a time and queue.
-- Images, `response_format` and the `guided_*` and `structured_outputs` fields, `logprobs`, `tool_choice: "required"` or a named function, `thinking_budget`, and `n` above 1: HTTP 400.
+- More than 4 requests decoding at once. `--parallel` takes 1 to 4; further requests queue for a free lane.
+- Images, `response_format` and the `guided_*` and `structured_outputs` fields, `logprobs`, `tool_choice: "required"` or a named function, `thinking_budget` (at every `--parallel`, 2 to 4 included), and `n` above 1: HTTP 400.
 - `--prefill-fp8`: refused. Prompt matmuls take bf16 activations.
 - Tool calls arrive whole in the final chunk of a streamed reply, with `finish_reason: "tool_calls"`.
 - An effort name turns thinking on. A client that sends `reasoning_effort: "low"` to this `--no-thinking` server gets thinking. Send `chat_template_kwargs.thinking: false` (or `reasoning_effort: "none"`) to keep it off. The frozen ruler sends both `thinking: false` and `reasoning_effort: "low"` inside `chat_template_kwargs`, and the server keeps thinking off.
 - Sampling defaults to DeepSeek's recommendation (model card: temperature 1.0, `top_p` 0.95 or 1.0, [`model-card-sampling.txt`](evidence/s3-default-1m/model-card-sampling.txt); the card's own evaluations ran at 0.95), no top-k. The engine's own default is `top_p` 0.95; `run.sh` passes `--top-p 1.0` (`TOP_P=1.0`), so a request that sends no `top_p` draws at 42.8 tok/s on the ruler's prose prompt (s5). A request that sends a top_p under 1 also draws on the device (since `41306d5`), exactly as the host path drew: 37.7 tok/s at 0.95 on that prompt, a reply that takes more rounds (see Sampled decode). At `ec28f35` it read each rank's vocabulary half to the host (15.5 tok/s). Greedy requests are not affected. The family page at the pin predates the device draw: it still says `top_p` 1.0 reads every row to the host and is slow; Sampled decode measures otherwise.
-- Both ranks decode each request to `max_tokens` or an end token, one request at a time. Size `max_tokens` per request.
+- Both ranks decode each request to `max_tokens` or an end token. A client that disconnects stops its request after the next round; one that disconnects while its prompt fills is noticed at its first token, so the fill runs to its end first. Size `max_tokens` per request.
 - What happens when one rank dies mid-request is not tested here. Restart both with `./stop.sh && ./run.sh`.
+- A failure on one rank in the middle of a round (the other rank still in its collectives) is not recovered: the pair stops serving. Restart both with `./stop.sh && ./run.sh`.
 
 ## Memory
 
 GB10 is unified memory: the page cache, the host and the GPU share one pool on each node.
 
-- **Admission.** At startup each rank sizes its caches for the window and allocates everything once; serving allocates no device memory. The engine grants MemAvailable less a reserve of max(4 GiB, a tenth of MemTotal) ([`capacity.py`](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/src/tensorfold/cuda/capacity.py#L163-L168)): 12.1 GiB of 121 GiB on these Sparks ([`free_before_s65538.txt`](evidence/s0-engine-receipts/free_before_s65538.txt), [`derived.txt`](evidence/s2-run-sh-ec28f35/derived.txt)). The page cache counts as available. An explicit `--context` that does not fit is refused on both ranks.
+- **Admission.** At startup each rank sizes its caches for the window and allocates everything once; serving allocates no device memory. The engine grants MemAvailable less a reserve of max(4 GiB, a tenth of MemTotal) ([`capacity.py`](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/src/tensorfold/cuda/capacity.py#L163-L168)): 12.1 GiB of 121 GiB on these Sparks ([`free_before_s65538.txt`](evidence/s0-engine-receipts/free_before_s65538.txt), [`derived.txt`](evidence/s2-run-sh-ec28f35/derived.txt)). The page cache counts as available. An explicit `--context` that does not fit is refused on both ranks.
 - **Receipts.** At `--context 65538`: `startup estimate 78.46 GiB within 99.76 GiB` on rank 0 and `within 101.46 GiB` on rank 1, with 73.23 GiB of weights ([`serve_s65538_rank0.log`](evidence/s0-engine-receipts/serve_s65538_rank0.log), [`rank1`](evidence/s0-engine-receipts/serve_s65538_rank1.log)). MemAvailable was 115 / 116 GiB before that boot ([`free_before_s65538.txt`](evidence/s0-engine-receipts/free_before_s65538.txt)) and 28 / 30 GiB after the receipt session ([`free_after.txt`](evidence/s0-engine-receipts/s65538/free_after.txt)).
-- **Native window.** Without `--context`, both ranks admitted 1,048,576 tokens: `startup estimate 79.09 GiB within 98.95 GiB` / `101.55 GiB` ([`serve_default_rank0.log`](evidence/s0-engine-receipts/serve_default_rank0.log), [`rank1`](evidence/s0-engine-receipts/serve_default_rank1.log)). One smoke ran; 23 / 26 GiB were available after it ([`free_after_default.txt`](evidence/s0-engine-receipts/free_after_default.txt)). Through `run.sh` (s2): the same admission, then the bench and needles up to 1,039,528 tokens; the lowest MemAvailable was 22.1 GiB on the head and 26.7 GiB on the worker ([`memwatch.tsv`](evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv)). At `903a1e8` (s5): `startup estimate 81.32 GiB within 99.54 GiB` / `102.12 GiB`, with 76.07 GiB of weights (C4 keeps the Engram scale rows resident); over boot F, the bench cells, the 1,039,528-token needle and the full quality set, the lowest MemAvailable was 15.0 GiB on the head and 23.7 GiB on the worker ([`startup.txt`](evidence/s5-final/bootE/gate/startup.txt), [`memwatch.tsv`](evidence/s5-final/bootF/memwatch.tsv), [`derived.txt`](evidence/s5-final/derived.txt)).
-- **Before a load.** `run.sh` waits until MemAvailable ≥ `MEM_GATE_GIB=100` on each node, up to `MEM_GATE_TIMEOUT` (600 s). It refuses a gate below 94 GiB: the native window's 81.32 GiB at `903a1e8` plus the 12.1 GiB reserve, rounded up ([`startup.txt`](evidence/s5-final/bootE/gate/startup.txt), [`derived.txt`](evidence/s5-final/derived.txt)). It does not evict the page cache: the engine counts it as available, and a warm cache loads faster.
+- **Native window.** Without `--context`, both ranks admitted 1,048,576 tokens: `startup estimate 79.09 GiB within 98.95 GiB` / `101.55 GiB` ([`serve_default_rank0.log`](evidence/s0-engine-receipts/serve_default_rank0.log), [`rank1`](evidence/s0-engine-receipts/serve_default_rank1.log)). One smoke ran; 23 / 26 GiB were available after it ([`free_after_default.txt`](evidence/s0-engine-receipts/free_after_default.txt)). Through `run.sh` (s2): the same admission, then the bench and needles up to 1,039,528 tokens; the lowest MemAvailable was 22.1 GiB on the head and 26.7 GiB on the worker ([`memwatch.tsv`](evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv)). At `903a1e8` (s5): `startup estimate 81.32 GiB within 99.54 GiB` / `102.12 GiB`, with 76.07 GiB of weights (C4 keeps the Engram scale rows resident); over boot F, the bench cells, the 1,039,528-token needle and the full quality set, the lowest MemAvailable was 15.0 GiB on the head and 23.7 GiB on the worker ([`startup.txt`](evidence/s5-final/bootE/gate/startup.txt), [`memwatch.tsv`](evidence/s5-final/bootF/memwatch.tsv), [`derived.txt`](evidence/s5-final/derived.txt)). At `b86514a` with `--parallel 4` (s6): `startup estimate 82.55 GiB` for 4 windows of 1,048,576, 81.32 GiB at one lane; the lowest MemAvailable over the 4-lane boots was 17.42 GiB on the head, during the needle beside 3 lanes, and 21.90 GiB on the worker ([`abba_table.txt`](evidence/s6-concurrent/abba_table.txt) section 5).
+- **Before a load.** `run.sh` waits until MemAvailable ≥ `MEM_GATE_GIB=100` on each node, up to `MEM_GATE_TIMEOUT` (600 s). It refuses a gate below 95 GiB at the defaults: the startup estimate plus the 12.1 GiB reserve, rounded up, where the estimate is resident 75.99 + max(5.33, 3.71 + 0.95 GiB a further lane per 1048576-token window). That gives 82.55 GiB at 4 x 1048576 and 81.32 GiB at one lane (94 at `--parallel 1`), the estimates s6 measured ([`2B startup.txt`](evidence/s6-concurrent/2B/startup.txt), [`1A startup.txt`](evidence/s6-concurrent/1A/startup.txt)). It does not evict the page cache: the engine counts it as available, and a warm cache loads faster.
 - **While serving.** `run.sh` adds `--oom-score-adj` (`OOM_SCORE_ADJ=1000`), `--ulimit core=1` and a memguard. The memguard kills the container when MemAvailable < `MEMGUARD_MIN_AVAIL_MB` (3072) MB and SwapFree < `MEMGUARD_MIN_SWAP_FREE_MB` (2048) MB for 6 s.
 - The Engram reads go through the page cache. Rows are never resident (only their scale rows, since C4) and never cross the link.
 
@@ -323,7 +394,7 @@ export HCA=rocep1s0f1,roceP2p1s0f1
 export PORT=8000
 ```
 
-- **HCAs.** Pin `NCCL_IB_HCA`. Two Sparks on their direct cable expose two RoCE devices for the one port: list both ([TensorFold `RUNBOOK.md`](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/RUNBOOK.md) at the pin). `run.sh` checks that each listed device's port 1 is `ACTIVE`.
+- **HCAs.** Pin `NCCL_IB_HCA`. Two Sparks on their direct cable expose two RoCE devices for the one port: list both ([TensorFold `RUNBOOK.md`](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/RUNBOOK.md) at the pin). `run.sh` checks that each listed device's port 1 is `ACTIVE`.
 - **Rendezvous.** `MASTER_PORT=29571`, distinct from the lab's other recipes. The rendezvous port and the link are not authenticated: keep them on the private link.
 - **Caches.** `TF_CACHE/<TF_SHA>` holds the compiled extensions and Triton kernels. A new `TF_SHA` starts a new cache.
 
@@ -348,18 +419,19 @@ Every number above has a file under [`evidence/`](evidence/). `recipe.yaml` name
 | [`s3-default-1m`](evidence/README.md#s3-default-1m-2026-10-04) | `TOP_P=1.0` (`--top-p 1.0` on both ranks); two `run.sh` boots at the shipped defaults: the decode table, sampled cells with and without sampling fields, exactness of the default request, a quiet `prefill_cold` | default top_p 1.0; decode table from these boots |
 | [`s4-device-nucleus`](evidence/README.md#s4-device-nucleus-2026-10-05) | the engine bumped to `41306d5` (top_p cut on the device); image built by `run.sh`; one `run.sh` boot at the shipped defaults: the gate, sampled cells at top_p 1.0, 0.95 and 0.9, exactness at top_p 0.95 and 1.0 against s2 and s3 | top_p 0.95 at 31.8 tok/s (was 15.5); replies equal |
 | [`s5-final`](evidence/README.md#s5-final-2026-10-06) | the engine bumped to `903a1e8` (speed units C1-C5, C7, C8) and the engine's default draft policy; image built by `run.sh`; two `run.sh` boots at the shipped defaults: the decode table, L.A.I.L, sampled cells, `bench_openai`, quiet `prefill_cold`, exactness, a 1,039,528-token needle, the full quality set, NLL; the vLLM sibling the same day on the same cells | decode table and headline from these boots; ahead of vLLM on prose, structured, L.A.I.L and prefill, behind on prose_long and short chat |
+| [`s6-concurrent`](evidence/README.md#s6-concurrent-2026-10-08) | the engine bumped to `b86514a` (concurrent requests); six `run.sh` boots in one session: `--parallel 1` against 4 (ABBA), `--decode-share` 0.25 and 1, then the vLLM sibling; the decode table at c=1, 2 and 4, exactness under load, TTFT of prompts arriving mid-decode, a 1,039,528-token needle beside 3 lanes, memory; the gate at the shipped defaults | `PARALLEL=4` ships: c=1 within 0.5% of one lane, memory floors hold; the decode table from boots 2B and 3B |
 
 ## Gotchas
 
 - **Name the revision.** The repository's `main` holds only the model card. `run.sh` downloads by revision sha.
 - **Both nodes hold the whole pack.** Each rank reads its own Engram half from shards 47 and 48 on its own disk.
-- **The first start compiles.** Four CUDA extensions build at the first start on each node, into `TF_CACHE/<TF_SHA>`. s2's first boot with an empty cache took 3 min 1 s from `./run.sh` to ready (rank 0 `loaded in 167.9s`); warm boots took about a minute ([`bootA/run.txt`](evidence/s2-run-sh-ec28f35/bootA/run.txt), [`bootB/run.txt`](evidence/s2-run-sh-ec28f35/bootB/run.txt), [`derived.txt`](evidence/s2-run-sh-ec28f35/derived.txt)). s4's first boot at `41306d5` took 182 s ([`s4 run.txt`](evidence/s4-device-nucleus/run.txt)); s5's first at `903a1e8` 208 s (rank 0 `loaded in 194.7s`), its second, warm, 66 s ([`bootE/run.txt`](evidence/s5-final/bootE/run.txt), [`bootF/run.txt`](evidence/s5-final/bootF/run.txt), [`derived.txt`](evidence/s5-final/derived.txt)). Rank 1 waits up to 600 s for rank 0's rendezvous ([`comm.py`](https://github.com/sfxnz/TensorFold/blob/903a1e8af62c8f46eceee6b95481706ada30ae49/src/tensorfold/cuda/comm.py#L54)).
+- **The first start compiles.** Four CUDA extensions build at the first start on each node, into `TF_CACHE/<TF_SHA>`. s2's first boot with an empty cache took 3 min 1 s from `./run.sh` to ready (rank 0 `loaded in 167.9s`); warm boots took about a minute ([`bootA/run.txt`](evidence/s2-run-sh-ec28f35/bootA/run.txt), [`bootB/run.txt`](evidence/s2-run-sh-ec28f35/bootB/run.txt), [`derived.txt`](evidence/s2-run-sh-ec28f35/derived.txt)). s4's first boot at `41306d5` took 182 s ([`s4 run.txt`](evidence/s4-device-nucleus/run.txt)); s5's first at `903a1e8` 208 s (rank 0 `loaded in 194.7s`), its second, warm, 66 s ([`bootE/run.txt`](evidence/s5-final/bootE/run.txt), [`bootF/run.txt`](evidence/s5-final/bootF/run.txt), [`derived.txt`](evidence/s5-final/derived.txt)). Rank 1 waits up to 600 s for rank 0's rendezvous ([`comm.py`](https://github.com/sfxnz/TensorFold/blob/b86514a5ac8700b32e7b24f1095349df4ce2b922/src/tensorfold/cuda/comm.py#L54)).
 - **The kernel cache is root-owned.** The containers run as root, so files under `TF_CACHE/<TF_SHA>` belong to root. Remove an old one through the image, not with sudo: `docker run --rm -v "$TF_CACHE:/c" "$IMAGE" rm -rf /c/<old TF_SHA>`.
 - TensorFold opens HTTP only after the model is loaded: "connection refused" means still loading.
 
 ## Credits
 
-- Engine: [TensorFold](https://github.com/ashhart/TensorFold) (Apache-2.0) by its maintainer, with the `deepseek_v41` family of PRs #390 and #391, the device keyed draw and the speed units C1-C5, C7 and C8 from the fork `sfxnz/TensorFold` (Upstream status, above).
+- Engine: [TensorFold](https://github.com/ashhart/TensorFold) (Apache-2.0) by its maintainer, with the `deepseek_v41` family of PRs #390 and #391, the device keyed draw, the speed units C1-C5, C7 and C8 and concurrent requests from the fork `sfxnz/TensorFold` (Upstream status, above).
 - Weights: [sfxnz/DeepSeek-V4.1-Flash-EXL3](https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3), quantized from [deepseek-ai/DeepSeek-V4.1-Flash](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash) (MIT per its model card).
 - Harness: `bench_decode.py` and `smoke_chat.py` come from the vLLM sibling recipe, unchanged. The guards, `kit/render.py`, `stop.sh` and the gate follow the lab's Qwen3.8-Flash-Next TensorFold recipe.
 

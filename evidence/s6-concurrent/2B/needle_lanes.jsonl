@@ -1,0 +1,27 @@
+{"lane": 0, "request": 0, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791434976.7, "done": 1791435165.1, "tok_s": 7.96, "max_gap_s": 2.131, "overlaps_needle": true}
+{"lane": 1, "request": 0, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791434976.9, "done": 1791435165.2, "tok_s": 7.96, "max_gap_s": 2.13, "overlaps_needle": true}
+{"lane": 2, "request": 0, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791434977.1, "done": 1791435165.9, "tok_s": 7.94, "max_gap_s": 2.131, "overlaps_needle": true}
+{"lane": 0, "request": 1, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435165.1, "done": 1791435351.2, "tok_s": 8.06, "max_gap_s": 0.552, "overlaps_needle": true}
+{"lane": 1, "request": 1, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435165.2, "done": 1791435351.2, "tok_s": 8.06, "max_gap_s": 0.554, "overlaps_needle": true}
+{"lane": 2, "request": 1, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435165.9, "done": 1791435352.0, "tok_s": 8.06, "max_gap_s": 0.553, "overlaps_needle": true}
+{"lane": 1, "request": 2, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435351.2, "done": 1791435524.8, "tok_s": 8.64, "max_gap_s": 0.648, "overlaps_needle": true}
+{"lane": 0, "request": 2, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435351.2, "done": 1791435524.8, "tok_s": 8.64, "max_gap_s": 0.649, "overlaps_needle": true}
+{"lane": 2, "request": 2, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435352.0, "done": 1791435525.4, "tok_s": 8.64, "max_gap_s": 0.65, "overlaps_needle": true}
+{"lane": 0, "request": 3, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435524.8, "done": 1791435695.7, "tok_s": 8.81, "max_gap_s": 0.602, "overlaps_needle": true}
+{"lane": 1, "request": 3, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435524.8, "done": 1791435695.7, "tok_s": 8.8, "max_gap_s": 0.602, "overlaps_needle": true}
+{"lane": 2, "request": 3, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435525.4, "done": 1791435695.7, "tok_s": 8.81, "max_gap_s": 0.602, "overlaps_needle": true}
+{"lane": 0, "request": 4, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435695.7, "done": 1791435878.1, "tok_s": 8.22, "max_gap_s": 0.714, "overlaps_needle": true}
+{"lane": 1, "request": 4, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435695.7, "done": 1791435878.7, "tok_s": 8.2, "max_gap_s": 0.714, "overlaps_needle": true}
+{"lane": 2, "request": 4, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435695.7, "done": 1791435878.7, "tok_s": 8.2, "max_gap_s": 0.713, "overlaps_needle": true}
+{"lane": 0, "request": 5, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435878.1, "done": 1791436061.1, "tok_s": 8.22, "max_gap_s": 0.687, "overlaps_needle": true}
+{"lane": 1, "request": 5, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435878.7, "done": 1791436061.2, "tok_s": 8.22, "max_gap_s": 0.687, "overlaps_needle": true}
+{"lane": 2, "request": 5, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791435878.7, "done": 1791436061.3, "tok_s": 8.22, "max_gap_s": 0.688, "overlaps_needle": true}
+{"lane": 0, "request": 6, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436061.1, "done": 1791436230.4, "tok_s": 8.86, "max_gap_s": 0.651, "overlaps_needle": true}
+{"lane": 2, "request": 6, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436061.3, "done": 1791436231.0, "tok_s": 8.84, "max_gap_s": 0.651, "overlaps_needle": true}
+{"lane": 1, "request": 6, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436061.2, "done": 1791436231.0, "tok_s": 8.84, "max_gap_s": 0.651, "overlaps_needle": true}
+{"needle": {"start": "2026-10-08T04:49:42Z", "length": 1040000, "depth": 0.5, "doc_tokens": 1039503}}
+{"needle": {"length": 1040000, "depth": 0.5, "prompt_tokens": 1039528, "cached": 0, "completion_tokens": 8, "prefill_s": 48.3523, "prefill_tok_s": 21499.0, "wall_s": 1370.6, "found": true, "code": "CZP-3128-QL", "answer": "CZP-3128-QL", "token_sha": "4dfbacf6d86b", "end": "2026-10-08T05:12:32Z"}}
+{"lane": 0, "request": 7, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436230.4, "done": 1791436373.1, "tok_s": 10.54, "max_gap_s": 1.125, "overlaps_needle": true}
+{"lane": 2, "request": 7, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436231.0, "done": 1791436373.2, "tok_s": 10.55, "max_gap_s": 1.126, "overlaps_needle": true}
+{"lane": 1, "request": 7, "error": null, "completion_tokens": 1500, "token_sha": "b12cd40d927d", "sent": 1791436231.0, "done": 1791436373.2, "tok_s": 10.55, "max_gap_s": 1.126, "overlaps_needle": true}
+{"summary": true, "needle_rc": 0, "needle_stderr_tail": "", "needle_s": 1374.6}

@@ -1,0 +1,10 @@
+2026-10-08T04:16:36Z 2B run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T04:17:33Z 2B warm pass (discarded)
+2026-10-08T04:17:43Z 2B gate RUNS=9
+2026-10-08T04:33:56Z 2B sampled cells c=1 2 4
+2026-10-08T04:40:19Z 2B pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T04:42:11Z 2B ttft cells reps=3
+2026-10-08T04:46:02Z 2B prefill_cold
+2026-10-08T04:49:36Z 2B needle 1040000@0.5 with 3 lanes decoding
+2026-10-08T05:12:53Z 2B logs and stop
+2026-10-08T05:13:08Z 2B done

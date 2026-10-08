@@ -1,0 +1,33 @@
+# 2026-10-08T06:26:07Z python3 bench_decode.py --url http://127.0.0.1:8000/v1/chat/completions --model deepseek-ai/DeepSeek-V4.1-Flash --phase prose --concurrency 1 --max-tokens 200 --runs 2
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=2 concurrency=[1] phases=['prose']
+phase=prose c=1 run=1 wall=3.75s agg=55.51 tok/s per_stream=[55.51] ttft=[0.164] acc=nan ms_step=[]
+phase=prose c=1 run=2 wall=3.65s agg=55.69 tok/s per_stream=[55.70] ttft=[0.076] acc=nan ms_step=[]
+natural phase=prose completion_tokens=74 finish_reason=stop
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "median_decode_tok_s": 55.60614994624423,
+    "median_ttft_s": 0.11983979656361043,
+    "median_agg_tok_s": 55.60024870595552,
+    "median_completion_tokens": 200.0,
+    "n": 2,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.11983979656361043,
+    "ttft_s_p90": 0.15493487543426454,
+    "ttft_s_p99": 0.16283126818016172,
+    "inter_chunk_ms_p50": 54.22600801102817,
+    "inter_chunk_ms_p90": 61.609745561145246,
+    "inter_chunk_ms_p99": 65.80009467201307,
+    "finish_reasons": {
+      "length": 2
+    },
+    "natural_completion_tokens": 74,
+    "natural_finish_reason": "stop",
+    "natural_covers_max": false,
+    "post_eos_fraction": 0.63
+  }
+]
+rc=0

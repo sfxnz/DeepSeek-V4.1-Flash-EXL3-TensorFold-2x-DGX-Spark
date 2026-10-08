@@ -1,0 +1,10 @@
+2026-10-08T02:50:52Z W1 run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T02:54:41Z W1 warm pass (discarded)
+2026-10-08T02:54:53Z W1 gate RUNS=1
+2026-10-08T03:05:46Z W1 sampled cells c=1 2 4
+2026-10-08T03:06:30Z W1 pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T03:08:25Z W1 ttft alone reps=1
+2026-10-08T03:09:22Z W1 ttft cells reps=1
+2026-10-08T03:11:01Z W1 prefill_cold
+2026-10-08T03:21:56Z W1 logs and stop (by hand: boot.sh was edited while it ran and stopped after prefill_cold)
+2026-10-08T03:22:01Z W1 done

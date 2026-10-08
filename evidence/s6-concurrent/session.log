@@ -1,0 +1,75 @@
+2026-10-08T02:50:52Z W1 run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T02:54:41Z W1 warm pass (discarded)
+2026-10-08T02:54:53Z W1 gate RUNS=1
+2026-10-08T03:05:46Z W1 sampled cells c=1 2 4
+2026-10-08T03:06:30Z W1 pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T03:08:25Z W1 ttft alone reps=1
+2026-10-08T03:09:22Z W1 ttft cells reps=1
+2026-10-08T03:11:01Z W1 prefill_cold
+2026-10-08T03:21:56Z W1 logs and stop (by hand: boot.sh was edited while it ran and stopped after prefill_cold)
+2026-10-08T03:22:01Z W1 done
+2026-10-08T03:22:07Z W2 run.sh PARALLEL=1 DECODE_SHARE=0.5
+2026-10-08T03:23:04Z W2 warm pass (discarded)
+2026-10-08T03:23:13Z W2 gate RUNS=1
+2026-10-08T03:36:26Z W2 sampled cells c=1 2 4
+2026-10-08T03:37:36Z W2 pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T03:39:25Z W2 ttft alone reps=1
+2026-10-08T03:40:20Z W2 prefill_cold
+2026-10-08T03:43:54Z W2 logs and stop
+2026-10-08T03:44:08Z W2 done
+2026-10-08T03:44:09Z 1A run.sh PARALLEL=1 DECODE_SHARE=0.5
+2026-10-08T03:45:01Z 1A warm pass (discarded)
+2026-10-08T03:45:10Z 1A gate RUNS=9
+2026-10-08T04:08:12Z 1A sampled cells c=1
+2026-10-08T04:09:42Z 1A pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T04:11:32Z 1A ttft alone reps=3
+2026-10-08T04:12:48Z 1A prefill_cold
+2026-10-08T04:16:21Z 1A logs and stop
+2026-10-08T04:16:36Z 1A done
+2026-10-08T04:16:36Z 2B run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T04:17:33Z 2B warm pass (discarded)
+2026-10-08T04:17:43Z 2B gate RUNS=9
+2026-10-08T04:33:56Z 2B sampled cells c=1 2 4
+2026-10-08T04:40:19Z 2B pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T04:42:11Z 2B ttft cells reps=3
+2026-10-08T04:46:02Z 2B prefill_cold
+2026-10-08T04:49:36Z 2B needle 1040000@0.5 with 3 lanes decoding
+2026-10-08T05:12:53Z 2B logs and stop
+2026-10-08T05:13:08Z 2B done
+2026-10-08T05:13:08Z 3B run.sh PARALLEL=4 DECODE_SHARE=0.5
+2026-10-08T05:14:05Z 3B warm pass (discarded)
+2026-10-08T05:14:15Z 3B gate RUNS=9
+2026-10-08T05:30:41Z 3B sampled cells c=1 2 4
+2026-10-08T05:37:10Z 3B pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T05:39:02Z 3B ttft cells reps=3
+2026-10-08T05:42:59Z 3B prefill_cold
+2026-10-08T05:46:38Z 3B logs and stop
+2026-10-08T05:46:52Z 3B done
+2026-10-08T05:46:53Z 4A run.sh PARALLEL=1 DECODE_SHARE=0.5
+2026-10-08T05:47:45Z 4A warm pass (discarded)
+2026-10-08T05:47:54Z 4A gate RUNS=9
+2026-10-08T06:10:59Z 4A sampled cells c=1
+2026-10-08T06:12:29Z 4A pairs (s5 pairs_nucleus, c7 q2 receipts)
+2026-10-08T06:14:19Z 4A ttft alone reps=3
+2026-10-08T06:15:35Z 4A prefill_cold
+2026-10-08T06:19:08Z 4A logs and stop
+2026-10-08T06:19:23Z 4A done
+2026-10-08T06:19:23Z 5C run.sh PARALLEL=4 DECODE_SHARE=0.25
+2026-10-08T06:20:20Z 5C warm pass (discarded)
+2026-10-08T06:20:30Z 5C ttft cells reps=3
+2026-10-08T06:24:19Z 5C pairs_concurrent
+2026-10-08T06:24:55Z 5C logs and stop
+2026-10-08T06:25:10Z 5C done
+2026-10-08T06:25:10Z 6D run.sh PARALLEL=4 DECODE_SHARE=1
+2026-10-08T06:26:07Z 6D warm pass (discarded)
+2026-10-08T06:26:17Z 6D ttft cells reps=3
+2026-10-08T06:30:05Z 6D pairs_concurrent
+2026-10-08T06:30:44Z 6D logs and stop
+2026-10-08T06:30:58Z 6D done
+2026-10-08T06:30:59Z 7V run.sh (env AUDIT=strict ./run.sh)
+2026-10-08T06:41:51Z 7V smoke
+2026-10-08T06:41:52Z 7V warm pass (discarded)
+2026-10-08T06:42:04Z 7V ruler c=1 2 4
+2026-10-08T06:50:23Z 7V sampled cells
+2026-10-08T06:57:30Z 7V logs and stop
+2026-10-08T06:58:15Z 7V done

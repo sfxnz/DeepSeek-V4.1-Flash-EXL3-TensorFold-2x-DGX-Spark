@@ -75,15 +75,21 @@ serve:
     # measured: the native window. s2 booted run.sh at 1048576, ran the frozen ruler there, and found needles at
     # 130k, 258k, 524k and 1,039,528 prompt tokens, MemAvailable never below 22 GiB on either node
     # (evidence/s2-run-sh-ec28f35/ctx1m/needles.jsonl, evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv); s3 booted it
-    # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt); s5 twice at TF_SHA, with the 1,039,528-token
-    # needle again (evidence/s5-final/bootF/needle.jsonl, MemAvailable at least 15.0 / 23.7 GiB over that boot).
+    # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt); s5 twice at 903a1e8, with the
+    # 1,039,528-token needle again (evidence/s5-final/bootF/needle.jsonl, MemAvailable at least 15.0 / 23.7 GiB over
+    # that boot); s6 six times at TF_SHA, with that needle found while 3 other lanes decoded
+    # (evidence/s6-concurrent/2B/needle_lanes.jsonl).
     CONTEXT: 1048576
     # Requests decoded together, 1 to 4 (the family's MAX_LANES); each lane holds a whole CONTEXT window, allocated
-    # at startup. pending measurement: 4 ships if session s6 (ABBA against 1) shows the memory floors hold at 4
-    # windows of CONTEXT and c=1 holds, else 2. run.sh computes its memory-gate floor from PARALLEL and CONTEXT.
+    # at startup. measured: s6 ran PARALLEL=1 and 4 ABBA through run.sh. At 4 x 1048576 MemAvailable stayed at least
+    # 17.4 GiB on the head and 21.9 on the worker, and a lone request decoded within 0.5% of PARALLEL=1
+    # (evidence/s6-concurrent/abba_table.txt), so 4 ships. run.sh computes its memory-gate floor from PARALLEL and
+    # CONTEXT.
     PARALLEL: 4
     # With PARALLEL 2 or more, a new prompt fills between decode rounds, which take this share of each prompt span's
-    # time (the engine's default; 0: whole prompts first). Not passed at PARALLEL 1, where it has no effect.
+    # time (the engine's default; 0: whole prompts first). Not passed at PARALLEL 1, where it has no effect. s6: a 16k
+    # prompt arriving while 3 lanes decode reaches its first token in 15.0 s at 0.25, 18.0-18.7 s at 0.5 and 24.0 s at 1
+    # (9.6 s alone), the lanes decoding at about 4.2, 7.2 and 11.3 tok/s meanwhile (evidence/s6-concurrent/abba_table.txt).
     DECODE_SHARE: 0.5
     # The engine's default draft policy, written out so a bump cannot change it silently: up to 5 DSpark drafts a
     # round, the chain stopping where the drafts' confidence product falls under 0.15 (TF_SHA's
@@ -126,11 +132,12 @@ serve:
 readme:
   # Rows of the README "Defaults" table. {NAME} is replaced by serve.env.NAME.
   defaults:
-    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
+    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family, its speed units and concurrent requests) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
     - Model: "`{MODEL}` at `{SNAPSHOT_SHA}`, served from the HF cache `{HF_CACHE}` (read-only) on each node"
     - Snapshot check: "`config.json` sha256 `{CONFIG_SHA256}`, index sha256 `{INDEX_SHA256}`, {SHARDS} shards, {SHARD_BYTES} shard bytes, every shard's header ending at its size"
     - Ranks: "`--tp {TP}`: rank 1 on `{WORKER_HOST}` first, then rank 0 (HTTP) on the head; rendezvous `{HEAD_IP}:{MASTER_PORT}`"
     - "`--context`": "{CONTEXT}, the model's native window (tested through run.sh: needles at 130k, 258k, 524k and 1,039,528 prompt tokens, all found)"
+    - Concurrency: "`--parallel {PARALLEL}`: up to {PARALLEL} requests decode together, each lane holding a whole `--context` window allocated at startup; more requests wait for a free lane. `--decode-share {DECODE_SHARE}`: a new prompt fills between the other lanes' decode rounds, which take {DECODE_SHARE} of each prompt span's time (passed only at `PARALLEL` 2 or more)"
     - Drafting: "`--mtp-drafts {MTP_DRAFTS} --mtp-confidence {MTP_CONFIDENCE}`, the engine's default policy: up to {MTP_DRAFTS} DSpark drafts a round, the chain stopping where the drafts' confidence product falls under {MTP_CONFIDENCE} (`MTP_CONFIDENCE` empty: {MTP_DRAFTS} drafts every round; 0 drafts: one token a round)"
     - Thinking: "off (`--no-thinking`, `THINKING={THINKING}`) on both ranks; a request turns it on with `chat_template_kwargs.thinking` or an effort name"
     - "`--max-tokens`": "{MAX_TOKENS} (the reply cap when a request sets none)"
@@ -148,13 +155,25 @@ measured:
   # kit/render.py renders a row with evidence null as "not yet measured on this pair" and refuses a number without
   # evidence.
   decode:
-    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed greedy, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s5 bootE and bootF, 2026-10-06: TensorFold `903a1e8`, `--context 1048576`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`, no env override); each row is the median of the two per-boot medians (evidence/s5-final/decode.txt, which also gives each boot's and the pooled 18-run medians); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS_LONG=9; runs 2 to 9 of each cell resume the kept prompt, so TTFT p50 is a resumed prompt. Before (s3 bootC and bootD, TensorFold `ec28f35`, 3 drafts a round): prose 46.0, structured 64.1, prose_long 34.6 (evidence/s3-default-1m/decode.txt)"
+    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s6 boots 2B and 3B, 2026-10-08: TensorFold `b86514a`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`; the only env override, EXTRA_ENV, loaded a probe that logs memory around graph warm-up); each row is the median of the two per-boot medians (evidence/s6-concurrent/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s6-concurrent/scripts/sampled_conc.py). Before (s5 bootE and bootF, TensorFold `903a1e8`, one request at a time): prose 55.8, structured 97.3, prose_long 40.7 (evidence/s5-final/decode.txt)"
     units: {decode: tok/s per stream (median), aggregate: tok/s, ttft_p50: s}
     rows:
-      - {phase: prose, concurrency: 1, decode: 55.8, aggregate: 55.8, ttft_p50: 0.07, evidence: evidence/s5-final/decode.txt,
+      - {phase: prose, concurrency: 1, decode: 56.3, aggregate: 56.3, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt,
          note: "The prose reply ends at its end token after 74 tokens; ignore_eos decodes the other 126 (post_eos_fraction 0.63)."}
-      - {phase: structured, concurrency: 1, decode: 97.3, aggregate: 97.2, ttft_p50: 0.07, evidence: evidence/s5-final/decode.txt}
-      - {phase: prose_long, concurrency: 1, decode: 40.7, aggregate: 40.7, ttft_p50: 0.07, evidence: evidence/s5-final/decode.txt}
+      - {phase: prose, concurrency: 2, decode: 41.3, aggregate: 82.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose, concurrency: 4, decode: 29.1, aggregate: 115.7, ttft_p50: 0.28, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: structured, concurrency: 1, decode: 97.7, aggregate: 97.7, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: structured, concurrency: 2, decode: 72.5, aggregate: 144.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: structured, concurrency: 4, decode: 50.6, aggregate: 200.7, ttft_p50: 0.26, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose_long, concurrency: 1, decode: 41.2, aggregate: 41.2, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose_long, concurrency: 2, decode: 30.6, aggregate: 61.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose_long, concurrency: 4, decode: 21.8, aggregate: 87.1, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 1, decode: 43.0, aggregate: 43.0, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 2, decode: 31.6, aggregate: 63.3, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 4, decode: 22.4, aggregate: 89.8, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 1, decode: 37.9, aggregate: 37.9, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 2, decode: 28.6, aggregate: 57.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 4, decode: 20.5, aggregate: 82.4, ttft_p50: 0.29, evidence: evidence/s6-concurrent/decode.txt}
 
 links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8

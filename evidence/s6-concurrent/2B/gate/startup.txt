@@ -1,0 +1,6 @@
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-head.log:[tensorfold] CUDA rank 0 startup estimate 82.55 GiB within 99.67 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-head.log:[tensorfold] rank 0 of 2: 40 layers and DSpark, 76.07 GiB of weights in 25.4 s
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-head.log:[tensorfold] serving deepseek-ai/DeepSeek-V4.1-Flash at http://0.0.0.0:8000/v1 on CUDA, rank 0 of 2 (sampling: top_p 1.0; drafts: on; prompts: bf16 activations; context: 1048576; loaded in 43.6s)
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-spark2.log:[tensorfold] CUDA rank 1 startup estimate 82.55 GiB within 102.05 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-spark2.log:[tensorfold] rank 1 of 2: 40 layers and DSpark, 76.07 GiB of weights in 26.7 s
+/home/sfxnz/projects/data/tf-dsv41/receipts/n11/2B/gate/docker-spark2.log:[tensorfold] rank 1 ready in 49.2s, following rank 0

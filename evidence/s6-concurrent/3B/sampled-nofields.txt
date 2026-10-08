@@ -1,0 +1,31 @@
+# 2026-10-08T05:30:41Z python3 /home/sfxnz/projects/data/tf-dsv41/receipts/n11/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label nofields --runs 9 --concurrency 1 2 4
+label=nofields url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1, 2, 4] sampling={}
+phase=nofields c=1 run=1 wall=4.80s agg=42.17 tok/s per_stream=[42.18] shas=4e0fa4daff89
+phase=nofields c=1 run=2 wall=4.66s agg=43.34 tok/s per_stream=[43.34] shas=4e0fa4daff89
+phase=nofields c=1 run=3 wall=4.67s agg=43.21 tok/s per_stream=[43.21] shas=4e0fa4daff89
+phase=nofields c=1 run=4 wall=4.66s agg=43.26 tok/s per_stream=[43.27] shas=4e0fa4daff89
+phase=nofields c=1 run=5 wall=5.01s agg=40.22 tok/s per_stream=[40.23] shas=4e0fa4daff89
+phase=nofields c=1 run=6 wall=4.67s agg=43.24 tok/s per_stream=[43.24] shas=4e0fa4daff89
+phase=nofields c=1 run=7 wall=4.68s agg=43.12 tok/s per_stream=[43.12] shas=4e0fa4daff89
+phase=nofields c=1 run=8 wall=4.68s agg=43.12 tok/s per_stream=[43.13] shas=4e0fa4daff89
+phase=nofields c=1 run=9 wall=4.66s agg=43.32 tok/s per_stream=[43.32] shas=4e0fa4daff89
+phase=nofields c=2 run=1 wall=6.41s agg=63.35 tok/s per_stream=[31.55,32.00] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=2 wall=6.48s agg=62.67 tok/s per_stream=[31.29,31.63] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=3 wall=6.78s agg=60.22 tok/s per_stream=[29.91,30.50] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=4 wall=6.42s agg=63.26 tok/s per_stream=[31.52,31.94] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=5 wall=6.41s agg=63.36 tok/s per_stream=[31.55,32.01] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=6 wall=6.42s agg=63.22 tok/s per_stream=[31.91,31.50] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=7 wall=6.42s agg=63.26 tok/s per_stream=[31.95,31.50] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=8 wall=6.78s agg=59.80 tok/s per_stream=[29.81,30.17] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=9 wall=6.41s agg=63.32 tok/s per_stream=[31.54,31.98] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=1 wall=9.13s agg=89.78 tok/s per_stream=[22.21,22.36,22.64,22.80] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=2 wall=9.13s agg=89.75 tok/s per_stream=[22.63,22.20,22.35,22.80] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=3 wall=9.63s agg=84.97 tok/s per_stream=[21.02,21.42,21.55,21.16] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=4 wall=9.16s agg=89.50 tok/s per_stream=[22.29,22.14,22.56,22.72] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=5 wall=9.44s agg=86.68 tok/s per_stream=[21.45,21.85,21.99,21.59] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=6 wall=9.18s agg=89.56 tok/s per_stream=[22.65,22.08,22.81,22.23] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=7 wall=9.13s agg=89.84 tok/s per_stream=[22.37,22.22,22.81,22.65] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=8 wall=9.11s agg=90.01 tok/s per_stream=[22.26,22.68,22.42,22.84] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=9 wall=9.96s agg=82.06 tok/s per_stream=[20.31,20.81,20.44,20.68] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+SUMMARY [{"phase": "nofields", "sampling": {}, "concurrency": 1, "n": 9, "median_agg_tok_s": 43.208129471262836, "median_decode_tok_s": 43.21196578575794, "ttft_s_p50": 0.06516175204887986, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 2, "n": 18, "median_agg_tok_s": 63.25991251894015, "median_decode_tok_s": 31.541458891345236, "ttft_s_p50": 0.13572187698446214, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 4, "n": 36, "median_agg_tok_s": 89.55773456785184, "median_decode_tok_s": 22.248070659477754, "ttft_s_p50": 0.2638741850387305, "token_shas": ["4e0fa4daff89"]}]
+rc=0

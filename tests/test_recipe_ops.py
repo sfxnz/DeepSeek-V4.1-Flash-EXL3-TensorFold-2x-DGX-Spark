@@ -970,9 +970,9 @@ class RenderTests(unittest.TestCase):
         env["STOP_TIMEOUT"] = re.search(r'STOP_TIMEOUT="\$\{STOP_TIMEOUT:-(\d+)\}"', _read("stop.sh")).group(1)
         switches = {"ORCHESTRATE", "BENCH_ONLY", "SKIP_DOWNLOAD", "THINKING", "MEMGUARD", "MTP_CONFIDENCE",
                     "EXTRA_ARGS", "EXTRA_ENV"}
-        # The gate floor at the defaults. README's hand-written text still describes one lane until N12b rewrites it.
-        floors = {"AGENTS.md": str(_gate(int(env["PARALLEL"]), int(env["CONTEXT"]))),
-                  "README.md": str(_gate(1, int(env["CONTEXT"])))}
+        # The gate floor at the defaults, in both files.
+        floor = str(_gate(int(env["PARALLEL"]), int(env["CONTEXT"])))
+        floors = {"AGENTS.md": floor, "README.md": floor}
         self.assertIn(f"less than a floor it computes from `PARALLEL` and `CONTEXT`", _read("AGENTS.md"))
         self.assertIn(f"rounded up: {floors['AGENTS.md']} at the defaults", _read("AGENTS.md"))
         checked = 0

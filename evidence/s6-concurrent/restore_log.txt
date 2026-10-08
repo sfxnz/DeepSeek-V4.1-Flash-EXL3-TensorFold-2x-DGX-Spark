@@ -1,0 +1,14 @@
+N11 previous serve and end state
+
+Before the first boot (previous_serve_before.txt, 2026-10-08T02:47:28Z): no GPU serve ran on either Spark. spark1 ran
+only conduit (not a GPU serve, never touched); spark2 ran no container. The Qwen serve was already stopped.
+Orchestrator override of the N11 spec: the user asked for the Qwen serve to stay stopped, so nothing was restored and
+no previous-serve smokes ran (the acceptance line "the previous serve was restored and its smokes passed" is replaced
+by this override).
+
+Every TF boot stopped with ./stop.sh (rc=0, <boot>/stop.txt); the vLLM sibling with docker stop -t 60 + docker rm on
+both nodes (7V/stop.txt). W1's stop was run by hand (W1/steps.txt): boot.sh was edited while W1 ran and bash stopped
+after its prefill_cold step; W1 is a warm-up boot and is not counted.
+
+After the session (end_state.txt, 2026-10-08T06:58:25Z): spark1 runs only conduit, spark2 no container, no GPU process
+on either node. free -h available: spark1 114Gi, spark2 116Gi (before: 113Gi, 117Gi).
