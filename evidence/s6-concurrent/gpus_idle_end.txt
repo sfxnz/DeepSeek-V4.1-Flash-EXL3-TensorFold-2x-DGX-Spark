@@ -1,0 +1,16 @@
+2026-10-08T07:35:26Z
+== spark1
+conduit matrixconduit/matrix-conduit:latest Up 2 weeks
+pid, process_name, used_gpu_memory [MiB]
+utilization.gpu [%]
+0 %
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       7.4Gi       104Gi       2.8Mi        12Gi       114Gi
+Swap:           15Gi       4.4Gi        11Gi
+== spark2
+pid, process_name, used_gpu_memory [MiB]
+utilization.gpu [%]
+0 %
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       4.9Gi       106Gi       664Ki        11Gi       116Gi
+Swap:           15Gi       2.0Gi        14Gi
