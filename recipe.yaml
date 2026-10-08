@@ -82,8 +82,9 @@ serve:
     CONTEXT: 1048576
     # Requests decoded together, 1 to 4 (the family's MAX_LANES); each lane holds a whole CONTEXT window, allocated
     # at startup. measured: s6 ran PARALLEL=1 and 4 ABBA through run.sh. At 4 x 1048576 MemAvailable stayed at least
-    # 17.4 GiB on the head and 21.9 on the worker, and a lone request decoded within 0.5% of PARALLEL=1
-    # (evidence/s6-concurrent/abba_table.txt), so 4 ships. run.sh computes its memory-gate floor from PARALLEL and
+    # 17.4 GiB on the head and 21.9 on the worker on warm-cache boots (13.0 / 14.7 GiB while the first start compiled
+    # the kernels, evidence/s6-concurrent/W1/memwatch.tsv), and a lone request decoded the ruler's cells within 0.5% of
+    # PARALLEL=1, every c=1 cell within 1.31% (evidence/s6-concurrent/abba_table.txt), so 4 ships. run.sh computes its memory-gate floor from PARALLEL and
     # CONTEXT.
     PARALLEL: 4
     # With PARALLEL 2 or more, a new prompt fills between decode rounds, which take this share of each prompt span's
