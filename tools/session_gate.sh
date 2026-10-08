@@ -5,9 +5,11 @@
 #
 # Order: receipts (sha256 of the clients, run.sh, stop.sh and recipe.yaml, git head, both ranks' argv and container env, free -h on both nodes)
 # -> smokes (smoke_chat.py, smoke_count.py) -> the frozen bench_decode.py (the vLLM sibling's ruler,
-# byte-identical): prose + structured at c=1, 9 runs; prose_long at c=1, 5 runs -> receipts (free -h, both
-# ranks' logs, startup lines, error needles) -> gate.txt. Exits nonzero if any step fails. c=1 only: the
-# deepseek_v41 family serves one request at a time, so a second stream only queues.
+# byte-identical): prose + structured at c=1, 9 runs; prose_long at c=1, 5 runs; the same at c=2 and c=4
+# -> tools/bench_concurrent.py (TensorFold's, verbatim): every request alone and "draft": false, then together at
+# 1, 2 and 4, and mixed prompts started 2 s apart at 2 and 4; every reply's token_sha must equal its alone run's
+# -> tools/pairs_concurrent.py: distinct staggered prompts, one over 16k tokens, token_ids and token_sha a request
+# -> receipts (free -h, both ranks' logs, startup lines, error needles) -> gate.txt. Exits nonzero if any step fails.
 #
 # Env:
 #   RUN_FROZEN=0     skip the frozen bench_decode.py runs.
@@ -16,7 +18,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-[[ $# -eq 1 ]] || { sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+[[ $# -eq 1 ]] || { sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 EV="$(mkdir -p "$1" && cd "$1" && pwd)"
 PORT="${PORT:-8000}"
 BASE="http://127.0.0.1:${PORT}"
@@ -73,7 +75,7 @@ if ! grep -q "\"$MODEL\"" "$EV/models.json"; then
   log "/v1/models does not list $MODEL"
   exit 1
 fi
-sha256sum bench_decode.py smoke_chat.py smoke_count.py tools/session_gate.sh run.sh stop.sh recipe.yaml >"$EV/harness.sha256"
+sha256sum bench_decode.py smoke_chat.py smoke_count.py tools/bench_concurrent.py tools/pairs_concurrent.py tools/session_gate.sh run.sh stop.sh recipe.yaml >"$EV/harness.sha256"
 git rev-parse HEAD >"$EV/git-head.txt" 2>/dev/null || true
 docker inspect -f '{{.Config.Image}} {{join .Args " "}}' "$CONTAINER_NAME" >"$EV/serve-argv.txt" 2>&1 || true
 "${SSH[@]}" "$WORKER_HOST" "docker inspect -f '{{.Config.Image}} {{join .Args \" \"}}' '$CONTAINER_NAME'" >>"$EV/serve-argv.txt" 2>&1 || true
@@ -92,6 +94,33 @@ if [[ "$RUN_FROZEN" == 1 ]]; then
   step bench-frozen python3 bench_decode.py --url "$URL" --model "$MODEL" --phase both --concurrency 1 --max-tokens 200 --runs "$RUNS"
   step bench-prose-long python3 bench_decode.py --url "$URL" --model "$MODEL" --phase prose_long --concurrency 1 --max-tokens 200 --runs "$RUNS_LONG"
 fi
+
+# --- concurrent requests -----------------------------------------------------
+# bench_concurrent.py exits 0 whatever its checks found: conc-check fails on any unequal or failed request.
+conc_check() {
+  python3 - "$@" <<'PY'
+import json, sys
+bad = []
+for path in sys.argv[1:]:
+    for cell in json.load(open(path))["cells"]:
+        for key in ("alone", "serial"):
+            got = cell.get(key) or {}
+            if got.get("unequal") or got.get("failed"):
+                bad.append(f"{path} {cell['prompt']} t={cell['temperature']} n={cell['streams']} {key} {got}")
+        if cell.get("failed") or "alone" not in cell:
+            bad.append(f"{path} {cell['prompt']} t={cell['temperature']} n={cell['streams']} failed={cell.get('failed')} checked={'alone' in cell}")
+print("\n".join(bad) or "every request equal to its alone run")
+sys.exit(1 if bad else 0)
+PY
+}
+if [[ "$RUN_FROZEN" == 1 ]]; then
+  step bench-frozen-conc python3 bench_decode.py --url "$URL" --model "$MODEL" --phase both --concurrency 2 4 --max-tokens 200 --runs "$RUNS"
+  step bench-prose-long-conc python3 bench_decode.py --url "$URL" --model "$MODEL" --phase prose_long --concurrency 2 4 --max-tokens 200 --runs "$RUNS_LONG"
+fi
+step bench-concurrent python3 tools/bench_concurrent.py "$BASE" "$MODEL" --levels 1,2,4 --alone --serial --output "$EV/bench_concurrent.json"
+step bench-concurrent-mixed python3 tools/bench_concurrent.py "$BASE" "$MODEL" --mixed --stagger-ms 2000 --levels 2,4 --alone --output "$EV/bench_concurrent_mixed.json"
+step conc-check conc_check "$EV/bench_concurrent.json" "$EV/bench_concurrent_mixed.json"
+step pairs-concurrent python3 tools/pairs_concurrent.py --url "$URL" --model "$MODEL" --output "$EV/pairs_concurrent.jsonl"
 
 # --- receipts ----------------------------------------------------------------
 curl -sS --max-time 5 "$BASE/health" >"$EV/health-after.json" || true

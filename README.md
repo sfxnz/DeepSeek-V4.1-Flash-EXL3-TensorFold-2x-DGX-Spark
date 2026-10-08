@@ -255,7 +255,7 @@ Stop both ranks from the head:
 <!-- BEGIN generated defaults from recipe.yaml — edit recipe.yaml and run kit/render.py -->
 | Setting | Value |
 |---|---|
-| Engine | TensorFold `903a1e8af62c8f46eceee6b95481706ada30ae49` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-903a1e8` from `docker/Dockerfile` |
+| Engine | TensorFold `b86514a5ac8700b32e7b24f1095349df4ce2b922` (v0.6.4 + the deepseek_v41 CUDA family and its speed units) from `https://github.com/sfxnz/TensorFold.git`, built into `tf-dsv41-flash:0.6.4-b86514a` from `docker/Dockerfile` |
 | Model | `sfxnz/DeepSeek-V4.1-Flash-EXL3` at `982b70452f399814f56b46272fd30394ae10d58c`, served from the HF cache `$HOME/.cache/huggingface` (read-only) on each node |
 | Snapshot check | `config.json` sha256 `6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5`, index sha256 `91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03`, 48 shards, 357466041064 shard bytes, every shard's header ending at its size |
 | Ranks | `--tp 2`: rank 1 on `spark2` first, then rank 0 (HTTP) on the head; rendezvous `10.100.8.1:29571` |

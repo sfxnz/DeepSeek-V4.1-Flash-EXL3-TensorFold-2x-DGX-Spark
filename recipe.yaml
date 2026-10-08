@@ -22,30 +22,32 @@ model:
 image:
   base: nvcr.io/nvidia/pytorch:26.07-py3
   digest: sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
-  local_tag: &image tf-dsv41-flash:0.6.4-903a1e8
+  local_tag: &image tf-dsv41-flash:0.6.4-b86514a
   build: docker/Dockerfile (pip install git+TF_REPO@TF_SHA under docker/constraints.txt; the commit pip installed is checked; no installed package may change, so torch and triton stay the base's)
 
 engine:
   name: tensorfold
-  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows + the speed units C1, C2, C3, C4, C5, C7, C8
+  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows + the speed units C1, C2, C3, C4, C5, C7, C8 + concurrent requests (--parallel 1 to 4, units N0-N10)
   # The fork's integration branch: release v0.6.4 (6ea5ade), the family (e174ee0 has PR 391's tip tree, 0d91389), the
   # device keyed draw (C6, C6b; db7f53e has 41306d5's tree), then the speed units, each merged after its own receipts
   # (lab data/tf-dsv41/receipts/c1..c8): C1 prompt decoder-row skip, C3 prompt-window EXL3 expert kernel, C2 decode
   # fusion, C7 packed caches and the split decode index selection, C4 Engram I/O off the decode path with resident
   # scale rows, C5 device-drawn drafts and the confidence draft policy (engine default: up to 5 drafts, stop under a
-  # confidence product of 0.15), C8 prompt chunks in two row halves and the kept snapshot from inside its chunk.
+  # confidence product of 0.15), C8 prompt chunks in two row halves and the kept snapshot from inside its chunk; then
+  # concurrent requests (lab data/tf-dsv41/receipts/n0..n10): up to 4 lanes, each holding a whole window, share one
+  # verify forward a round, prompts fill between rounds (--decode-share), and every reply equals its solo run.
   # Upstream froze its Python engine at 0.6.5 (ashhart/TensorFold issue 286) and closed PRs 390, 391 and 408; the
   # maintainer rewrites the useful parts in the Zig engine with credit. So the recipe pins the fork. A bump needs new
   # evidence.
   repo: &tf_repo https://github.com/sfxnz/TensorFold.git
-  branch: dsv41-recipe-engine3
-  commit: &tf_sha 903a1e8af62c8f46eceee6b95481706ada30ae49
+  branch: dsv41-recipe-engine4
+  commit: &tf_sha b86514a5ac8700b32e7b24f1095349df4ce2b922
   base_release: v0.6.4 (6ea5ade)
   upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391, https://github.com/ashhart/TensorFold/pull/408]
   upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine frozen at 0.6.5; PRs 390, 391 and 408 closed; new work goes to the Zig engine)
   family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip; the same tree as e174ee0 on the fork's integration branch)
   keyed_draw: 0582d5f (C6) and 3ab53da (C6b), merged as 684e2eb and d663c34 (db7f53e has the tree of 41306d5, the s4 pin)
-  previous: 41306d5e2acd5651fc0954609b3a651d2ef61d6e (fork branch dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
+  previous: 903a1e8af62c8f46eceee6b95481706ada30ae49 (fork branch dsv41-recipe-engine3; session s5), 41306d5e2acd5651fc0954609b3a651d2ef61d6e (dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
 
 hardware:
   shape: 2x DGX Spark (GB10)
@@ -76,6 +78,13 @@ serve:
     # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt); s5 twice at TF_SHA, with the 1,039,528-token
     # needle again (evidence/s5-final/bootF/needle.jsonl, MemAvailable at least 15.0 / 23.7 GiB over that boot).
     CONTEXT: 1048576
+    # Requests decoded together, 1 to 4 (the family's MAX_LANES); each lane holds a whole CONTEXT window, allocated
+    # at startup. pending measurement: 4 ships if session s6 (ABBA against 1) shows the memory floors hold at 4
+    # windows of CONTEXT and c=1 holds, else 2. run.sh computes its memory-gate floor from PARALLEL and CONTEXT.
+    PARALLEL: 4
+    # With PARALLEL 2 or more, a new prompt fills between decode rounds, which take this share of each prompt span's
+    # time (the engine's default; 0: whole prompts first). Not passed at PARALLEL 1, where it has no effect.
+    DECODE_SHARE: 0.5
     # The engine's default draft policy, written out so a bump cannot change it silently: up to 5 DSpark drafts a
     # round, the chain stopping where the drafts' confidence product falls under 0.15 (TF_SHA's
     # families/deepseek_v41/cuda DEFAULT_DRAFTS, DEFAULT_CONFIDENCE). A fixed count (MTP_DRAFTS alone, MTP_CONFIDENCE
@@ -151,7 +160,7 @@ links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8
   base_model: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
   engine: https://github.com/ashhart/TensorFold
-  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine3
+  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine4
   base_image: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
   repo: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-TensorFold-2x-DGX-Spark
   sibling_vllm: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark

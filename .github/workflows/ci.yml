@@ -35,13 +35,13 @@ jobs:
             exit 1
           fi
           grep -F 'exceeds the native window 1048576' err
-      - name: run.sh refuses a memory gate below 94 GiB
+      - name: run.sh refuses a memory gate below the 95 GiB floor (PARALLEL=4 at the native window)
         run: |
           if VALIDATE_ONLY=1 MEM_GATE_GIB=0 ./run.sh 2>err; then
             echo "run.sh accepted MEM_GATE_GIB=0" >&2
             exit 1
           fi
-          grep -F 'is below 94 GiB' err
+          grep -F 'is below 95 GiB' err
       - name: run.sh refuses EXTRA_ARGS that re-set an owned flag
         run: |
           if VALIDATE_ONLY=1 EXTRA_ARGS="--context 8192" ./run.sh 2>err; then
@@ -51,8 +51,8 @@ jobs:
           grep -F 'which run.sh passes itself' err
       - name: run.sh refuses EXTRA_ARGS the family ignores
         run: |
-          if VALIDATE_ONLY=1 EXTRA_ARGS="--parallel 2" ./run.sh 2>err; then
-            echo "run.sh accepted EXTRA_ARGS=\"--parallel 2\"" >&2
+          if VALIDATE_ONLY=1 EXTRA_ARGS="--prefill-fp8" ./run.sh 2>err; then
+            echo "run.sh accepted EXTRA_ARGS=\"--prefill-fp8\"" >&2
             exit 1
           fi
           grep -F 'refuses or ignores it' err
