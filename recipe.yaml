@@ -45,13 +45,13 @@ engine:
   # b86514a's. They are the engine's defaults, so no recipe flag turns them on.
   # Upstream's Python engine ends at 0.6.6 on its python-0.6 branch (ashhart/TensorFold issue 286); it closed PRs
   # 390, 391 and 408. Its main is the Zig engine 1.0.x, which has no DeepSeek-V4 family (a port for 1.0.x, CHANGELOG
-  # 1.0.0) and serves CUDA for Nemotron only, on one GPU. So the recipe pins the fork. A bump needs new evidence.
+  # 1.0.0) and serves CUDA for Nemotron only, single-host (two-rank --speed-up is two Macs). So the recipe pins the fork. A bump needs new evidence.
   repo: &tf_repo https://github.com/sfxnz/TensorFold.git
   branch: dsv41-recipe-engine5
   commit: &tf_sha 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
   base_release: v0.6.6 (cb2ebf0; upstream's python-0.6 at ed78d6f merged as dc971a2), on v0.6.4 (6ea5ade)
   upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391, https://github.com/ashhart/TensorFold/pull/408]
-  upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine ends at 0.6.6 on branch python-0.6; PRs 390, 391 and 408 closed; main is the Zig engine 1.0.x, with no DeepSeek-V4 family and CUDA for Nemotron only, one GPU)
+  upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine ends at 0.6.6 on branch python-0.6; PRs 390, 391 and 408 closed; main is the Zig engine 1.0.x, with no DeepSeek-V4 family and CUDA for Nemotron only, single-host)
   family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip; the same tree as e174ee0 on the fork's integration branch)
   keyed_draw: 0582d5f (C6) and 3ab53da (C6b), merged as 684e2eb and d663c34 (db7f53e has the tree of 41306d5, the s4 pin)
   previous: b86514a5ac8700b32e7b24f1095349df4ce2b922 (fork branch dsv41-recipe-engine4; session s6), 903a1e8af62c8f46eceee6b95481706ada30ae49 (dsv41-recipe-engine3; session s5), 41306d5e2acd5651fc0954609b3a651d2ef61d6e (dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
