@@ -1,0 +1,105 @@
+# s7 step 1: IMAGE_ONLY=1 ./run.sh on spark1, 2026-10-10T10:50:38Z, recipe 38a0607 + working tree (branch agent/tensorfold-dsv41-speed)
+$ IMAGE_ONLY=1 ./run.sh
+==> role=head host=spark1
+==> Building tf-dsv41-flash:0.6.6-19f5478 (TensorFold https://github.com/sfxnz/TensorFold.git @ 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) from docker/Dockerfile
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.55kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for nvcr.io/nvidia/pytorch:26.07-py3@sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/3] FROM nvcr.io/nvidia/pytorch:26.07-py3@sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 37B done
+#5 DONE 0.0s
+
+#6 [2/3] COPY constraints.txt /opt/tensorfold-constraints.txt
+#6 CACHED
+
+#7 [3/3] RUN pip freeze | grep -viE '^tensorfold[ =@]' | sort > /opt/base-freeze.txt  && env -u HF_TOKEN pip install --no-cache-dir -c /opt/tensorfold-constraints.txt "tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb"  && pip freeze | grep -viE '^tensorfold[ =@]' | sort | diff /opt/base-freeze.txt -  && python -c "import json, importlib.metadata as md; d = json.loads(md.distribution('tensorfold').read_text('direct_url.json')); assert d['vcs_info']['commit_id'] == '19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb', d; assert d['url'] == 'https://github.com/sfxnz/TensorFold.git', d; print('tensorfold', md.version('tensorfold'), d['url'], d['vcs_info']['commit_id'])"  && python -c "import tensorfold.families.deepseek_v41 as f; assert f.MODELS == ('sfxnz/DeepSeek-V4.1-Flash-EXL3',), f.MODELS; import torch, triton; print('deepseek_v41', f.__file__, 'torch', torch.__version__, 'triton', triton.__version__)"  && for b in tensorfold ninja nvcc; do command -v "$b" || exit 1; done  && printf '%s@%s\n' "https://github.com/sfxnz/TensorFold.git" "19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb" > /opt/tensorfold-sha
+#7 0.638 Collecting tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+#7 0.638   Cloning https://github.com/sfxnz/TensorFold.git (to revision 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) to /tmp/pip-install-y_i8527y/tensorfold_7f5f587e8efa449bb594dc4118d39a4c
+#7 0.646   Running command git clone --filter=blob:none --quiet https://github.com/sfxnz/TensorFold.git /tmp/pip-install-y_i8527y/tensorfold_7f5f587e8efa449bb594dc4118d39a4c
+#7 2.201   Running command git rev-parse -q --verify 'sha^19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb'
+#7 2.202   Running command git fetch -q https://github.com/sfxnz/TensorFold.git 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+#7 2.506   Running command git checkout -q 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+#7 3.039   Resolved https://github.com/sfxnz/TensorFold.git to commit 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+#7 3.044   DEPRECATION: Setting PIP_CONSTRAINT will not affect build constraints in the future, pip 26.2 will enforce this behaviour change. A possible replacement is to specify build constraints using --build-constraint or PIP_BUILD_CONSTRAINT. To disable this warning without any build constraints set --use-feature=build-constraint or PIP_USE_FEATURE="build-constraint".
+#7 3.044   Installing build dependencies: started
+#7 3.557   Installing build dependencies: finished with status 'done'
+#7 3.557   Getting requirements to build wheel: started
+#7 3.804   Getting requirements to build wheel: finished with status 'done'
+#7 3.805   Preparing metadata (pyproject.toml): started
+#7 3.923   Preparing metadata (pyproject.toml): finished with status 'done'
+#7 3.926 Requirement already satisfied: numpy>=1.26 in /usr/local/lib/python3.12/dist-packages (from tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (2.1.0)
+#7 3.926 Requirement already satisfied: huggingface-hub>=0.24 in /usr/local/lib/python3.12/dist-packages (from tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (1.24.0)
+#7 3.926 Requirement already satisfied: tokenizers>=0.20 in /usr/local/lib/python3.12/dist-packages (from tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (0.23.1)
+#7 3.926 Requirement already satisfied: safetensors>=0.4 in /usr/local/lib/python3.12/dist-packages (from tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (0.8.0)
+#7 3.926 Requirement already satisfied: jinja2>=3.1 in /usr/local/lib/python3.12/dist-packages (from tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (3.1.6)
+#7 3.927 Requirement already satisfied: click<9.0.0,>=8.4.2 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (8.4.2)
+#7 3.927 Requirement already satisfied: filelock>=3.10.0 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (3.32.0)
+#7 3.927 Requirement already satisfied: fsspec>=2023.5.0 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (2026.4.0)
+#7 3.927 Requirement already satisfied: hf-xet<2.0.0,>=1.5.1 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (1.5.2)
+#7 3.927 Requirement already satisfied: httpx<1,>=0.23.0 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (0.28.1)
+#7 3.927 Requirement already satisfied: packaging>=20.9 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (26.2)
+#7 3.928 Requirement already satisfied: pyyaml>=5.1 in /usr/lib/python3/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (6.0.1)
+#7 3.928 Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (4.69.1)
+#7 3.928 Requirement already satisfied: typing-extensions>=4.1.0 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (4.16.0)
+#7 3.930 Requirement already satisfied: anyio in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (4.14.2)
+#7 3.930 Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (2026.7.22)
+#7 3.930 Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (1.0.9)
+#7 3.930 Requirement already satisfied: idna in /usr/local/lib/python3.12/dist-packages (from httpx<1,>=0.23.0->huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (3.18)
+#7 3.931 Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/dist-packages (from httpcore==1.*->httpx<1,>=0.23.0->huggingface-hub>=0.24->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (0.16.0)
+#7 3.934 Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.12/dist-packages (from jinja2>=3.1->tensorfold @ git+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb) (3.0.3)
+#7 3.939 Building wheels for collected packages: tensorfold
+#7 3.939   Building wheel for tensorfold (pyproject.toml): started
+#7 4.247   Building wheel for tensorfold (pyproject.toml): finished with status 'done'
+#7 4.250   Created wheel for tensorfold: filename=tensorfold-0.6.6-py3-none-any.whl size=1821681 sha256=005b52760eb6844642c8dad835430272cf593a5b79459523a004a292853faeff
+#7 4.250   Stored in directory: /tmp/pip-ephem-wheel-cache-afnj3m9m/wheels/15/31/3e/2d7e35e6aba73fc0c53969525102de22d9ee14c2b332716206
+#7 4.253 Successfully built tensorfold
+#7 4.327 Installing collected packages: tensorfold
+#7 4.868 Successfully installed tensorfold-0.6.6
+#7 4.868 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#7 5.129 tensorfold 0.6.6 https://github.com/sfxnz/TensorFold.git 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+#7 6.188 deepseek_v41 /usr/local/lib/python3.12/dist-packages/tensorfold/families/deepseek_v41/__init__.py torch 2.13.0a0+9186a08b2c.nv26.07 triton 3.7.1
+#7 6.410 /usr/local/bin/tensorfold
+#7 6.410 /usr/local/bin/ninja
+#7 6.410 /usr/local/cuda/bin/nvcc
+#7 DONE 6.4s
+
+#8 exporting to image
+#8 exporting layers 0.1s done
+#8 writing image sha256:a76ec03d091dbd84464c33b7e133707ab6fe4860dcd6ff2652fdcde5c3c6a52b done
+#8 naming to docker.io/library/tf-dsv41-flash:0.6.6-19f5478 done
+#8 DONE 0.2s
+==> Image tf-dsv41-flash:0.6.6-19f5478 (TensorFold 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb)
+==> Copying tf-dsv41-flash:0.6.6-19f5478 to spark2 (worker has none, head has sha256:a76ec03d091dbd84464c33b7e133707ab6fe4860dcd6ff2652fdcde5c3c6a52b)
+==> Image tf-dsv41-flash:0.6.6-19f5478 ready. Start the serve with ./run.sh.
+
+real	3m27.242s
+user	0m20.981s
+sys	0m21.196s
+rc=0
+
+# checks after the build, 2026-10-10T10:54:17Z
+$ docker inspect (head, spark1)
+id=sha256:a76ec03d091dbd84464c33b7e133707ab6fe4860dcd6ff2652fdcde5c3c6a52b tensorfold.sha=19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb tensorfold.repo=https://github.com/sfxnz/TensorFold.git
+$ docker inspect (worker, spark2)
+id=sha256:a76ec03d091dbd84464c33b7e133707ab6fe4860dcd6ff2652fdcde5c3c6a52b tensorfold.sha=19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb tensorfold.repo=https://github.com/sfxnz/TensorFold.git
+$ installed commit and package data in the image (head; no GPU)
+https://github.com/sfxnz/TensorFold.git@19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+tensorfold 0.6.6 https://github.com/sfxnz/TensorFold.git 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+engram_io.cpp
+gemv.cpp
+gemv.cu
+l2warm.cpp
+l2warm.cu

@@ -1,0 +1,39 @@
+$ uv run --no-project --python 3.12 --with pytest --with pyyaml python -m pytest -q tests
+........................................................................ [ 78%]
+....................                                                     [100%]
+92 passed in 7.46s
+rc=0
+$ python3 -m unittest discover -s tests -q
+----------------------------------------------------------------------
+Ran 92 tests in 7.085s
+
+OK
+rc=0
+$ python3 kit/render.py --check
+rc=0
+$ VALIDATE_ONLY=1 ./run.sh
+==> validate-only image=tf-dsv41-flash:0.6.6-19f5478 tf=19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb repo=https://github.com/sfxnz/TensorFold.git snapshot=982b70452f399814f56b46272fd30394ae10d58c tp=2 ctx=1048576 drafts=5 confidence=0.15 thinking=0 max_tokens=4096 top_p=1.0 parallel=4 decode_share=0.5 hca=rocep1s0f1,roceP2p1s0f1 host=0.0.0.0 mem_gate=100 engine_env=0
+rc=0
+$ VALIDATE_ONLY=args ./run.sh
+rank1: tensorfold serve /cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c --tp 2 --rank 1 --master 10.100.8.1 --master-port 29571 --name deepseek-ai/DeepSeek-V4.1-Flash --context 1048576 --parallel 4 --mtp-drafts 5 --top-p 1.0 --no-update-check --decode-share 0.5 --mtp-confidence 0.15 --no-thinking
+rank0: tensorfold serve /cache/huggingface/hub/models--sfxnz--DeepSeek-V4.1-Flash-EXL3/snapshots/982b70452f399814f56b46272fd30394ae10d58c --tp 2 --rank 0 --master 10.100.8.1 --master-port 29571 --name deepseek-ai/DeepSeek-V4.1-Flash --context 1048576 --parallel 4 --mtp-drafts 5 --top-p 1.0 --no-update-check --decode-share 0.5 --mtp-confidence 0.15 --no-thinking --host 0.0.0.0 --port 8000 --max-tokens 4096
+env: HF_HOME=/cache/huggingface
+env: HF_HUB_OFFLINE=1
+env: TENSORFOLD_NO_UPDATE_CHECK=1
+env: PYTHONUNBUFFERED=1
+env: PYTHONDONTWRITEBYTECODE=1
+env: TORCH_EXTENSIONS_DIR=/cache/tf/torch_extensions
+env: TRITON_CACHE_DIR=/cache/tf/triton
+env: CUDA_CACHE_PATH=/cache/tf/nv
+env: TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0
+env: NCCL_SOCKET_IFNAME=enp1s0f1np1
+env: NCCL_IB_HCA=rocep1s0f1,roceP2p1s0f1
+env: NCCL_DEBUG=WARN
+rc=0
+$ shellcheck -S warning run.sh stop.sh tools/session_gate.sh
+rc=0
+$ sha256sum tools/bench_concurrent.py; git -C ~/projects/code/TensorFold show 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb:tools/bench_concurrent.py | sha256sum
+262e5323e3ba439056b2794f96edf85caf5a81ea2790dd2ac374069b7dbed501  tools/bench_concurrent.py
+262e5323e3ba439056b2794f96edf85caf5a81ea2790dd2ac374069b7dbed501  -
+$ sha256sum bench_decode.py
+3172cbc4558ae9c18a2a5844b824129c0cd9ab4d0371c148c1c31a0999708813  bench_decode.py
