@@ -1,0 +1,7 @@
+2026-10-10T11:51:41Z
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       8.1Gi        96Gi       308Ki        19Gi       113Gi
+Swap:           15Gi       3.9Gi        12Gi
+               total        used        free      shared  buff/cache   available
+Mem:           121Gi       4.6Gi        94Gi       280Ki        23Gi       117Gi
+Swap:           15Gi       1.8Gi        14Gi

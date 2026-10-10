@@ -1,0 +1,67 @@
+SP-P9 GPU check (2026-10-09). Verdict: bits equal, tests pass (after one bug fix), KILLED (prose round saving under 0.4 ms).
+
+Trees: base = int/dsv41-speed 2987c8a (wt/INT-speed; the tip moved from f9dd67b, merged into unit/SP-P9 as 87cc8a1).
+unit = unit/SP-P9 16d4b7c. Knob TF_DSV41_CHAIN_STOP=1 on both ranks for every unit run unless noted.
+
+0. Bug found and fixed (b5409b7, fix(deepseek_v41): capture stopped chains on a high-priority stream)
+  torch 2.13's begin_capture_to_if_node captures each body on the next stream of the low-priority pool (32, round robin).
+  torch.cuda.graph's capture stream comes from the same pool, so after at most 31 bodies in a capture the pool hands
+  back the capturing stream itself and cudaStreamBeginCaptureToGraph fails with cudaErrorIllegalState. A chain at d=5
+  holds 16 bodies, so every Graphs.warm with the stop failed (first suite run: 25 golden errors + 2 fails knob off,
+  142 errors + 6 fails knob on, all this error). Repro: pool_repro/repro.out (default capture stream fails at if-node
+  31; a high-priority capture stream holds 80). Fix: Stop.stream (priority -1, never handed out by the low pool);
+  Graphs._capture takes a stream and the chain graphs use it when the stop is on. New GPU test
+  test_a_capture_on_the_stop_stream_holds_more_bodies_than_the_stream_pool (80 bodies; fails before: no Stop.stream).
+  Two test-side changes for knob-on runs (f8f2aa2, 16d4b7c): test_graphs_replay_the_eager_rounds and dsv41_tp_check
+  hashed the whole dbuf.dlog after a proposal; a stopped graph leaves the rows after the kept drafts without their
+  Markov bias (never read by the host), so with the stop on they now hash dlog[:len(drafts)]. Knob off: unchanged.
+
+1. Tests
+  CPU family host tests: 401 passed, 16 skipped (after merge and after the fix).
+  GPU family suite tests/cuda/test_dsv41_*.py, final code: head knob off 808 passed 40 skipped; head knob on 808 passed
+    40 skipped; spark2 knob off 808 passed 40 skipped. (spark2 knob on at b5409b7: 806 passed, 2 failed: the dlog hash
+    above, and test_prompts_admitted_mid_decode_equal_their_solo_runs[4.0-129] asserting "1 lanes decoding at the
+    last admission", a timing assertion, its streams equal; both passed 3 of 3 reruns on spark2 knob on after
+    f8f2aa2, rerun_on_spark2.txt.) 40 skips = checkpoint-only and the fp4-cast skip, as in sp-P7.
+  All new P9 GPU tests ran and pass: chain_stop (4), stopped chains == full chains, golden through stopped graphs,
+    4 lanes with the stop == solo. Real checkpoint test_dsv41_dspark.py knob on: 8 passed.
+  dsv41_tp_check (tp_check/compare.txt): unit NCCL (stop on) == unit --pair (stop on, eager) on both ranks, digests
+    r0 0a29f10e.., r1 e690fbc5..; base vs unit NCCL: replies, accepted, cached, head, verify steps and cache hashes
+    equal on both ranks (blocks hash differs by design: base full dlog, unit rows up to the kept drafts; the
+    full-dlog run try1_fullblock differed in 3 of 183 block hashes a rank only; verify steps, replies and cache equal).
+
+2. Microbench (bench_table.txt; dev/sp-p9/bench_p9.py, 4 lanes at 1048576, held greedy stream, median of 100 replays,
+   median over 2 runs x 2 ranks). Chain graph device ms, d=5:
+     greedy: base 5.501; unit full chain 5.595 (+0.094 if-node cost); stop after kept 1/2/3/4: 4.929/5.099/5.287/5.408
+     keyed:  base 6.010; unit full chain 6.166 (+0.156);              stop after kept 1/2/3/4: 4.987/5.296/5.680/5.831
+   A skipped greedy Markov step is worth ~0.15-0.2 ms (plan assumed 0.3); keyed ~0.3.
+   Kept drafts, confidences: sha equal base == unit in every cell; unit runs only inputs up to the stop (+1 at most).
+   Ruler replies (greedy, 200 tokens, d=5 / 0.15, c=1; kept drafts per round identical in every run):
+     prose      66 rounds, mean kept 2.95 {1:11, 2:20, 3:11, 4:9, 5:15}: est. chain saving 0.245 ms a round
+     structured 34 rounds, mean kept 4.97: -0.088 ms (the if-node cost)
+     prose_long 92 rounds, mean kept 2.33: 0.346 ms
+   Timed decode rounds of the same replies (mean of reply means, 8 a tree): prose base 52.511 unit 52.818 (+0.307),
+     structured 58.127 / 58.347 (+0.220), prose_long 50.812 / 50.975 (+0.163): no gain visible (noise ~0.5 ms).
+   Reply shas identical across trees, runs, ranks: prose 2e916de1.., structured aea865be.., prose_long f2962765...
+   Keyed what-if (bench_keyed_estimate.txt, greedy kept histograms): prose 0.431, prose_long 0.604 ms.
+
+3. Two-rank solo profile (graph_table.txt; profile_p9.py = p0/profile_p0.py, --context 131584, 131072-token prompt).
+   logits_sha R=1..6 IDENTICAL in every run (base x3, unit x3, and the 3 diagnostic unit runs), both ranks, and equal
+   to sp-P7's: r0 00da0fa1 de53e574 db7103d8 7b4fd03d 521c461f 244375c8; r1 319aafa0 ede733a1 24205af9 28239c43
+   352f2af1 305adf05. state_sha, first token, DSpark tokens/rounds/drafted/accepted/keeps/depths equal in all runs.
+   Verify graph ms, median over runs x ranks, base -> unit (knob on):
+     R=1 33.562 -> 34.149, R=2 39.133 -> 39.433, R=3 43.733 -> 44.088, R=4 48.142 -> 48.426, R=5 49.132 -> 49.546,
+     R=6 52.076 -> 52.470 (+0.29 to +0.59 ms; base runs alone span <= 0.45).
+   The verify graphs hold no P9 code. Diagnostics (one run each): unit knob off == base (-0.20..+0.12,
+     graph_table_unit_off.txt); knob on with if-nodes and gates disabled (stop tensors + stream kept) +0.18..+0.63
+     (graph_table_unit_nobody.txt); knob on with only the stop's three small device tensors per Work (no stream, no
+     if-node) +0.16..+0.53 (graph_table_unit_nostream.txt). So the slowdown follows the extra allocations (a device
+     memory layout effect on the verify graphs), not the conditional nodes; a single-GPU probe shows no driver-wide
+     cost of if-node graphs on other graphs (cond_overhead/probe.out). Not resolved further.
+   DSpark solo decode ms/round (68 rounds): base 58.354, unit 58.319, unit knob off 57.808 (one run): no net gain.
+
+Kill rule (speed-plan P9): prose round saving under 0.4 ms.
+  Measured: prose 0.245 ms a round estimated from the chain microbench (prose_long 0.346, structured -0.088), before
+  the verify-graph slowdown; the timed ruler rounds and the solo profile show no gain. KILLED.
+  The knob stays off by default (not flipped); no ABBA run. The fix b5409b7 is needed for any later use of the stop.
+GPUs: both idle after every step (docker ps: conduit only here, nothing on spark2).

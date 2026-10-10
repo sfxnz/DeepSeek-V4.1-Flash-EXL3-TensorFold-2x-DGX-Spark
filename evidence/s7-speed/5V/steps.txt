@@ -1,0 +1,8 @@
+2026-10-10T13:47:23Z 5V run.sh (env AUDIT=strict ./run.sh)
+2026-10-10T13:57:58Z 5V smoke
+2026-10-10T13:57:59Z 5V warm pass (discarded)
+2026-10-10T13:58:10Z 5V ruler c=1 2 4
+2026-10-10T14:06:28Z 5V sampled cells
+2026-10-10T14:13:35Z 5V diverse cell
+2026-10-10T14:19:50Z 5V logs and stop
+2026-10-10T14:20:34Z 5V done

@@ -1,0 +1,16 @@
+copy	source (lab, under data/tf-dsv41/)	sha256 (source = copy)
+P0-summary.txt	receipts/sp-P0/summary.txt	5d163de8a4f9fe620c82e708f273ce1f860fa87760b6db5b88dfb30f4d9b8fa5
+P4-summary.txt	receipts/sp-P4/abba/summary.txt	6c638ba0861a1b5afbb4977e5cb6e2fed5a48542dad9bc0dbfd22ed6b16b6b5c
+P10-summary.txt	receipts/sp-P10/abba/summary.txt	9f60fd15730d6e017d88a753da995286136d08a3dfaf11a0c901e98df8083093
+P2-summary.txt	receipts/sp-P2/abba/summary.txt	8965ccca0ea062830c68fcb33fc90b89bd3fbdb427401f1dc40afeadda299438
+P1-summary.txt	receipts/sp-P1/followup/summary.txt	425068d34eec93ea3977f2b2cdf41a6089a1abab3875c39913fb3f99fa7168a7
+P6b-summary.txt	receipts/sp-P6b/summary.txt	0ffe2df2bdb0daae3d1b635b1aa302572d30f8c84c2ab6c9c53a1378f3368481
+P6-summary.txt	receipts/sp-P6/abba/summary.txt	2ec3f719480f0863efe54fd833f1bee75f8c804de12157d0931bb8b522bffa69
+P3-summary.txt	receipts/sp-P3/check/summary.txt	cd6c60ac2d9da5967ddc10929c9413ce4ab564fed688653d5fe0f56bbb6bd616
+P5-summary.txt	receipts/sp-P5/check/summary.txt	e7bda0afee313d3f8f5099262799f0c8fe934fd6027f6fc258c7bc49016dd54a
+P7-summary.txt	receipts/sp-P7/abba/summary.txt	b18b6fc87a48da85ffbe227101c9edcb313760d3415b9e5245aa981017954358
+P8-summary.txt	receipts/sp-P8/check/summary.txt	36d7fc0c6dbdbb011aacbc94ba5d80675179ab5ae31fda31c91e103a4fc0ea4e
+P9-summary.txt	receipts/sp-P9/check/summary.txt	936a69e906445495097d8ad403aecbf34e32e6d22b14b0c62083d2f42decaab8
+P11-summary.txt	receipts/sp-P11/check/summary.txt	7feaf82f616a624751b2127225ffb0c3bb898878c0fd7ee1de53c83cea78261a
+P12-summary.txt	receipts/sp-P12/check/summary.txt	68737df14cada1964842dbe93f76f6ef7eb0c5405ef9e36d6c742f6a91f9fb47
+orchestrator-notes.txt	design/speed-plan.md from its first "## Orchestrator note" line to the end (source sha256 0a2079259883961045cc5de036ea72b9c34917e5df38fe0d3bb6c733e3fc458a)	2cea2424184e55ad3e0a2bcfcd9bf9a186dda1c9aa6c96ea6ae069288aa76b07

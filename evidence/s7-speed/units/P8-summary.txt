@@ -1,0 +1,54 @@
+SP-P8 GPU check (2026-10-09). Verdict: bits equal, tests pass, KILLED (c=4 under +1%). pass = false.
+
+Trees: base = int/dsv41-speed 2987c8a (wt/INT-speed). unit = unit/SP-P8 fd1d7c7 (wt/SP-P8) = 0022957 + merges of
+int/dsv41-speed d139943 (P4) and 2987c8a (P10). Both merges were clean. No bug found, no fix commit.
+int/dsv41-speed moved to 2987c8a during the check, so the first GPU pass (gpu_first_merge/: head 51 passed, spark2
+family 761 passed / 40 skipped, all green on 5b4ef49) was redone on fd1d7c7. A first tp_check ran with mixed trees
+(rank 0 2987c8a, rank 1 d139943) and hung. It was stopped with docker stop (tp_aborted_mixed_trees/). Every later
+two-rank step checked HEAD and byte-equal src/tests on both hosts first (same_trees.sh).
+Unit arms ran with TF_DSV41_ABSORB_GRAPHS=1. Each tree and commit had its own fresh extension dir (extension_dirs.txt).
+
+1. Tests (pinned image nvcr.io/nvidia/pytorch:26.07-py3), unit tree fd1d7c7
+  CPU, no GPU visible: 387 passed, 52 skipped (cpu_tests_family_after_merge2.txt).
+  head GPU with the pack: test_dsv41_dspark, lanes, multi, greedy: 74 passed, 0 skipped (gpu/unit.txt). This includes
+    test_graph_replays_equal_eager (device-start graphs), test_moved_absorb_graphs_replay_eager_from_every_segment_start,
+    the 6 "moved" cases of test_streams_together_equal_their_solo_runs (c = 2, 3, 4 x fixed/confidence), and the pack
+    tests test_pack_blocks_follow_the_reference... and test_pack_shared_forward_rows_equal_each_lane_alone_on_two_ranks.
+  spark2 GPU family, tests/cuda/test_dsv41_*.py: 784 passed, 40 skipped, 0 failed (gpu/family.txt). golden, multi,
+    multi_tp, multi_kept, sample_lanes and greedy ran with no skips. The skips are the real-checkpoint tests and the
+    torch float4 limit, the same set as earlier checks.
+  dsv41_tp_check (tp/compare.txt): base and unit JSON lines byte-identical on rank 0, rank 1 and --pair. NCCL == pair.
+    Digests rank0 c02c8cad.., rank1 0d0daff9.. (the same as the sp-P4 receipts).
+
+2. Microbench: host launch ms of a non-first lane (plan: 0.94-1.04 today against 0.445).
+  Lanes mode, 4 lanes at 1048576, c = 1, 2, 4, 200 greedy tokens a stream, both ranks. Order: base, unit, unit,
+  base, unit with the knob off, then unit, base (micro_summary.txt, micro_lanes_table.txt).
+  Rounds with all 4 lanes live (n=46 each). Rank 0 / rank 1 means:
+    other-lane launch ms: base 1.165/1.127 (cold first run), 1.141/0.890, 1.067/0.898 -> unit 0.740/0.534,
+      0.624/0.563, 0.555/0.547. Saves about 0.35-0.55 ms a non-first lane, as the plan expected.
+    lanes' summed host ms a round: base 4.64/4.05, 4.56/3.81 -> unit 3.53/3.23, 3.23/2.77, 3.05/2.71. That is
+      1.0-1.5 ms less host time a c=4 round.
+    round wall ms: base 110.40/110.37, 110.52/110.47 -> unit 110.85/110.81, 111.12/111.12, 110.85/110.84.
+      Unit is +0.3 to +0.7 ms slower (-0.3% to -0.6%), inside noise. Knob off: 110.53/110.49.
+    all rounds, mean ms: base 103.73, 104.02 -> unit 104.28, 104.21, 104.27. The first run, base, was cold
+      (108.55) and is left out.
+  c=2, all lanes live: base 74.60, 74.30 -> unit 74.37, 74.55, 74.62 ms (equal). c=1 has no non-first lane.
+  The saved host time does not shorten the round. The absorb launches overlap device work that is already queued,
+  and the next proposal's sync waits on the device either way.
+  Stream token shas and draft stats (rounds, drafted, accepted) are equal across all 7 lanes runs, at c = 1, 2 and 4,
+  on both ranks. Knob on == knob off == base.
+
+3. Two-rank solo profile (p0/profile_p0.py, 131072-token prompt, --context 131584). Order: base, unit, unit2, base2.
+  logits_sha R=1..6 are identical in all 4 runs on both ranks (graph_table.txt):
+    rank0 00da0fa1.. de53e574.. db7103d8.. 7b4fd03d.. 521c461f.. 244375c8.. (the same as the P4 receipts).
+  state_sha, DSpark tokens/keeps/depths and serial tokens are equal across all 4 runs (decode_compare.txt).
+  Graph ms, median of 2 runs x 2 ranks, base -> unit:
+    R=1 33.61 -> 33.83   R=2 39.04 -> 39.13   R=3 43.88 -> 44.11   R=4 47.98 -> 48.08   R=5 49.12 -> 49.34
+    R=6 52.13 -> 52.09
+  This is expected: P8 does not touch the solo graphs or the verify forward. The +0.1-0.2 ms is run-to-run spread.
+
+Kill rule (speed-plan P8): c=4 under +1%. Measured c=4 round wall: -0.3% to -0.6% (no gain). KILLED.
+The knob TF_DSV41_ABSORB_GRAPHS stays off by default (unchanged). Per the plan: fold batched absorb into P6.
+P8's per-lane absorb graph saves host time only, and host time is not on the critical path at c=4.
+No ABBA was run (killed before it).
+GPUs: both idle at the end (docker ps: conduit only here, nothing on spark2). MemAvailable 114 / 116 GiB.

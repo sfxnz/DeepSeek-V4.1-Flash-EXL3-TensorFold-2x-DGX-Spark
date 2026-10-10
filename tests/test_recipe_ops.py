@@ -61,10 +61,11 @@ def _defaults() -> dict[str, str]:
 
 
 def _gate(parallel: int, context: int) -> int:
-    """run.sh's memory-gate floor (mp5): resident 75.99 + max(5.33, 3.71 + 0.95 (P - 1) CONTEXT / 1048576) + 12.1 GiB,
-    rounded up, in exact fractions."""
+    """run.sh's memory-gate floor (mp5, s7): resident 75.99 + max(5.33, 3.71 + 0.95 (P - 1) CONTEXT / 1048576 + 0.01 at
+    P >= 2) + 12.1 GiB, rounded up, in exact fractions."""
     from fractions import Fraction
     geometry = Fraction(371, 100) + Fraction(95, 100) * (parallel - 1) * Fraction(context, 1048576)
+    geometry += Fraction(1, 100) * (parallel > 1)   # s7: the batched proposals' scratch (8.81 MiB at 4 lanes)
     total = Fraction(7599, 100) + max(Fraction(533, 100), geometry) + Fraction(1210, 100)
     return -(-total.numerator // total.denominator)
 

@@ -1,0 +1,8 @@
+2026-10-10T10:58:39Z W1 run.sh arm B (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks)
+2026-10-10T11:03:00Z W1 warm pass (discarded)
+2026-10-10T11:03:11Z W1 gate RUNS=1
+2026-10-10T11:13:04Z W1 diverse c=1 2 4 runs=1
+2026-10-10T11:13:37Z W1 sampled cells c=1 2 4 runs=1
+2026-10-10T11:14:18Z W1 prefill_cold
+2026-10-10T11:18:02Z W1 logs and stop
+2026-10-10T11:18:22Z W1 done

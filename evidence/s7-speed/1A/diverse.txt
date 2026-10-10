@@ -1,0 +1,205 @@
+# 2026-10-10T11:35:54Z python3 /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/bench_diverse.py --url http://127.0.0.1:8000/v1/chat/completions --model deepseek-ai/DeepSeek-V4.1-Flash --phase both --concurrency 1 2 4 --runs 9 --max-tokens 200
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=9 concurrency=[1, 2, 4] phases=['prose', 'code']
+phase=prose c=1 run=1 prompts=[0] wall=4.65s agg=44.77 tok/s per_stream=[44.78] ttft=[0.205] ms_round=[54.9] sha=[959d71b53449]
+phase=prose c=1 run=2 prompts=[1] wall=5.33s agg=38.83 tok/s per_stream=[38.84] ttft=[0.210] ms_round=[52.3] sha=[0d2062596e37]
+phase=prose c=1 run=3 prompts=[2] wall=4.80s agg=43.40 tok/s per_stream=[43.40] ttft=[0.210] ms_round=[53.3] sha=[a7514c0a2a83]
+phase=prose c=1 run=4 prompts=[3] wall=4.86s agg=42.76 tok/s per_stream=[42.76] ttft=[0.201] ms_round=[54.1] sha=[7d6943ef62b2]
+phase=prose c=1 run=5 prompts=[4] wall=5.32s agg=38.64 tok/s per_stream=[38.65] ttft=[0.175] ms_round=[51.0] sha=[7710f97fbd47]
+phase=prose c=1 run=6 prompts=[5] wall=5.49s agg=37.65 tok/s per_stream=[37.65] ttft=[0.204] ms_round=[52.3] sha=[9bc25f4dcf30]
+phase=prose c=1 run=7 prompts=[6] wall=5.26s agg=38.92 tok/s per_stream=[38.92] ttft=[0.149] ms_round=[52.7] sha=[2908ada4be99]
+phase=prose c=1 run=8 prompts=[7] wall=5.74s agg=35.78 tok/s per_stream=[35.78] ttft=[0.176] ms_round=[50.6] sha=[560ccc84818b]
+phase=prose c=1 run=9 prompts=[0] wall=4.48s agg=45.08 tok/s per_stream=[45.09] ttft=[0.064] ms_round=[54.5] sha=[959d71b53449]
+phase=prose c=2 run=1 prompts=[0, 1] wall=6.85s agg=59.15 tok/s per_stream=[34.19,29.33] ttft=[0.181,0.065] ms_round=[71.9,69.2] sha=[959d71b53449,0d2062596e37]
+phase=prose c=2 run=2 prompts=[2, 3] wall=6.43s agg=63.06 tok/s per_stream=[31.80,31.44] ttft=[0.175,0.068] ms_round=[72.8,73.6] sha=[a7514c0a2a83,7d6943ef62b2]
+phase=prose c=2 run=3 prompts=[4, 5] wall=7.24s agg=55.92 tok/s per_stream=[28.20,27.88] ttft=[0.187,0.068] ms_round=[69.9,70.7] sha=[7710f97fbd47,9bc25f4dcf30]
+phase=prose c=2 run=4 prompts=[6, 7] wall=7.53s agg=53.76 tok/s per_stream=[29.46,26.67] ttft=[0.188,0.067] ms_round=[69.6,67.8] sha=[2908ada4be99,560ccc84818b]
+phase=prose c=2 run=5 prompts=[0, 1] wall=6.79s agg=59.73 tok/s per_stream=[34.31,30.13] ttft=[0.072,0.184] ms_round=[71.6,67.4] sha=[959d71b53449,0d2062596e37]
+phase=prose c=2 run=6 prompts=[2, 3] wall=6.30s agg=64.50 tok/s per_stream=[32.14,32.58] ttft=[0.067,0.188] ms_round=[72.0,71.0] sha=[a7514c0a2a83,7d6943ef62b2]
+phase=prose c=2 run=7 prompts=[4, 5] wall=7.10s agg=57.10 tok/s per_stream=[28.79,28.48] ttft=[0.186,0.071] ms_round=[68.4,69.2] sha=[7710f97fbd47,9bc25f4dcf30]
+phase=prose c=2 run=8 prompts=[6, 7] wall=7.50s agg=53.94 tok/s per_stream=[29.49,26.78] ttft=[0.175,0.068] ms_round=[69.6,67.6] sha=[2908ada4be99,560ccc84818b]
+phase=prose c=2 run=9 prompts=[0, 1] wall=6.78s agg=59.79 tok/s per_stream=[34.40,29.65] ttft=[0.182,0.068] ms_round=[71.4,68.5] sha=[959d71b53449,0d2062596e37]
+phase=prose c=4 run=1 prompts=[0, 1, 2, 3] wall=10.21s agg=79.92 tok/s per_stream=[22.23,20.25,21.27,21.42] ttft=[0.072,0.379,0.181,0.315] ms_round=[110.5,100.3,108.8,108.0] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=prose c=4 run=2 prompts=[4, 5, 6, 7] wall=11.04s agg=73.78 tok/s per_stream=[19.04,19.25,19.92,18.34] ttft=[0.071,0.311,0.372,0.185] ms_round=[103.5,102.4,103.0,98.6] sha=[7710f97fbd47,9bc25f4dcf30,2908ada4be99,560ccc84818b]
+phase=prose c=4 run=3 prompts=[0, 1, 2, 3] wall=10.19s agg=80.01 tok/s per_stream=[22.31,19.88,21.54,21.38] ttft=[0.072,0.178,0.375,0.307] ms_round=[110.1,102.2,107.4,108.2] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=prose c=4 run=4 prompts=[4, 5, 6, 7] wall=11.02s agg=73.96 tok/s per_stream=[19.12,19.22,19.88,18.71] ttft=[0.072,0.189,0.317,0.379] ms_round=[103.0,102.5,103.2,96.7] sha=[7710f97fbd47,9bc25f4dcf30,2908ada4be99,560ccc84818b]
+phase=prose c=4 run=5 prompts=[0, 1, 2, 3] wall=10.13s agg=80.67 tok/s per_stream=[22.54,20.44,21.28,21.43] ttft=[0.332,0.394,0.069,0.193] ms_round=[109.0,99.3,108.7,108.0] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=prose c=4 run=6 prompts=[4, 5, 6, 7] wall=11.02s agg=73.79 tok/s per_stream=[19.25,19.37,19.76,18.78] ttft=[0.199,0.262,0.072,0.419] ms_round=[102.3,101.7,103.8,96.3] sha=[7710f97fbd47,9bc25f4dcf30,2908ada4be99,560ccc84818b]
+phase=prose c=4 run=7 prompts=[0, 1, 2, 3] wall=10.09s agg=80.85 tok/s per_stream=[22.52,20.34,21.81,21.52] ttft=[0.074,0.305,0.365,0.180] ms_round=[109.1,99.8,106.1,107.5] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=prose c=4 run=8 prompts=[4, 5, 6, 7] wall=11.12s agg=73.24 tok/s per_stream=[18.96,19.05,19.81,18.42] ttft=[0.071,0.184,0.370,0.310] ms_round=[103.9,103.4,103.5,98.2] sha=[7710f97fbd47,9bc25f4dcf30,2908ada4be99,560ccc84818b]
+phase=prose c=4 run=9 prompts=[0, 1, 2, 3] wall=10.07s agg=81.06 tok/s per_stream=[22.61,20.54,21.59,21.75] ttft=[0.073,0.376,0.180,0.314] ms_round=[108.7,98.9,107.2,106.4] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=code c=1 run=1 prompts=[0] wall=3.25s agg=64.20 tok/s per_stream=[64.21] ttft=[0.147] ms_round=[63.2] sha=[77415e80a85a]
+phase=code c=1 run=2 prompts=[1] wall=2.52s agg=83.37 tok/s per_stream=[83.39] ttft=[0.134] ms_round=[64.5] sha=[60363dc518a3]
+phase=code c=1 run=3 prompts=[2] wall=2.62s agg=80.94 tok/s per_stream=[80.96] ttft=[0.163] ms_round=[64.7] sha=[bd8d4d310b92]
+phase=code c=1 run=4 prompts=[3] wall=3.11s agg=67.15 tok/s per_stream=[67.16] ttft=[0.143] ms_round=[63.0] sha=[858b031dc7d1]
+phase=code c=1 run=5 prompts=[4] wall=3.49s agg=59.43 tok/s per_stream=[59.45] ttft=[0.143] ms_round=[59.8] sha=[58d23ee72176]
+phase=code c=1 run=6 prompts=[5] wall=2.65s agg=79.42 tok/s per_stream=[79.44] ttft=[0.141] ms_round=[64.2] sha=[99ae047c393b]
+phase=code c=1 run=7 prompts=[6] wall=2.90s agg=73.31 tok/s per_stream=[73.33] ttft=[0.182] ms_round=[64.6] sha=[d58beb35b462]
+phase=code c=1 run=8 prompts=[7] wall=3.06s agg=82.05 tok/s per_stream=[82.07] ttft=[0.635] ms_round=[65.5] sha=[23f1db9068ca]
+phase=code c=1 run=9 prompts=[0] wall=2.97s agg=68.54 tok/s per_stream=[68.55] ttft=[0.066] ms_round=[59.2] sha=[77415e80a85a]
+phase=code c=2 run=1 prompts=[0, 1] wall=4.12s agg=99.74 tok/s per_stream=[50.68,59.43] ttft=[0.195,0.069] ms_round=[80.1,90.5] sha=[77415e80a85a,60363dc518a3]
+phase=code c=2 run=2 prompts=[2, 3] wall=3.99s agg=103.08 tok/s per_stream=[58.50,52.41] ttft=[0.070,0.197] ms_round=[89.5,80.8] sha=[bd8d4d310b92,858b031dc7d1]
+phase=code c=2 run=3 prompts=[4, 5] wall=4.38s agg=93.64 tok/s per_stream=[46.14,60.30] ttft=[0.070,0.196] ms_round=[77.0,84.6] sha=[58d23ee72176,99ae047c393b]
+phase=code c=2 run=4 prompts=[6, 7] wall=3.79s agg=108.56 tok/s per_stream=[53.41,59.54] ttft=[0.067,0.186] ms_round=[88.7,90.3] sha=[d58beb35b462,23f1db9068ca]
+phase=code c=2 run=5 prompts=[0, 1] wall=4.12s agg=99.84 tok/s per_stream=[50.70,59.60] ttft=[0.190,0.068] ms_round=[80.1,90.2] sha=[77415e80a85a,60363dc518a3]
+phase=code c=2 run=6 prompts=[2, 3] wall=4.03s agg=102.05 tok/s per_stream=[58.03,51.86] ttft=[0.071,0.195] ms_round=[90.2,81.6] sha=[bd8d4d310b92,858b031dc7d1]
+phase=code c=2 run=7 prompts=[4, 5] wall=4.38s agg=93.62 tok/s per_stream=[46.16,60.20] ttft=[0.067,0.189] ms_round=[77.0,84.8] sha=[58d23ee72176,99ae047c393b]
+phase=code c=2 run=8 prompts=[6, 7] wall=3.83s agg=107.68 tok/s per_stream=[52.98,58.93] ttft=[0.068,0.190] ms_round=[89.4,91.3] sha=[d58beb35b462,23f1db9068ca]
+phase=code c=2 run=9 prompts=[0, 1] wall=4.14s agg=99.35 tok/s per_stream=[50.47,59.45] ttft=[0.192,0.068] ms_round=[80.5,90.5] sha=[77415e80a85a,60363dc518a3]
+phase=code c=4 run=1 prompts=[0, 1, 2, 3] wall=6.34s agg=130.94 tok/s per_stream=[31.73,37.98,37.54,33.51] ttft=[0.071,0.190,0.339,0.404] ms_round=[128.0,141.6,139.5,126.3] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+phase=code c=4 run=2 prompts=[4, 5, 6, 7] wall=6.72s agg=123.43 tok/s per_stream=[29.94,36.27,34.21,38.27] ttft=[0.075,0.349,0.200,0.408] ms_round=[118.7,140.7,138.5,140.5] sha=[58d23ee72176,99ae047c393b,d58beb35b462,23f1db9068ca]
+phase=code c=4 run=3 prompts=[0, 1, 2, 3] wall=6.34s agg=130.96 tok/s per_stream=[31.72,37.96,37.99,33.16] ttft=[0.071,0.192,0.405,0.340] ms_round=[128.0,141.7,137.8,127.7] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+phase=code c=4 run=4 prompts=[4, 5, 6, 7] wall=6.72s agg=123.37 tok/s per_stream=[29.93,36.34,34.23,38.32] ttft=[0.075,0.349,0.197,0.407] ms_round=[118.7,140.4,138.4,140.3] sha=[58d23ee72176,99ae047c393b,d58beb35b462,23f1db9068ca]
+phase=code c=4 run=5 prompts=[0, 1, 2, 3] wall=6.37s agg=130.55 tok/s per_stream=[31.61,38.00,36.91,33.40] ttft=[0.071,0.348,0.193,0.407] ms_round=[128.5,141.5,141.9,126.8] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+phase=code c=4 run=6 prompts=[4, 5, 6, 7] wall=6.78s agg=122.26 tok/s per_stream=[29.68,36.37,33.89,37.50] ttft=[0.070,0.402,0.191,0.340] ms_round=[119.7,140.3,139.8,143.4] sha=[58d23ee72176,99ae047c393b,d58beb35b462,23f1db9068ca]
+phase=code c=4 run=7 prompts=[0, 1, 2, 3] wall=6.36s agg=130.88 tok/s per_stream=[31.66,38.00,37.55,33.46] ttft=[0.070,0.201,0.349,0.407] ms_round=[128.3,141.5,139.5,126.5] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+phase=code c=4 run=8 prompts=[4, 5, 6, 7] wall=6.75s agg=122.85 tok/s per_stream=[29.80,36.03,34.65,38.24] ttft=[0.071,0.194,0.346,0.405] ms_round=[119.3,141.6,136.7,140.7] sha=[58d23ee72176,99ae047c393b,d58beb35b462,23f1db9068ca]
+phase=code c=4 run=9 prompts=[0, 1, 2, 3] wall=6.45s agg=128.88 tok/s per_stream=[32.95,37.75,37.16,33.21] ttft=[0.406,0.073,0.195,0.344] ms_round=[123.3,142.5,140.9,127.5] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+SHAS {"code/0": {"77415e80a85a": [1, 2, 4]}, "code/1": {"60363dc518a3": [1, 2, 4]}, "code/2": {"bd8d4d310b92": [1, 2, 4]}, "code/3": {"858b031dc7d1": [1, 2, 4]}, "code/4": {"58d23ee72176": [1, 2, 4]}, "code/5": {"99ae047c393b": [1, 2, 4]}, "code/6": {"d58beb35b462": [1, 2, 4]}, "code/7": {"23f1db9068ca": [1, 2, 4]}, "prose/0": {"959d71b53449": [1, 2, 4]}, "prose/1": {"0d2062596e37": [1, 2, 4]}, "prose/2": {"a7514c0a2a83": [1, 2, 4]}, "prose/3": {"7d6943ef62b2": [1, 2, 4]}, "prose/4": {"7710f97fbd47": [1, 2, 4]}, "prose/5": {"9bc25f4dcf30": [1, 2, 4]}, "prose/6": {"2908ada4be99": [1, 2, 4]}, "prose/7": {"560ccc84818b": [1, 2, 4]}}
+SHA_CHECK prompts=16 differing=0 PASS
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "n": 9,
+    "median_decode_tok_s": 38.9238694793013,
+    "median_agg_tok_s": 38.918838568262245,
+    "median_ttft_s": 0.201301502995193,
+    "median_completion_tokens": 200,
+    "median_ms_per_round": 52.70664040335291,
+    "median_tokens_per_round": 2.0618556701030926,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 52.06927191466093,
+    "inter_chunk_ms_p90": 60.486799106001854,
+    "inter_chunk_ms_p99": 68.31649453379214
+  },
+  {
+    "phase": "prose",
+    "concurrency": 2,
+    "n": 18,
+    "median_decode_tok_s": 29.570237311311324,
+    "median_agg_tok_s": 59.15327654474533,
+    "median_ttft_s": 0.12345727148931473,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 69.7560640121071,
+    "median_tokens_per_round": 2.051335998316852,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 69.8585039936006,
+    "inter_chunk_ms_p90": 78.38528351858258,
+    "inter_chunk_ms_p99": 87.23382680676877
+  },
+  {
+    "phase": "prose",
+    "concurrency": 4,
+    "n": 36,
+    "median_decode_tok_s": 20.295582917912007,
+    "median_agg_tok_s": 79.9203226512585,
+    "median_ttft_s": 0.23068993689958006,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 103.51783571479356,
+    "median_tokens_per_round": 2.0618556701030926,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 104.38305488787591,
+    "inter_chunk_ms_p90": 113.2774599827826,
+    "inter_chunk_ms_p99": 149.59297520108518
+  },
+  {
+    "phase": "code",
+    "concurrency": 1,
+    "n": 9,
+    "median_decode_tok_s": 73.32999957802444,
+    "median_agg_tok_s": 73.30902126434205,
+    "median_ttft_s": 0.14336927188560367,
+    "median_completion_tokens": 200,
+    "median_ms_per_round": 64.23115307608477,
+    "median_tokens_per_round": 4.761904761904762,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 64.05971013009548,
+    "inter_chunk_ms_p90": 69.2509004380554,
+    "inter_chunk_ms_p99": 77.79981878586113
+  },
+  {
+    "phase": "code",
+    "concurrency": 2,
+    "n": 18,
+    "median_decode_tok_s": 55.7219920620951,
+    "median_agg_tok_s": 99.836685068097,
+    "median_ttft_s": 0.1286288284463808,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 86.73375224564123,
+    "median_tokens_per_round": 4.945054945054945,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 89.10726546309888,
+    "inter_chunk_ms_p90": 94.74696780089289,
+    "inter_chunk_ms_p99": 142.46346611296758
+  },
+  {
+    "phase": "code",
+    "concurrency": 4,
+    "n": 36,
+    "median_decode_tok_s": 35.34287661380617,
+    "median_agg_tok_s": 128.8776543663112,
+    "median_ttft_s": 0.2697403619531542,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 138.9901449785388,
+    "median_tokens_per_round": 4.945054945054945,
+    "prompts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "inter_chunk_ms_p50": 140.54664317518473,
+    "inter_chunk_ms_p90": 148.1258874759078,
+    "inter_chunk_ms_p99": 248.9963618060574
+  }
+]
+rc=0

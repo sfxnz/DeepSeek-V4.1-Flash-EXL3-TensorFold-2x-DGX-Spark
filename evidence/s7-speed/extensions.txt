@@ -1,0 +1,44 @@
+# 2026-10-10T14:21:34Z per-arm kernel caches: run.sh mounts $TF_CACHE/$TF_SHA at /cache/tf (TORCH_EXTENSIONS_DIR=/cache/tf/torch_extensions), so each arm builds and loads only its own extensions.
+== spark1 b86514a5ac8700b32e7b24f1095349df4ce2b922
+tensorfold_dsv41_engram_io
+tensorfold_exl3_experts_v1
+tensorfold_experts_v7
+tensorfold_nvfp4_prompt_v1
+tensorfold_nvfp4_v3
+== spark1 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+tensorfold_dsv41_engram_io
+tensorfold_dsv41_gemv_v2
+tensorfold_dsv41_l2warm_v1
+tensorfold_exl3_experts_v1
+tensorfold_experts_v7
+tensorfold_nvfp4_prompt_v1
+tensorfold_nvfp4_v4
+== spark2 b86514a5ac8700b32e7b24f1095349df4ce2b922
+tensorfold_dsv41_engram_io
+tensorfold_exl3_experts_v1
+tensorfold_experts_v7
+tensorfold_nvfp4_prompt_v1
+tensorfold_nvfp4_v3
+== spark2 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+tensorfold_dsv41_engram_io
+tensorfold_dsv41_gemv_v2
+tensorfold_dsv41_l2warm_v1
+tensorfold_exl3_experts_v1
+tensorfold_experts_v7
+tensorfold_nvfp4_prompt_v1
+tensorfold_nvfp4_v4
+== W1 builds (first start of 19f5478, rank 0 then rank 1)
+[tensorfold] building CUDA extension tensorfold_dsv41_engram_io
+[tensorfold] building CUDA extension tensorfold_dsv41_l2warm_v1
+[tensorfold] building CUDA extension tensorfold_dsv41_gemv_v2
+[tensorfold] building CUDA extension tensorfold_nvfp4_v4
+[tensorfold] building CUDA extension tensorfold_exl3_experts_v1
+[tensorfold] building CUDA extension tensorfold_experts_v7
+[tensorfold] building CUDA extension tensorfold_nvfp4_prompt_v1
+[tensorfold] building CUDA extension tensorfold_dsv41_engram_io
+[tensorfold] building CUDA extension tensorfold_dsv41_l2warm_v1
+[tensorfold] building CUDA extension tensorfold_dsv41_gemv_v2
+[tensorfold] building CUDA extension tensorfold_nvfp4_v4
+[tensorfold] building CUDA extension tensorfold_exl3_experts_v1
+[tensorfold] building CUDA extension tensorfold_experts_v7
+[tensorfold] building CUDA extension tensorfold_nvfp4_prompt_v1

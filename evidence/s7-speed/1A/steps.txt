@@ -1,0 +1,8 @@
+2026-10-10T11:18:22Z 1A run.sh arm A (/home/sfxnz/projects/data/tf-dsv41/s7-old-recipe)
+2026-10-10T11:19:21Z 1A warm pass (discarded)
+2026-10-10T11:19:31Z 1A gate RUNS=9
+2026-10-10T11:35:54Z 1A diverse c=1 2 4 runs=9
+2026-10-10T11:41:19Z 1A sampled cells c=1 2 4 runs=9
+2026-10-10T11:47:42Z 1A prefill_cold
+2026-10-10T11:51:22Z 1A logs and stop
+2026-10-10T11:51:41Z 1A done

@@ -122,11 +122,14 @@ case "$ORCHESTRATE" in auto | 0) ;; *) die "ORCHESTRATE=$ORCHESTRATE must be aut
 (( PORT <= 65535 && MASTER_PORT <= 65535 )) || die "PORT=$PORT / MASTER_PORT=$MASTER_PORT must be at most 65535."
 (( PORT != MASTER_PORT )) || die "PORT=$PORT collides with MASTER_PORT=$MASTER_PORT."
 # The memory-gate floor for PARALLEL windows of CONTEXT, in GiB, rounded up: resident 75.99 + max(staging 5.33,
-# geometry 3.71 + 0.95 a further lane per 1048576-token window) + admission's reserve 12.1 (MemAvailable less
-# max(4 GiB, MemTotal / 10) on a Spark). 94 at PARALLEL=1 and 95 at 4 x 1048576: s6 measured the startup estimate
-# 81.32 GiB at one lane and 82.55 GiB at 4 x 1048576 on both ranks, the formula's values, so the constants stand
-# (evidence/s6-concurrent/1A/startup.txt, 2B/startup.txt; abba_table.txt section 6). Integer math in GiB/100 x 1048576.
-MIN_MEM_GATE_GIB=$(( 371 * 1048576 + 95 * (PARALLEL - 1) * CONTEXT ))
+# geometry 3.71 + 0.95 a further lane per 1048576-token window + 0.01 at 2 or more lanes) + admission's reserve 12.1
+# (MemAvailable less max(4 GiB, MemTotal / 10) on a Spark). 94 at PARALLEL=1 and 95 at 4 x 1048576. s6 measured the
+# startup estimate 81.32 GiB at one lane and 82.55 GiB at 4 x 1048576 at b86514a (evidence/s6-concurrent/1A/startup.txt,
+# 2B/startup.txt); s7 measured 82.56 GiB at 4 x 1048576 at 19f5478 (evidence/s7-speed/2B/startup.txt), whose batched
+# DSpark proposals add 8.81 MiB of scratch at 4 lanes (evidence/s7-speed/units/P6b-summary.txt) and none at one lane
+# (families/deepseek_v41/cuda/geometry.py at the pin): the 0.01 term.
+# Integer math in GiB/100 x 1048576.
+MIN_MEM_GATE_GIB=$(( 371 * 1048576 + 95 * (PARALLEL - 1) * CONTEXT + (PARALLEL > 1) * 1048576 ))
 (( MIN_MEM_GATE_GIB >= 533 * 1048576 )) || MIN_MEM_GATE_GIB=$(( 533 * 1048576 ))
 MIN_MEM_GATE_GIB=$(( ((7599 + 1210) * 1048576 + MIN_MEM_GATE_GIB + 100 * 1048576 - 1) / (100 * 1048576) ))
 if (( MEM_GATE_GIB < MIN_MEM_GATE_GIB )) && [[ "$FORCE_UNSAFE_MEM_GATE" != 1 ]]; then

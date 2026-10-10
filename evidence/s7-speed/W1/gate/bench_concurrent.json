@@ -1,0 +1,987 @@
+{
+ "label": "",
+ "tokens": 256,
+ "mixed": false,
+ "cells": [
+  {
+   "prompt": "code",
+   "temperature": 1.0,
+   "streams": 1,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 47.1,
+   "per_stream_tps": 47.1,
+   "ttft_s_max": 0.07,
+   "alone": {
+    "equal": 3,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 47.07817471582004,
+     "per_stream_tps": [
+      47.1
+     ],
+     "ttft_s": [
+      0.06
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 47.12593100308606,
+     "per_stream_tps": [
+      47.1
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 47.545892903575506,
+     "per_stream_tps": [
+      47.5
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "code",
+   "temperature": 1.0,
+   "streams": 2,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 71.7,
+   "per_stream_tps": 36.1,
+   "ttft_s_max": 0.19,
+   "steady_tps": 72.9,
+   "alone": {
+    "equal": 6,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 71.67335710513208,
+     "steady_tps": 73.83727911656932,
+     "per_stream_tps": [
+      36.4,
+      37.0
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 47.79585974437609,
+     "steady_tps": 48.60932776560728,
+     "per_stream_tps": [
+      24.1,
+      24.4
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 71.86907922052013,
+     "steady_tps": 72.94889452729967,
+     "per_stream_tps": [
+      35.9,
+      37.1
+     ],
+     "ttft_s": [
+      0.07,
+      0.19
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "code",
+   "temperature": 1.0,
+   "streams": 4,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 101.6,
+   "per_stream_tps": 26.4,
+   "ttft_s_max": 0.38,
+   "steady_tps": 113.5,
+   "alone": {
+    "equal": 12,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 103.35037886102414,
+     "steady_tps": 113.53863800179877,
+     "per_stream_tps": [
+      26.2,
+      27.0,
+      33.1,
+      31.0
+     ],
+     "ttft_s": [
+      0.19,
+      0.38,
+      0.32,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 101.5620320785963,
+     "steady_tps": 114.64067485929309,
+     "per_stream_tps": [
+      26.0,
+      26.6,
+      33.2,
+      31.1
+     ],
+     "ttft_s": [
+      0.32,
+      0.38,
+      0.07,
+      0.19
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 65.90650822849916,
+     "steady_tps": 67.99855124623345,
+     "per_stream_tps": [
+      16.5,
+      16.8,
+      20.0,
+      18.6
+     ],
+     "ttft_s": [
+      0.07,
+      0.32,
+      0.19,
+      0.38
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 1.0,
+   "streams": 1,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 61.2,
+   "per_stream_tps": 61.2,
+   "ttft_s_max": 0.07,
+   "alone": {
+    "equal": 3,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 61.24625214030159,
+     "per_stream_tps": [
+      61.2
+     ],
+     "ttft_s": [
+      0.06
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 61.181093425264145,
+     "per_stream_tps": [
+      61.2
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 61.00347509865906,
+     "per_stream_tps": [
+      61.0
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 1.0,
+   "streams": 2,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 77.1,
+   "per_stream_tps": 42.0,
+   "ttft_s_max": 0.18,
+   "steady_tps": 85.9,
+   "alone": {
+    "equal": 6,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 77.0987990637429,
+     "steady_tps": 85.89799088953558,
+     "per_stream_tps": [
+      47.9,
+      38.5
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 77.26150207956289,
+     "steady_tps": 86.14259447684933,
+     "per_stream_tps": [
+      48.0,
+      38.6
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 73.77357278524974,
+     "steady_tps": 81.48508402835292,
+     "per_stream_tps": [
+      45.4,
+      36.9
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 1.0,
+   "streams": 4,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 101.1,
+   "per_stream_tps": 27.7,
+   "ttft_s_max": 0.37,
+   "steady_tps": 114.1,
+   "alone": {
+    "equal": 12,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 4,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 101.09777631000712,
+     "steady_tps": 114.0522232942939,
+     "per_stream_tps": [
+      33.9,
+      27.2,
+      25.6,
+      29.0
+     ],
+     "ttft_s": [
+      0.37,
+      0.31,
+      0.19,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 101.38471352879242,
+     "steady_tps": 115.65955555188607,
+     "per_stream_tps": [
+      33.9,
+      27.2,
+      26.1,
+      29.3
+     ],
+     "ttft_s": [
+      0.31,
+      0.18,
+      0.37,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 97.81599307530892,
+     "steady_tps": 109.74961420797733,
+     "per_stream_tps": [
+      32.2,
+      26.5,
+      25.0,
+      28.2
+     ],
+     "ttft_s": [
+      0.07,
+      0.37,
+      0.31,
+      0.18
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "code",
+   "temperature": 0.0,
+   "streams": 1,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 91.0,
+   "per_stream_tps": 91.0,
+   "ttft_s_max": 0.07,
+   "alone": {
+    "equal": 3,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 90.88250886068307,
+     "per_stream_tps": [
+      90.9
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 91.00282446426064,
+     "per_stream_tps": [
+      91.0
+     ],
+     "ttft_s": [
+      0.06
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 91.87698394609677,
+     "per_stream_tps": [
+      91.9
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "code",
+   "temperature": 0.0,
+   "streams": 2,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 138.9,
+   "per_stream_tps": 70.4,
+   "ttft_s_max": 0.18,
+   "steady_tps": 143.4,
+   "alone": {
+    "equal": 6,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 138.87106997478352,
+     "steady_tps": 143.36658080860207,
+     "per_stream_tps": [
+      71.6,
+      70.1
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 140.4153574735294,
+     "steady_tps": 144.97551136707273,
+     "per_stream_tps": [
+      70.8,
+      72.4
+     ],
+     "ttft_s": [
+      0.07,
+      0.18
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 129.28931036379012,
+     "steady_tps": 131.41990394681022,
+     "per_stream_tps": [
+      65.2,
+      66.5
+     ],
+     "ttft_s": [
+      0.07,
+      0.18
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "code",
+   "temperature": 0.0,
+   "streams": 4,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 154.5,
+   "per_stream_tps": 40.2,
+   "ttft_s_max": 0.5,
+   "steady_tps": 160.6,
+   "alone": {
+    "equal": 12,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 203.17209099216376,
+     "steady_tps": 215.7317634823176,
+     "per_stream_tps": [
+      51.8,
+      53.3,
+      54.1,
+      52.3
+     ],
+     "ttft_s": [
+      0.07,
+      0.31,
+      0.37,
+      0.18
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 138.00233767023408,
+     "steady_tps": 141.73262123989548,
+     "per_stream_tps": [
+      35.6,
+      35.2,
+      36.0,
+      35.2
+     ],
+     "ttft_s": [
+      0.3,
+      0.18,
+      0.37,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 154.45408795313284,
+     "steady_tps": 160.5528263627074,
+     "per_stream_tps": [
+      39.2,
+      40.6,
+      41.2,
+      39.7
+     ],
+     "ttft_s": [
+      0.09,
+      0.42,
+      0.5,
+      0.24
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 0.0,
+   "streams": 1,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 48.8,
+   "per_stream_tps": 48.8,
+   "ttft_s_max": 0.07,
+   "alone": {
+    "equal": 3,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 48.7923080240157,
+     "per_stream_tps": [
+      48.8
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 48.95523363018479,
+     "per_stream_tps": [
+      49.0
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 45.86446851991903,
+     "per_stream_tps": [
+      45.9
+     ],
+     "ttft_s": [
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 0.0,
+   "streams": 2,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 76.0,
+   "per_stream_tps": 38.5,
+   "ttft_s_max": 0.24,
+   "steady_tps": 76.4,
+   "alone": {
+    "equal": 6,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 54.827064520920196,
+     "steady_tps": 54.987717483300415,
+     "per_stream_tps": [
+      27.5,
+      27.9
+     ],
+     "ttft_s": [
+      0.09,
+      0.24
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 76.0418324167336,
+     "steady_tps": 76.41959181823727,
+     "per_stream_tps": [
+      38.7,
+      38.2
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 77.99850876248729,
+     "steady_tps": 78.96168334064109,
+     "per_stream_tps": [
+      39.7,
+      39.2
+     ],
+     "ttft_s": [
+      0.18,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true
+     ]
+    }
+   ]
+  },
+  {
+   "prompt": "chat",
+   "temperature": 0.0,
+   "streams": 4,
+   "failed": 0,
+   "unmeasured": 0,
+   "aggregate_tps": 120.9,
+   "per_stream_tps": 30.8,
+   "ttft_s_max": 0.38,
+   "steady_tps": 123.6,
+   "alone": {
+    "equal": 12,
+    "unequal": 0,
+    "failed": 0
+   },
+   "serial": {
+    "equal": 1,
+    "unequal": 0,
+    "failed": 0
+   },
+   "reps": [
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 120.91843299733154,
+     "steady_tps": 123.56136377011408,
+     "per_stream_tps": [
+      31.3,
+      30.8,
+      31.1,
+      30.6
+     ],
+     "ttft_s": [
+      0.37,
+      0.18,
+      0.31,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 121.34629914275789,
+     "steady_tps": 124.1663679417553,
+     "per_stream_tps": [
+      30.7,
+      31.5,
+      31.2,
+      30.9
+     ],
+     "ttft_s": [
+      0.07,
+      0.38,
+      0.32,
+      0.19
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "failed": 0,
+     "unmeasured": 0,
+     "aggregate_tps": 117.3701432744795,
+     "steady_tps": 120.18463935988021,
+     "per_stream_tps": [
+      30.2,
+      29.9,
+      30.4,
+      29.7
+     ],
+     "ttft_s": [
+      0.31,
+      0.18,
+      0.37,
+      0.07
+     ],
+     "errors": [],
+     "equal_alone": [
+      true,
+      true,
+      true,
+      true
+     ]
+    }
+   ]
+  }
+ ]
+}

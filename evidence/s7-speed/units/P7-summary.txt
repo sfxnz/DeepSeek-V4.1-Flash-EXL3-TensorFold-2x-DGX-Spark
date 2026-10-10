@@ -1,0 +1,80 @@
+SP-P7 served ABBA (2026-10-09). Verdict: shas equal in both ABBAs; c=4 same-prompt gain +1.9% to +2.7% in both;
+keep rule NOT met as written in either ABBA. Knob TF_DSV41_MARKOV_ROWS left default OFF (no commit). Not killed
+(the kill criterion is the chain microbench, passed in ../check: 0.79-0.82 ms a lane-round on the ruler).
+
+Arms: A = int/dsv41-speed f9dd67b (wt/INT-speed; tip did not move, so no merge into the unit, CPU tests from ../check stand),
+B = unit/SP-P7 a91b0bc (wt/SP-P7) with TF_DSV41_MARKOV_ROWS=1024 on both ranks (256.4 MiB a rank; rank 0 startup
+estimate 82.80 GiB vs 82.55 for A). Both arms TF_DSV41_STAGES=1 (as sp-P0, M2, sp-P6).
+Flags (dev/n10/serve_pair.sh): --tp 2 --no-thinking --context 1048576 --mtp-drafts 5 --mtp-confidence 0.15 --top-p 1.0
+--parallel 4 --decode-share 0.5. Order 1A 2B 3B 4A, WARM=1, cells.sh MODE=speed (bench_decode --phase both and
+--phase prose_long at c=1 2 4 --runs 5, then M2 bench_diverse prose+code at c=1 2 4, 9 waves). Commands: cmd_abba.txt,
+rep2/cmd_abba.txt. Tables: dev/sp-p6/abba_table.py -> abba_table.txt, rep2/abba_table.txt; dev/sp-p7/pooled_table.py ->
+pooled_table.txt. Hashes: tool_sha256.txt. Every cell rc=0, all 8 boots.
+
+1. ABBA 1 (abba_table.txt), aggregate tok/s, per-boot medians; arm = median of per-boot medians; noise = |1A-4A|/A.
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   56.08   56.83   56.76   56.09   56.09   56.79   +1.26    0.03
+   same     prose       2   82.63   83.65   68.55   81.82   82.22   76.10   -7.45    0.98  <- below noise (3B stall)
+   same     prose       4  116.43  119.20  118.79  116.08  116.25  118.99   +2.35    0.29
+   same     prose_long  1   41.45   40.94   41.42   41.09   41.27   41.18   -0.21    0.85
+   same     prose_long  2   60.58   61.08   61.85   61.29   60.94   61.46   +0.86    1.17
+   same     prose_long  4   87.53   88.04   89.34   87.56   87.54   88.69   +1.31    0.04
+   same     structured  1   97.84   99.12   96.35   97.48   97.66   97.74   +0.08    0.37
+   same     structured  2  145.19  145.94  143.08  143.87  144.53  144.51   -0.01    0.92
+   same     structured  4  201.43  203.47  203.15  200.66  201.05  203.31   +1.12    0.38
+   diverse  code        1   72.85   75.95   78.19   76.96   74.90   77.07   +2.89    5.48
+   diverse  code        2  101.30  101.26  101.58   99.85  100.58  101.42   +0.84    1.44
+   diverse  code        4  129.62  130.48  130.13  129.78  129.70  130.30   +0.47    0.12
+   diverse  prose       1   37.86   39.60   41.00   40.72   39.29   40.30   +2.56    7.28
+   diverse  prose       2   58.53   59.02   57.74   59.58   59.05   58.38   -1.15    1.78
+   diverse  prose       4   79.73   81.16   75.23   80.57   80.15   78.19   -2.44    1.06  <- below noise (3B stall)
+   Boot 3B had stalled spans: bench_decode prose c=2 runs 3-5 at 68.6, 64.6, 59.6 vs runs 1-2 at 83.8, 83.3; structured
+   c=4 runs 2-3 at 163.6, 173.9 vs 203.2; diverse prose c=4 waves 3, 6, 9 at 112-119 ms/round vs 95-107 in its other
+   waves (its unstalled waves were faster than A's: 83.0 vs 79.7-81.5 on prompts 0-3). 2B shows no such span and is
+   above both A boots in both failing cells. Head-node 15-min load average read 7.6 right after the run (0.4 before);
+   the head's used memory was ~6 GiB higher before 2B/3B than before 1A/4A, and rank 0's admission budget read 94.6 GiB
+   in 2B/3B vs 99.9-100.0 in A (rank 1 unchanged), so something outside the serve was active on the head. Not proven.
+   -> repeat ABBA (rep2) with vmstat 10 on both hosts.
+
+2. ABBA 2 (rep2/abba_table.txt), same arms and flags. Rank 0 budget 99.87-100.10 GiB in all 4 boots; vmstat: head max
+   run queue 9, min idle 79%, spark2 max 3 / 80%; no stalled runs.
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   56.36   56.25   56.08   56.59   56.48   56.16   -0.55    0.40  <- below noise
+   same     prose       2   82.53   83.37   83.39   81.83   82.18   83.38   +1.46    0.85
+   same     prose       4  116.33  118.93  119.22  115.57  115.95  119.07   +2.69    0.66
+   same     prose_long  1   41.38   41.14   41.44   41.41   41.39   41.29   -0.25    0.07  <- below noise
+   same     prose_long  2   60.53   61.77   61.53   61.06   60.80   61.65   +1.41    0.86
+   same     prose_long  4   87.52   89.54   89.35   87.48   87.50   89.44   +2.22    0.05
+   same     structured  1   98.14   96.61   97.69   96.67   97.40   97.15   -0.26    1.50
+   same     structured  2  144.44  145.16  145.18  143.46  143.95  145.17   +0.85    0.68
+   same     structured  4  199.63  202.97  203.97  199.69  199.66  203.47   +1.91    0.03
+   diverse  code        1   76.56   77.77   77.32   76.76   76.66   77.55   +1.15    0.25
+   diverse  code        2  100.95  100.80  100.31  100.44  100.70  100.55   -0.14    0.51
+   diverse  code        4  129.80  130.71  131.84  129.35  129.57  131.28   +1.31    0.35
+   diverse  prose       1   40.64   40.66   40.83   40.30   40.47   40.74   +0.67    0.86
+   diverse  prose       2   60.18   59.85   60.27   59.22   59.70   60.06   +0.60    1.62
+   diverse  prose       4   80.76   81.66   82.06   80.95   80.86   81.86   +1.24    0.23
+   Diverse ms/round c=4 (median per boot): prose A 103.72/103.61, B 101.95/102.22; code A 138.35/137.85, B 136.92/136.90;
+   tokens/round equal (2.06, 4.95).
+   M2 half rule: prose c=4 diverse +1.24 < 1.35 (half of +2.69) NO; prose c=2 +0.60 < 0.73 NO; code vs structured c=4
+   +1.31 >= 0.96 yes; c=2 -0.14 < 0.43 NO. (Per-stream diverse prose c=4 +1.85 >= 1.29.)
+
+3. Pooled over the 8 boots (pooled_table.txt; arm = median of 4 per-boot medians, Arange = A max-min over 4 A boots):
+   same prose c=1 +0.49 (Arange 0.91), c=2 +1.46 (0.99), c=4 +2.45 (0.73, 4/4 B boots above every A boot);
+   prose_long c=1 -0.27, c=2 +1.37, c=4 +2.08 (4/4); structured c=1 -0.53 (1.50), c=2 +0.71, c=4 +1.56 (4/4);
+   diverse code c=4 +0.69 (4/4), prose c=4 +0.92 (3/4); diverse c=1 and c=2 within the A range.
+   c=1 is not resolved: ABBA 1 +1.26%, ABBA 2 -0.55%; the A boots alone span 0.91%. The microbench's ~0.8 ms a round
+   (+1.5% at c=1) does not show reliably at c=1; the c=4 gain does, every boot.
+
+4. Reply shas: SHAS_EQUAL in both ABBAs. Rank 0 done lines (prompt, tokens, sha, rounds, accepted): 278 replies a boot,
+   21 distinct, the same multiset in all 8 boots (rounds and accepted equal, so drafts equal the base). bench_diverse
+   SHA_CHECK 16/16 PASS every boot; per-prompt shas equal across boots.
+
+Keep rule (plan): +1% on a targeted cell: yes (ABBA 1 c=1 prose +1.26; ABBA 2 c=4 prose +2.69). Shas equal: yes.
+No cell below noise: NO in either ABBA (ABBA 1: same prose c=2 -7.45 and diverse prose c=4 -2.44, both from 3B's stalls;
+ABBA 2: same prose c=1 -0.55 vs 0.40 and prose_long c=1 -0.25 vs 0.07). M2 half rule for the c>=2 gain: NO on prose in
+ABBA 2. -> keep=false, knob default OFF, no commit. Decision needed: the c=4 gain (+1.6 to +2.7% same-prompt, +0.7 to
++1.3% diverse) is consistent; c=1 is a wash within boot-to-boot spread. Options: keep it off and revisit after P6
+(which batches the proposals; P7's rows then need a scheme for two rows in one slot), or stack it with P9 (same Markov
+time) and measure them together.
+GPUs: both idle after every boot (docker ps: conduit only here, nothing on spark2); vmstat samplers stopped.

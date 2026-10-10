@@ -1,0 +1,6 @@
+rank0 [tensorfold] CUDA rank 0 startup estimate 82.56 GiB within 98.52 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+rank0 [tensorfold] rank 0 of 2: 40 layers and DSpark, 76.07 GiB of weights in 25.8 s
+rank0 [tensorfold] serving deepseek-ai/DeepSeek-V4.1-Flash at http://0.0.0.0:8000/v1 on CUDA, rank 0 of 2 (sampling: top_p 1.0; drafts: on; prompts: bf16 activations; context: 1048576; loaded in 44.4s)
+rank1 [tensorfold] CUDA rank 1 startup estimate 82.56 GiB within 101.89 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582
+rank1 [tensorfold] rank 1 of 2: 40 layers and DSpark, 76.07 GiB of weights in 24.7 s
+rank1 [tensorfold] rank 1 ready in 50.0s, following rank 0

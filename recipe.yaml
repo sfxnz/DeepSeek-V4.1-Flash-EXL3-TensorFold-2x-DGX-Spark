@@ -85,7 +85,8 @@ serve:
     # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt); s5 twice at 903a1e8, with the
     # 1,039,528-token needle again (evidence/s5-final/bootF/needle.jsonl, MemAvailable at least 15.0 / 23.7 GiB over
     # that boot); s6 six times at b86514a, with that needle found while 3 other lanes decoded
-    # (evidence/s6-concurrent/2B/needle_lanes.jsonl).
+    # (evidence/s6-concurrent/2B/needle_lanes.jsonl); s7 five times at b86514a and 19f5478, with that needle beside 3
+    # lanes again at 19f5478 (evidence/s7-speed/2B/needle_lanes.jsonl).
     CONTEXT: 1048576
     # Requests decoded together, 1 to 4 (the family's MAX_LANES); each lane holds a whole CONTEXT window, allocated
     # at startup. measured: s6 ran PARALLEL=1 and 4 ABBA through run.sh. At 4 x 1048576 MemAvailable stayed at least
@@ -163,25 +164,25 @@ measured:
   # kit/render.py renders a row with evidence null as "not yet measured on this pair" and refuses a number without
   # evidence.
   decode:
-    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s6 boots 2B and 3B, 2026-10-08: TensorFold `b86514a`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`; the only env override, EXTRA_ENV, loaded a probe that logs memory around graph warm-up); each row is the median of the two per-boot medians (evidence/s6-concurrent/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s6-concurrent/scripts/sampled_conc.py). Before (s5 bootE and bootF, TensorFold `903a1e8`, one request at a time): prose 55.8, structured 97.3, prose_long 40.7 (evidence/s5-final/decode.txt)"
+    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s7 boots 2B and 3B, 2026-10-10: TensorFold `19f5478`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`, no env override); each row is the median of the two per-boot medians (evidence/s7-speed/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s7-speed/scripts/sampled_conc.py). Every stream sends one prompt, which overstates what lanes gain on distinct prompts; the diverse cell below the table sends a different prompt to each stream. Before (s7 boots 1A and 4A, TensorFold `b86514a`, the same session; c=1 decode, c=2 and 4 aggregate): prose 56.12 / 82.35 / 116.01, structured 97.88 / 144.36 / 200.62, prose_long 40.93 / 60.81 / 86.56 (evidence/s7-speed/abba_table.txt)"
     units: {decode: tok/s per stream (median), aggregate: tok/s, ttft_p50: s}
     rows:
-      - {phase: prose, concurrency: 1, decode: 56.3, aggregate: 56.3, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt,
+      - {phase: prose, concurrency: 1, decode: 59.3, aggregate: 59.2, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt,
          note: "The prose reply ends at its end token after 74 tokens; ignore_eos decodes the other 126 (post_eos_fraction 0.63)."}
-      - {phase: prose, concurrency: 2, decode: 41.3, aggregate: 82.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose, concurrency: 4, decode: 29.1, aggregate: 115.7, ttft_p50: 0.28, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 1, decode: 97.7, aggregate: 97.7, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 2, decode: 72.5, aggregate: 144.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 4, decode: 50.6, aggregate: 200.7, ttft_p50: 0.26, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 1, decode: 41.2, aggregate: 41.2, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 2, decode: 30.6, aggregate: 61.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 4, decode: 21.8, aggregate: 87.1, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 1, decode: 43.0, aggregate: 43.0, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 2, decode: 31.6, aggregate: 63.3, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 4, decode: 22.4, aggregate: 89.8, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 1, decode: 37.9, aggregate: 37.9, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 2, decode: 28.6, aggregate: 57.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 4, decode: 20.5, aggregate: 82.4, ttft_p50: 0.29, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose, concurrency: 2, decode: 48.0, aggregate: 95.3, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose, concurrency: 4, decode: 37.3, aggregate: 148.7, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 1, decode: 105.1, aggregate: 105.1, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 2, decode: 84.5, aggregate: 167.6, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 4, decode: 63.8, aggregate: 254.1, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 1, decode: 43.3, aggregate: 43.3, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 2, decode: 35.3, aggregate: 70.6, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 4, decode: 28.0, aggregate: 111.3, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 1, decode: 44.6, aggregate: 44.6, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 2, decode: 36.5, aggregate: 73.0, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 4, decode: 28.9, aggregate: 115.8, ttft_p50: 0.26, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 1, decode: 39.5, aggregate: 39.5, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 2, decode: 33.0, aggregate: 65.8, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 4, decode: 26.5, aggregate: 106.0, ttft_p50: 0.26, evidence: evidence/s7-speed/decode.txt}
 
 links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8

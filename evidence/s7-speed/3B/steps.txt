@@ -1,0 +1,8 @@
+2026-10-10T12:44:40Z 3B run.sh arm B (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks)
+2026-10-10T12:45:38Z 3B warm pass (discarded)
+2026-10-10T12:45:47Z 3B gate RUNS=9
+2026-10-10T13:00:15Z 3B diverse c=1 2 4 runs=9
+2026-10-10T13:05:01Z 3B sampled cells c=1 2 4 runs=9
+2026-10-10T13:10:29Z 3B prefill_cold
+2026-10-10T13:14:22Z 3B logs and stop
+2026-10-10T13:14:37Z 3B done

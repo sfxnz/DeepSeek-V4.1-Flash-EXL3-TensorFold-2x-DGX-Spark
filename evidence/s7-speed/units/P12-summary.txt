@@ -1,0 +1,59 @@
+SP-P12 GPU check (2026-10-09). Verdict: bits equal, tests pass, KILLED. The 16-byte kernel is no faster than the
+4-byte kernel: at the best depth (4) the microbench is within +-2% of depth 0, depths 8 and 16 are 3-15% slower,
+and the routed kernel time inside the decode graph is unchanged or slower. The kill rule (ABBA under +1.5%) cannot
+be met by a kernel with no gain, so no ABBA was run.
+
+Trees: base = int/dsv41-speed f9dd67b (wt/INT-speed; it did not move, so no merge).
+       unit = unit/SP-P12 f50565d + 2d99553 (test fix, below).
+Knob for every unit GPU run: TF_DSV41_EXL3_WIDE=4 (the bench's best depth). The default (unset) path is unchanged.
+
+Bug found and fixed (2d99553, test only): tests/cuda/test_exl3_wide.py's row-alone check reused the slot y the
+previous call left in Scratch.y. In layers with an unrouted slot (the 4-bit and mixed-K cases, shared=True) row r
+was compared against row 0's caller y, so 2 tests failed at r=1 on f50565d (gpu/unit.txt). The kernel was right:
+every depth-vs-depth-0 assertion before it passed. Fix: copy the row's own keep rows into s.y before each lone call.
+After it: 6 passed, 1 skipped (pack layer, needs TF_DSV41_MODEL) (gpu/wide_fix.txt).
+
+1. Tests (pinned image)
+  CPU: 447 passed, 16 skipped (cpu/unit_cpu.txt).
+  Unit files (test_exl3_wide, test_exl3_experts, test_dsv41_moe), head, f50565d: 83 passed, 2 failed (test bug),
+    55 skipped (gpu/unit.txt; exllamav3 not in the image, real-checkpoint cases).
+  Family suite tests/cuda/test_dsv41_*.py (golden, multi, multi_tp, sample_lanes included):
+    knob unset, spark2: 755 passed, 40 skipped (gpu/family_unset.txt)
+    knob 4, head:       755 passed, 40 skipped (gpu/family_on.txt)
+    Skips: real-checkpoint tests and one torch float4 limit.
+  Real-checkpoint files (exl3_wide incl. the pack-layer test, exl3_experts, dsv41_moe, mx8, norms, real_layers,
+  reference_real) with TF_DSV41_MODEL set:
+    knob 4, spark2: 180 passed, 45 skipped (gpu/real_on.txt). knob unset, head: 180 passed, 45 skipped (gpu/real_off.txt).
+  dsv41_tp_check (tp/compare.txt): NCCL ranks == --pair on both trees; unit (knob 4) lines == base lines.
+
+2. Microbench (bench_table.txt; dev/sp-P12/bench_wide.py, routed() as a graph of 50 calls, best of 2 passes,
+   head GPU, base then unit in one session; random = 2-bit mcg layer at rank shapes 5120->1152->5120,
+   real = pack layer 3 at full width 2304). Every depth bit-equal to depth 0 in every cell.
+  Unit tree, same process, ms depth 0 -> 4 / 8 / 16:
+    random mixed R=4   0.471 -> 0.478 / 0.502 / 0.523     real mixed R=4   0.904 -> 0.892 / 0.923 / 0.979
+    random mixed R=6   0.752 -> 0.742 / 0.761 / 0.789     real mixed R=6   1.400 -> 1.389 / 1.449 / 1.488
+    random mixed R=24  2.351 -> 2.280 / 2.406 / 2.447     real mixed R=24  4.337 -> 4.357 / 4.527 / 4.567
+    random solo  R=1   0.125 -> 0.129 / 0.133 / 0.146     real solo  R=1   0.276 -> 0.282 / 0.297 / 0.308
+  GB/s of distinct expert bytes at R>=4, mixed routing: depth 0 194-213, depth 4 194-213, depth 8 185-208,
+  depth 16 177-203. Base tree depth 0 matches unit depth 0 within run noise (same kernel SASS).
+  Best wide depth against base depth 0, all 20 cells: -7.0% to +3.0%, no consistent gain.
+
+3. Two-rank profile (p0/profile_p0.py solo, 131072-token prompt, --context 131584; order base, unit, unit2, base2)
+  logits_sha R=1..6: IDENTICAL in all 4 runs on both ranks (graph_table.txt), and equal to the sp-P1 receipts
+    (r0 00da0fa1.., de53e574.., db7103d8.., 7b4fd03d.., 521c461f.., 244375c8..).
+  DSpark: 200 tokens in 68 rounds, tpr 2.926 in all 4 runs on both ranks.
+  Graph ms a replay, median of 2 runs x 2 ranks, base -> unit:
+    R=1 33.88 -> 33.61 (-0.26)   R=2 39.59 -> 38.95 (-0.63)   R=3 44.12 -> 43.84 (-0.28)
+    R=4 48.92 -> 48.04 (-0.88)   R=5 50.72 -> 49.99 (-0.73)   R=6 53.52 -> 52.91 (-0.61)
+    These deltas are within base run-to-run spread (base vs base2: R=2 1.15 ms, R=4 1.00 ms, R=5 0.85 ms); the
+    first base run was the slowest of the four. Against base2 alone: -0.14 / -0.10 / +0.29 / -0.38 / -0.33 / -0.46.
+  Routed kernel (grouped_kernel) ms a replay in the graph traces (kernels_graph.txt), 2 runs x 2 ranks, base -> unit:
+    R=1 6.24-6.35 -> 6.33-6.57   R=4 14.35-15.01 -> 14.35-14.64   R=6 17.97-18.20 -> 18.17-18.70
+    All unit launches are the RingTiles instances. No gain at any R; R=6 is about 0.3 ms slower.
+  Plain serial decode (R=1, 64 tokens), rank 0: base 34.95 / 34.58 -> unit 35.21 / 34.83 ms a round.
+
+Kill rule (plan P12): M1 headroom part does not kill (151-202 GB/s vs 236). ABBA >= +1.5% part: the kernel itself
+gains nothing (microbench and in-graph kernel time), so the unit is killed without spending an ABBA. Keep the knob
+off (it already defaults off); do not merge.
+
+Both GPUs idle at the end (idle_after.txt): conduit only here, nothing on spark2. MemAvailable 114 / 117 GiB.

@@ -1,0 +1,7 @@
+# 2026-10-10T11:13:58Z python3 /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label top_p095 --runs 1 --temperature 1.0 --top-p 0.95 --concurrency 1 2 4
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=1 concurrency=[1, 2, 4] sampling={"temperature": 1.0, "top_p": 0.95}
+phase=top_p095 c=1 run=1 wall=5.56s agg=36.33 tok/s per_stream=[36.33] shas=dae740142762
+phase=top_p095 c=2 run=1 wall=6.21s agg=65.45 tok/s per_stream=[32.59,33.05] shas=dae740142762,dae740142762
+phase=top_p095 c=4 run=1 wall=8.31s agg=99.00 tok/s per_stream=[24.43,25.18,24.98,24.65] shas=dae740142762,dae740142762,dae740142762,dae740142762
+SUMMARY [{"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 1, "n": 1, "median_agg_tok_s": 36.325318221097525, "median_decode_tok_s": 36.332913185917015, "ttft_s_p50": 0.08491975604556501, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 2, "n": 2, "median_agg_tok_s": 65.45005088485192, "median_decode_tok_s": 32.82367981106985, "ttft_s_p50": 0.12844371295068413, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 4, "n": 4, "median_agg_tok_s": 99.00196260220517, "median_decode_tok_s": 24.81512064362444, "ttft_s_p50": 0.272533641429618, "token_shas": ["dae740142762"]}]
+rc=0

@@ -1,0 +1,49 @@
+2026-10-10T10:58:39Z W1 run.sh arm B (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks)
+2026-10-10T11:03:00Z W1 warm pass (discarded)
+2026-10-10T11:03:11Z W1 gate RUNS=1
+2026-10-10T11:13:04Z W1 diverse c=1 2 4 runs=1
+2026-10-10T11:13:37Z W1 sampled cells c=1 2 4 runs=1
+2026-10-10T11:14:18Z W1 prefill_cold
+2026-10-10T11:18:02Z W1 logs and stop
+2026-10-10T11:18:22Z W1 done
+2026-10-10T11:18:22Z 1A run.sh arm A (/home/sfxnz/projects/data/tf-dsv41/s7-old-recipe)
+2026-10-10T11:19:21Z 1A warm pass (discarded)
+2026-10-10T11:19:31Z 1A gate RUNS=9
+2026-10-10T11:35:54Z 1A diverse c=1 2 4 runs=9
+2026-10-10T11:41:19Z 1A sampled cells c=1 2 4 runs=9
+2026-10-10T11:47:42Z 1A prefill_cold
+2026-10-10T11:51:22Z 1A logs and stop
+2026-10-10T11:51:41Z 1A done
+2026-10-10T11:51:42Z 2B run.sh arm B (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks)
+2026-10-10T11:52:40Z 2B warm pass (discarded)
+2026-10-10T11:52:48Z 2B gate RUNS=9
+2026-10-10T12:07:07Z 2B diverse c=1 2 4 runs=9
+2026-10-10T12:11:50Z 2B sampled cells c=1 2 4 runs=9
+2026-10-10T12:17:17Z 2B prefill_cold
+2026-10-10T12:20:53Z 2B needle 1040000@0.5 with 3 lanes decoding
+2026-10-10T12:44:25Z 2B logs and stop
+2026-10-10T12:44:40Z 2B done
+2026-10-10T12:44:40Z 3B run.sh arm B (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks)
+2026-10-10T12:45:38Z 3B warm pass (discarded)
+2026-10-10T12:45:47Z 3B gate RUNS=9
+2026-10-10T13:00:15Z 3B diverse c=1 2 4 runs=9
+2026-10-10T13:05:01Z 3B sampled cells c=1 2 4 runs=9
+2026-10-10T13:10:29Z 3B prefill_cold
+2026-10-10T13:14:22Z 3B logs and stop
+2026-10-10T13:14:37Z 3B done
+2026-10-10T13:14:38Z 4A run.sh arm A (/home/sfxnz/projects/data/tf-dsv41/s7-old-recipe)
+2026-10-10T13:15:31Z 4A warm pass (discarded)
+2026-10-10T13:15:40Z 4A gate RUNS=9
+2026-10-10T13:31:50Z 4A diverse c=1 2 4 runs=9
+2026-10-10T13:37:10Z 4A sampled cells c=1 2 4 runs=9
+2026-10-10T13:43:32Z 4A prefill_cold
+2026-10-10T13:47:08Z 4A logs and stop
+2026-10-10T13:47:23Z 4A done
+2026-10-10T13:47:23Z 5V run.sh (env AUDIT=strict ./run.sh)
+2026-10-10T13:57:58Z 5V smoke
+2026-10-10T13:57:59Z 5V warm pass (discarded)
+2026-10-10T13:58:10Z 5V ruler c=1 2 4
+2026-10-10T14:06:28Z 5V sampled cells
+2026-10-10T14:13:35Z 5V diverse cell
+2026-10-10T14:19:50Z 5V logs and stop
+2026-10-10T14:20:34Z 5V done

@@ -1,0 +1,123 @@
+# 2026-10-10T11:13:04Z python3 /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/bench_diverse.py --url http://127.0.0.1:8000/v1/chat/completions --model deepseek-ai/DeepSeek-V4.1-Flash --phase both --concurrency 1 2 4 --runs 1 --max-tokens 200
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=1 concurrency=[1, 2, 4] phases=['prose', 'code']
+phase=prose c=1 run=1 prompts=[0] wall=4.47s agg=46.47 tok/s per_stream=[46.48] ttft=[0.185] ms_round=[52.9] sha=[959d71b53449]
+phase=prose c=2 run=1 prompts=[0, 1] wall=6.99s agg=58.60 tok/s per_stream=[33.19,29.88] ttft=[0.068,0.328] ms_round=[74.0,68.0] sha=[959d71b53449,0d2062596e37]
+phase=prose c=4 run=1 prompts=[0, 1, 2, 3] wall=8.85s agg=93.25 tok/s per_stream=[25.85,22.97,26.04,25.32] ttft=[0.068,0.181,0.780,0.441] ms_round=[95.0,88.4,88.9,91.4] sha=[959d71b53449,0d2062596e37,a7514c0a2a83,7d6943ef62b2]
+phase=code c=1 run=1 prompts=[0] wall=3.08s agg=67.86 tok/s per_stream=[67.87] ttft=[0.148] ms_round=[59.8] sha=[77415e80a85a]
+phase=code c=2 run=1 prompts=[0, 1] wall=4.16s agg=99.64 tok/s per_stream=[48.62,60.08] ttft=[0.066,0.264] ms_round=[83.5,89.5] sha=[77415e80a85a,60363dc518a3]
+phase=code c=4 run=1 prompts=[0, 1, 2, 3] wall=5.85s agg=143.63 tok/s per_stream=[35.24,41.64,43.63,36.91] ttft=[0.198,0.073,0.659,0.410] ms_round=[115.2,129.2,120.0,114.7] sha=[77415e80a85a,60363dc518a3,bd8d4d310b92,858b031dc7d1]
+SHAS {"code/0": {"77415e80a85a": [1, 2, 4]}, "code/1": {"60363dc518a3": [2, 4]}, "code/2": {"bd8d4d310b92": [4]}, "code/3": {"858b031dc7d1": [4]}, "prose/0": {"959d71b53449": [1, 2, 4]}, "prose/1": {"0d2062596e37": [2, 4]}, "prose/2": {"a7514c0a2a83": [4]}, "prose/3": {"7d6943ef62b2": [4]}}
+SHA_CHECK prompts=8 differing=0 PASS
+SUMMARY [
+  {
+    "phase": "prose",
+    "concurrency": 1,
+    "n": 1,
+    "median_decode_tok_s": 46.48045927533026,
+    "median_agg_tok_s": 46.4731999737636,
+    "median_ttft_s": 0.18505122186616063,
+    "median_completion_tokens": 200,
+    "median_ms_per_round": 52.85640808546709,
+    "median_tokens_per_round": 2.4691358024691357,
+    "prompts": [
+      0
+    ],
+    "inter_chunk_ms_p50": 52.00126091949642,
+    "inter_chunk_ms_p90": 58.83446102961898,
+    "inter_chunk_ms_p99": 63.67358718998732
+  },
+  {
+    "phase": "prose",
+    "concurrency": 2,
+    "n": 2,
+    "median_decode_tok_s": 31.53284842204983,
+    "median_agg_tok_s": 58.59906079060398,
+    "median_ttft_s": 0.19794707011897117,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 70.99531121885133,
+    "median_tokens_per_round": 2.254976064499874,
+    "prompts": [
+      0,
+      1
+    ],
+    "inter_chunk_ms_p50": 64.61823685094714,
+    "inter_chunk_ms_p90": 96.70658074319363,
+    "inter_chunk_ms_p99": 138.9536604564637
+  },
+  {
+    "phase": "prose",
+    "concurrency": 4,
+    "n": 4,
+    "median_decode_tok_s": 25.584718190040142,
+    "median_agg_tok_s": 93.2540836502231,
+    "median_ttft_s": 0.3111219593556598,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 90.12180625130748,
+    "median_tokens_per_round": 2.3255813953488373,
+    "prompts": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "inter_chunk_ms_p50": 89.57274700514972,
+    "inter_chunk_ms_p90": 98.1991309672594,
+    "inter_chunk_ms_p99": 274.31971300393343
+  },
+  {
+    "phase": "code",
+    "concurrency": 1,
+    "n": 1,
+    "median_decode_tok_s": 67.8682020605648,
+    "median_agg_tok_s": 67.85559510035031,
+    "median_ttft_s": 0.1475992240011692,
+    "median_completion_tokens": 200,
+    "median_ms_per_round": 59.83987149345327,
+    "median_tokens_per_round": 4.081632653061225,
+    "prompts": [
+      0
+    ],
+    "inter_chunk_ms_p50": 61.551165068522096,
+    "inter_chunk_ms_p90": 65.71054328233004,
+    "inter_chunk_ms_p99": 67.4061713181436
+  },
+  {
+    "phase": "code",
+    "concurrency": 2,
+    "n": 2,
+    "median_decode_tok_s": 54.349124940433754,
+    "median_agg_tok_s": 99.63883019680445,
+    "median_ttft_s": 0.1649777110433206,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 86.52621717738029,
+    "median_tokens_per_round": 4.743519029233315,
+    "prompts": [
+      0,
+      1
+    ],
+    "inter_chunk_ms_p50": 81.44798735156655,
+    "inter_chunk_ms_p90": 116.48876953404397,
+    "inter_chunk_ms_p99": 145.0410666177055
+  },
+  {
+    "phase": "code",
+    "concurrency": 4,
+    "n": 4,
+    "median_decode_tok_s": 39.27704785910774,
+    "median_agg_tok_s": 143.63492550139856,
+    "median_ttft_s": 0.3044426165288314,
+    "median_completion_tokens": 200.0,
+    "median_ms_per_round": 117.63864346557557,
+    "median_tokens_per_round": 4.759238521836506,
+    "prompts": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "inter_chunk_ms_p50": 122.75172187946737,
+    "inter_chunk_ms_p90": 131.1073370743543,
+    "inter_chunk_ms_p99": 276.70583254657686
+  }
+]
+rc=0

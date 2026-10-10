@@ -1,0 +1,174 @@
+# s7 ABBA table. A = ./run.sh at origin/main 38a0607 (TensorFold b86514a, image tf-dsv41-flash:0.6.4-b86514a);
+# B = ./run.sh at agent/tensorfold-dsv41-speed 3bfdd72 (TensorFold 19f5478, image tf-dsv41-flash:0.6.6-19f5478).
+# Both at the shipped defaults (CONTEXT 1048576, PARALLEL 4, DECODE_SHARE 0.5, drafts 5, confidence 0.15, top_p 1.0),
+# no knob or debug env. Order W1 (B, empty kernel cache, not counted) 1A 2B 3B 4A, then 5V (vLLM sibling, MAX_NUM_SEQS=2).
+# Cell value per boot: c=1 median per-stream decode tok/s; c>=2 median wave aggregate tok/s. Arm = median of per-boot
+# medians. delta = B/A - 1. noiseA = |1A-4A|/A, noiseB = |2B-3B|/B. vLLM ratio = B / 5V.
+
+## 1. Decode cells (tok/s)
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+ruler               prose        1    56.06    59.40    59.12    56.18    56.12    59.26    5.59     0.22     0.47    49.68   1.193
+ruler               prose        2    82.36    95.32    95.35    82.34    82.35    95.33   15.76     0.02     0.03    78.35   1.217
+ruler               prose        4   115.57   148.27   149.03   116.44   116.01   148.65   28.14     0.75     0.51   104.22   1.426
+ruler               prose_long   1    40.86    43.16    43.41    41.00    40.93    43.29    5.76     0.34     0.58    44.90   0.964
+ruler               prose_long   2    61.10    70.48    70.75    60.51    60.81    70.62   16.13     0.97     0.39    71.82   0.983
+ruler               prose_long   4    85.41   112.27   110.34    87.72    86.56   111.31   28.59     2.67     1.74    89.04   1.250
+ruler               structured   1    98.01   104.92   105.32    97.75    97.88   105.12    7.39     0.26     0.38    83.79   1.255
+ruler               structured   2   144.63   167.45   167.72   144.10   144.36   167.58   16.08     0.37     0.16   156.30   1.072
+ruler               structured   4   200.72   254.28   253.97   200.53   200.62   254.13   26.67     0.10     0.12   201.83   1.259
+
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+diverse             code         1    73.33    77.79    78.89    77.46    75.39    78.34    3.91     5.47     1.40    73.25   1.069
+diverse             code         2    99.84   112.32   111.23   100.55   100.20   111.77   11.56     0.72     0.97   107.29   1.042
+diverse             code         4   128.88   153.69   143.07   130.42   129.65   148.38   14.45     1.19     7.16   134.01   1.107
+diverse             prose        1    38.92    40.48    40.93    40.33    39.63    40.71    2.72     3.56     1.11    41.62   0.978
+diverse             prose        2    59.15    67.62    68.02    59.70    59.42    67.82   14.13     0.91     0.59    61.54   1.102
+diverse             prose        4    79.92    99.10    95.59    80.82    80.37    97.35   21.12     1.12     3.60    80.03   1.216
+
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+sampled             nofields     1    43.12    44.63    44.59    43.21    43.17    44.61    3.34     0.23     0.10    48.15   0.926
+sampled             nofields     2    63.34    73.02    72.89    63.45    63.40    72.96   15.08     0.18     0.18    68.76   1.061
+sampled             nofields     4    89.72   115.75   115.89    90.19    89.96   115.82   28.75     0.52     0.12    78.32   1.479
+sampled             top_p095     1    38.01    39.59    39.50    37.92    37.96    39.55    4.16     0.23     0.23    42.80   0.924
+sampled             top_p095     2    57.25    65.85    65.73    57.32    57.28    65.79   14.85     0.11     0.18    63.90   1.029
+sampled             top_p095     4    82.59   105.94   105.98    82.79    82.69   105.96   28.14     0.24     0.03    88.36   1.199
+
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+ruler per-stream    prose        1    56.06    59.40    59.12    56.18    56.12    59.26    5.59     0.22     0.47    49.68   1.193
+ruler per-stream    prose        2    41.28    48.13    47.91    41.34    41.31    48.02   16.25     0.14     0.44    40.84   1.176
+ruler per-stream    prose        4    28.89    37.29    37.25    29.33    29.11    37.27   28.03     1.53     0.09    40.47   0.921
+ruler per-stream    prose_long   1    40.86    43.16    43.41    41.00    40.93    43.29    5.76     0.34     0.58    44.90   0.964
+ruler per-stream    prose_long   2    30.54    35.35    35.27    30.34    30.44    35.31   15.99     0.66     0.21    35.91   0.983
+ruler per-stream    prose_long   4    21.64    28.21    27.77    21.97    21.81    27.99   28.34     1.54     1.58    34.70   0.807
+ruler per-stream    structured   1    98.01   104.92   105.32    97.75    97.88   105.12    7.39     0.26     0.38    83.79   1.255
+ruler per-stream    structured   2    72.32    84.75    84.24    72.85    72.59    84.49   16.41     0.73     0.61    78.19   1.081
+ruler per-stream    structured   4    50.30    64.09    63.43    50.52    50.41    63.76   26.47     0.43     1.04    78.14   0.816
+
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+diverse per-stream  code         1    73.33    77.79    78.89    77.46    75.39    78.34    3.91     5.47     1.40    73.25   1.069
+diverse per-stream  code         2    55.72    63.59    61.74    55.87    55.79    62.66   12.31     0.26     2.95    54.42   1.151
+diverse per-stream  code         4    35.34    41.75    39.98    35.50    35.42    40.86   15.37     0.43     4.33    55.68   0.734
+diverse per-stream  prose        1    38.92    40.48    40.93    40.33    39.63    40.71    2.72     3.56     1.11    41.62   0.978
+diverse per-stream  prose        2    29.57    34.30    34.31    30.15    29.86    34.30   14.89     1.93     0.03    31.95   1.074
+diverse per-stream  prose        4    20.30    24.92    24.88    20.26    20.28    24.90   22.80     0.18     0.13    31.78   0.784
+
+group               phase        c       1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM
+diverse ms/round    code         1    64.23    59.57    60.36    60.87    62.55    59.97   -4.13     5.38     1.32        -       -
+diverse ms/round    code         2    86.73    75.92    78.67    87.58    87.16    77.29  -11.32     0.97     3.56        -       -
+diverse ms/round    code         4   138.99   116.50   118.15   136.60   137.80   117.32  -14.86     1.73     1.41        -       -
+diverse ms/round    prose        1    52.71    50.58    50.12    50.74    51.73    50.35   -2.66     3.79     0.91        -       -
+diverse ms/round    prose        2    69.76    59.84    61.02    69.19    69.47    60.43  -13.01     0.81     1.95        -       -
+diverse ms/round    prose        4   103.52    82.81    82.81   102.82   103.17    82.81  -19.73     0.67     0.00        -       -
+
+## 1b. Diverse cell on matched prompt sets (per boot: mean over prompt sets of the per-set median wave value)
+phase    c metric           1A       2B       3B       4A        A        B  delta%  noiseA%  noiseB%     vLLM  B/vLLM   B/4A%
+code     1 agg tok/s     74.00    78.75    78.50    77.87    75.94    78.62    3.54     5.08     0.33    71.08   1.106    0.97
+code     1 ms/round      63.44    59.66    59.86    60.33    61.88    59.76   -3.43     5.02     0.33        -       -   -0.94
+code     2 agg tok/s    101.01   112.72   111.58   101.05   101.03   112.15   11.01     0.03     1.02   102.99   1.089   10.99
+code     2 ms/round      85.39    75.92    77.24    85.49    85.44    76.58  -10.37     0.12     1.71        -       -  -10.42
+code     4 agg tok/s    127.00   149.25   146.47   127.06   127.03   147.86   16.40     0.06     1.88   131.31   1.126   16.36
+code     4 ms/round     136.60   114.97   118.07   134.93   135.76   116.52  -14.17     1.23     2.66        -       -  -13.64
+prose    1 agg tok/s     40.11    41.96    41.95    41.75    40.93    41.96    2.50     4.00     0.04    42.41   0.989    0.49
+prose    1 ms/round      52.62    50.34    50.34    50.56    51.59    50.34   -2.43     4.00     0.01        -       -   -0.44
+prose    2 agg tok/s     58.47    67.64    66.90    58.72    58.59    67.27   14.81     0.43     1.10    62.14   1.082   14.57
+prose    2 ms/round      70.24    60.40    60.95    69.59    69.91    60.67  -13.21     0.93     0.91        -       -  -12.81
+prose    4 agg tok/s     77.23    95.41    95.78    77.86    77.54    95.60   23.28     0.81     0.39    78.22   1.222   22.79
+prose    4 ms/round     105.25    84.28    84.20   104.25   104.75    84.24  -19.58     0.95     0.09        -       -  -19.20
+B/4A%: B against 4A alone (1A's c=1 diverse rounds ran longer than 4A's on 17 of 18 waves; see noiseA)
+files: <boot>/diverse.txt, 5V/diverse.out (the per-wave lines)
+
+files (under each boot dir <tag>/): diverse ms/round: diverse.txt; diverse per-stream: diverse.out; diverse per-stream: diverse.txt; diverse: diverse.out; diverse: diverse.txt; ruler per-stream: bench-frozen.out; ruler per-stream: bench-prose-long.out; ruler per-stream: gate/bench-frozen-conc.out; ruler per-stream: gate/bench-frozen.out; ruler per-stream: gate/bench-prose-long-conc.out; ruler per-stream: gate/bench-prose-long.out; ruler: bench-frozen.out; ruler: bench-prose-long.out; ruler: gate/bench-frozen-conc.out; ruler: gate/bench-frozen.out; ruler: gate/bench-prose-long-conc.out; ruler: gate/bench-prose-long.out; sampled: sampled-nofields.out; sampled: sampled-nofields.txt; sampled: sampled-top_p095.out; sampled: sampled-top_p095.txt
+
+## 2. Exactness
+W1 gate: GATE=PASS  (W1/gate/gate.txt); conc-check: every request equal to its alone run  (W1/gate/conc-check.out)
+1A gate: GATE=PASS  (1A/gate/gate.txt); conc-check: every request equal to its alone run  (1A/gate/conc-check.out)
+2B gate: GATE=PASS  (2B/gate/gate.txt); conc-check: every request equal to its alone run  (2B/gate/conc-check.out)
+3B gate: GATE=PASS  (3B/gate/gate.txt); conc-check: every request equal to its alone run  (3B/gate/conc-check.out)
+4A gate: GATE=PASS  (4A/gate/gate.txt); conc-check: every request equal to its alone run  (4A/gate/conc-check.out)
+
+rank 0 done lines (every reply of the boot), multiset of (prompt tokens, completion tokens, sha), read from
+rank0-full.log (two lanes can print their entries on one log line; <boot>/done-rank0.txt lists one entry a line):
+  1A: 603 replies, 53 distinct (prompt, tokens, sha)  (1A/rank0-full.log)
+  2B: 634 replies, 55 distinct (prompt, tokens, sha)  (2B/rank0-full.log)
+  3B: 603 replies, 53 distinct (prompt, tokens, sha)  (3B/rank0-full.log)
+  4A: 603 replies, 53 distinct (prompt, tokens, sha)  (4A/rank0-full.log)
+  4A vs 1A: (prompt, tokens, sha) multiset EQUAL; with (rounds, accepted) EQUAL
+  3B vs 1A: (prompt, tokens, sha) multiset EQUAL; with (rounds, accepted) EQUAL
+  2B keys absent from 1A (the needle and its lanes): {('42', '1500', 'b12cd40d927d'): 30, ('1039528', '8', '4dfbacf6d86b'): 1}
+  2B vs 1A: (prompt, tokens, sha) multiset EQUAL; with (rounds, accepted) EQUAL
+  1A vs s6 2B+3B (evidence/s6-concurrent/{2B,3B}/rank0-full.log): 24 shared (prompt, tokens) keys, every sha found in s6
+  2B vs s6 2B+3B (evidence/s6-concurrent/{2B,3B}/rank0-full.log): 26 shared (prompt, tokens) keys, every sha found in s6
+  3B vs s6 2B+3B (evidence/s6-concurrent/{2B,3B}/rank0-full.log): 24 shared (prompt, tokens) keys, every sha found in s6
+  4A vs s6 2B+3B (evidence/s6-concurrent/{2B,3B}/rank0-full.log): 24 shared (prompt, tokens) keys, every sha found in s6
+
+pairs_concurrent (tools/pairs_concurrent.py --compare):
+  2B vs 1A: unequal 0 of 4 (rc 0)
+  3B vs 1A: unequal 0 of 4 (rc 0)
+  2B vs 4A: unequal 0 of 4 (rc 0)
+  3B vs 4A: unequal 0 of 4 (rc 0)
+  2B vs s6-concurrent/2B: unequal 0 of 4 (rc 0)
+  3B vs s6-concurrent/2B: unequal 0 of 4 (rc 0)
+  1A: short greedy d583c605443d, medium keyed 36420ceb06ec, short keyed a4bc38138de8, long greedy c7b6a22de5c1
+  2B: short greedy d583c605443d, medium keyed 36420ceb06ec, short keyed a4bc38138de8, long greedy c7b6a22de5c1
+  3B: short greedy d583c605443d, medium keyed 36420ceb06ec, short keyed a4bc38138de8, long greedy c7b6a22de5c1
+  4A: short greedy d583c605443d, medium keyed 36420ceb06ec, short keyed a4bc38138de8, long greedy c7b6a22de5c1
+
+sampled cells, token_shas per (label, c):
+  1A: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+  2B: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+  3B: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+  4A: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+  s6/2B: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+  s6/3B: nofields c=1 4e0fa4daff89; nofields c=2 4e0fa4daff89; nofields c=4 4e0fa4daff89; top_p095 c=1 dae740142762; top_p095 c=2 dae740142762; top_p095 c=4 dae740142762
+
+diverse cell SHA_CHECK and per-prompt shas:
+  1A: SHA_CHECK prompts=16 differing=0 PASS  (1A/diverse.txt)
+  2B: SHA_CHECK prompts=16 differing=0 PASS  (2B/diverse.txt)
+  3B: SHA_CHECK prompts=16 differing=0 PASS  (3B/diverse.txt)
+  4A: SHA_CHECK prompts=16 differing=0 PASS  (4A/diverse.txt)
+  5V (vLLM): SHA_CHECK prompts=16 differing=11 FAIL prose/0,prose/3,prose/6,prose/7,code/0,code/1,code/3,code/4,code/5,code/6,code/7  (5V/diverse.out; vLLM greedy replies change with the batch; the tok/s are still read)
+  4A vs 1A per-prompt shas: EQUAL
+  2B vs 1A per-prompt shas: EQUAL
+  3B vs 1A per-prompt shas: EQUAL
+  1A: code/0 77415e80a85a, code/1 60363dc518a3, code/2 bd8d4d310b92, code/3 858b031dc7d1, code/4 58d23ee72176, code/5 99ae047c393b, code/6 d58beb35b462, code/7 23f1db9068ca, prose/0 959d71b53449, prose/1 0d2062596e37, prose/2 a7514c0a2a83, prose/3 7d6943ef62b2, prose/4 7710f97fbd47, prose/5 9bc25f4dcf30, prose/6 2908ada4be99, prose/7 560ccc84818b
+
+## 3. 1,039,528-token needle beside 3 decoding lanes (2B) against s6
+  s7 2B: {"length": 1040000, "depth": 0.5, "prompt_tokens": 1039528, "cached": 0, "completion_tokens": 8, "prefill_s": 48.1924, "prefill_tok_s": 21570.4, "wall_s": 1367.3, "found": true, "code": "CZP-3128-QL", "answer": "CZP-3128-QL", "token_sha": "4dfbacf6d86b", "end": "2026-10-10T12:43:46Z"}
+     lanes: 30 replies, errors 0, shas ['b12cd40d927d'], tok/s overlapping the needle median 10.04; needle_s 1371.2  (2B/needle_lanes.jsonl)
+  s6 2B: {"length": 1040000, "depth": 0.5, "prompt_tokens": 1039528, "cached": 0, "completion_tokens": 8, "prefill_s": 48.3523, "prefill_tok_s": 21499.0, "wall_s": 1370.6, "found": true, "code": "CZP-3128-QL", "answer": "CZP-3128-QL", "token_sha": "4dfbacf6d86b", "end": "2026-10-08T05:12:32Z"}
+     lanes: 24 replies, errors 0, shas ['b12cd40d927d'], tok/s overlapping the needle median 8.43; needle_s 1374.6  (/home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s6-concurrent/2B/needle_lanes.jsonl)
+
+## 4. prefill_cold tok/s (median of 3 prompts a length), s7 boots and s6 2B/3B
+  length       1A       2B       3B       4A    s6/1A    s6/2B    s6/3B    s6/4A        A        B  delta%  B/s6B%
+    2048   1135.3   1139.7   1139.8   1142.3   1148.5   1164.0   1137.4   1143.4   1138.8   1139.8    0.08   -0.95
+    8192   1573.8   1567.6   1577.8   1598.9   1568.8   1602.0   1573.7   1586.1   1586.3   1572.7   -0.86   -0.95
+   16384   1708.2   1708.0   1657.3   1723.8   1728.7   1728.0   1685.3   1725.0   1716.0   1682.7   -1.94   -1.41
+   32768   1746.3   1778.1   1740.0   1794.9   1794.6   1779.0   1775.2   1789.4   1770.6   1759.0   -0.65   -1.02
+   65536   1751.9   1795.7   1613.1   1814.4   1830.1   1828.1   1781.5   1827.5   1783.2   1704.4   -4.42   -5.56
+files: <boot>/prefill_cold.json; s6: evidence/s6-concurrent/<boot>/prefill_cold.json
+
+## 5. MemAvailable minima (GiB) from memwatch.tsv (every 2 s, whole boot: run.sh start to after stop)
+  W1: head 12.13 at 2026-10-10T11:01:40Z, worker 15.76 at 2026-10-10T11:01:40Z, 498 samples  (W1/memwatch.tsv)
+      serving 2026-10-10T11:02:58Z..2026-10-10T11:18:02Z: head 18.08, worker 21.20  (W1/run.txt, W1/steps.txt)
+  1A: head 18.60 at 2026-10-10T11:37:04Z, worker 22.21 at 2026-10-10T11:47:19Z, 839 samples  (1A/memwatch.tsv)
+      serving 2026-10-10T11:19:19Z..2026-10-10T11:51:22Z: head 18.60, worker 22.21  (1A/run.txt, 1A/steps.txt)
+  2B: head 16.79 at 2026-10-10T12:21:02Z, worker 21.54 at 2026-10-10T12:07:00Z, 1335 samples  (2B/memwatch.tsv)
+      serving 2026-10-10T11:52:38Z..2026-10-10T12:44:25Z: head 16.79, worker 21.54  (2B/run.txt, 2B/steps.txt)
+  3B: head 18.54 at 2026-10-10T12:48:05Z, worker 21.76 at 2026-10-10T13:11:06Z, 754 samples  (3B/memwatch.tsv)
+      serving 2026-10-10T12:45:36Z..2026-10-10T13:14:22Z: head 18.54, worker 21.76  (3B/run.txt, 3B/steps.txt)
+  4A: head 18.58 at 2026-10-10T13:33:10Z, worker 22.09 at 2026-10-10T13:46:22Z, 825 samples  (4A/memwatch.tsv)
+      serving 2026-10-10T13:15:29Z..2026-10-10T13:47:08Z: head 18.58, worker 22.09  (4A/run.txt, 4A/steps.txt)
+  5V: head 20.70 at 2026-10-10T14:18:01Z, worker 24.01 at 2026-10-10T13:58:00Z, 838 samples  (5V/memwatch.tsv)
+      serving 2026-10-10T13:57:57Z..2026-10-10T14:19:50Z: head 20.70, worker 24.01  (5V/run.txt, 5V/steps.txt)
+
+## 6. Startup estimate (rank 0 and rank 1 lines)
+  W1: rank0 [tensorfold] CUDA rank 0 startup estimate 82.56 GiB within 98.59 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (W1/startup.txt)
+  W1: rank1 [tensorfold] CUDA rank 1 startup estimate 82.56 GiB within 101.73 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (W1/startup.txt)
+  1A: rank0 [tensorfold] CUDA rank 0 startup estimate 82.55 GiB within 99.44 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (1A/startup.txt)
+  1A: rank1 [tensorfold] CUDA rank 1 startup estimate 82.55 GiB within 102.04 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (1A/startup.txt)
+  2B: rank0 [tensorfold] CUDA rank 0 startup estimate 82.56 GiB within 98.59 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (2B/startup.txt)
+  2B: rank1 [tensorfold] CUDA rank 1 startup estimate 82.56 GiB within 102.01 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (2B/startup.txt)
+  3B: rank0 [tensorfold] CUDA rank 0 startup estimate 82.56 GiB within 98.52 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (3B/startup.txt)
+  3B: rank1 [tensorfold] CUDA rank 1 startup estimate 82.56 GiB within 101.89 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (3B/startup.txt)
+  4A: rank0 [tensorfold] CUDA rank 0 startup estimate 82.55 GiB within 98.62 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (4A/startup.txt)
+  4A: rank1 [tensorfold] CUDA rank 1 startup estimate 82.55 GiB within 101.96 GiB; native 1048576, allocated prompt/reply window 1048576, cache slots 1048582  (4A/startup.txt)

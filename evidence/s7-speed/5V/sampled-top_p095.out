@@ -1,0 +1,29 @@
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1, 2, 4] sampling={"temperature": 1.0, "top_p": 0.95}
+phase=top_p095 c=1 run=1 wall=6.73s agg=30.61 tok/s per_stream=[30.61] shas=None
+phase=top_p095 c=1 run=2 wall=4.66s agg=44.63 tok/s per_stream=[44.64] shas=None
+phase=top_p095 c=1 run=3 wall=4.32s agg=48.34 tok/s per_stream=[48.35] shas=None
+phase=top_p095 c=1 run=4 wall=4.90s agg=42.80 tok/s per_stream=[42.80] shas=None
+phase=top_p095 c=1 run=5 wall=6.26s agg=33.10 tok/s per_stream=[33.10] shas=None
+phase=top_p095 c=1 run=6 wall=4.34s agg=48.27 tok/s per_stream=[48.28] shas=None
+phase=top_p095 c=1 run=7 wall=5.53s agg=37.39 tok/s per_stream=[37.39] shas=None
+phase=top_p095 c=1 run=8 wall=4.38s agg=47.65 tok/s per_stream=[47.65] shas=None
+phase=top_p095 c=1 run=9 wall=5.20s agg=40.22 tok/s per_stream=[40.23] shas=None
+phase=top_p095 c=2 run=1 wall=7.55s agg=54.67 tok/s per_stream=[33.15,27.34] shas=None,None
+phase=top_p095 c=2 run=2 wall=5.54s agg=75.56 tok/s per_stream=[42.37,37.79] shas=None,None
+phase=top_p095 c=2 run=3 wall=6.00s agg=70.33 tok/s per_stream=[42.26,34.41] shas=None,None
+phase=top_p095 c=2 run=4 wall=6.51s agg=63.66 tok/s per_stream=[41.71,31.84] shas=None,None
+phase=top_p095 c=2 run=5 wall=8.26s agg=49.83 tok/s per_stream=[24.92,28.51] shas=None,None
+phase=top_p095 c=2 run=6 wall=7.05s agg=59.30 tok/s per_stream=[31.70,30.23] shas=None,None
+phase=top_p095 c=2 run=7 wall=5.68s agg=74.49 tok/s per_stream=[44.31,36.39] shas=None,None
+phase=top_p095 c=2 run=8 wall=5.99s agg=70.51 tok/s per_stream=[45.14,34.48] shas=None,None
+phase=top_p095 c=2 run=9 wall=6.58s agg=63.90 tok/s per_stream=[35.24,32.63] shas=None,None
+phase=top_p095 c=4 run=1 wall=11.88s agg=88.57 tok/s per_stream=[39.91,34.07,36.02,36.16] shas=None,None,None,None
+phase=top_p095 c=4 run=2 wall=12.81s agg=78.53 tok/s per_stream=[43.72,31.50,35.96,33.50] shas=None,None,None,None
+phase=top_p095 c=4 run=3 wall=11.04s agg=98.58 tok/s per_stream=[38.59,38.59,37.09,38.04] shas=None,None,None,None
+phase=top_p095 c=4 run=4 wall=12.65s agg=81.38 tok/s per_stream=[35.12,40.16,28.79,30.93] shas=None,None,None,None
+phase=top_p095 c=4 run=5 wall=11.92s agg=91.04 tok/s per_stream=[31.63,35.90,41.92,34.10] shas=None,None,None,None
+phase=top_p095 c=4 run=6 wall=12.04s agg=87.77 tok/s per_stream=[30.72,38.80,36.32,39.66] shas=None,None,None,None
+phase=top_p095 c=4 run=7 wall=11.96s agg=84.66 tok/s per_stream=[39.03,46.05,28.01,41.81] shas=None,None,None,None
+phase=top_p095 c=4 run=8 wall=12.31s agg=88.36 tok/s per_stream=[34.08,30.38,37.07,37.77] shas=None,None,None,None
+phase=top_p095 c=4 run=9 wall=11.63s agg=93.68 tok/s per_stream=[34.12,39.43,39.29,34.03] shas=None,None,None,None
+SUMMARY [{"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 1, "n": 9, "median_agg_tok_s": 42.79620591826708, "median_decode_tok_s": 42.80316145940332, "ttft_s_p50": 0.21325527410954237, "token_shas": ["None"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 2, "n": 18, "median_agg_tok_s": 63.90444802014953, "median_decode_tok_s": 34.44236476531104, "ttft_s_p50": 0.2675394786056131, "token_shas": ["None"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 4, "n": 36, "median_agg_tok_s": 88.35739954951787, "median_decode_tok_s": 36.24260875332874, "ttft_s_p50": 2.6607635455438867, "token_shas": ["None"]}]

@@ -1,0 +1,73 @@
+SP-P6b GPU step (2026-10-10). Verdict: NEEDS-USER. Not merged. Default left OFF (b81e853 reverted by 19591f8; unit tree == e375f73).
+Unit: unit/SP-P6b (wt/SP-P6b). e375f73 = merge of int/dsv41-speed b44da3e (P1 included) into 2203710, no conflicts.
+b81e853 = TF_DSV41_BATCHED_DRAFTS on by default ("0" off), TF_DSV41_BATCHED_SETUP default late, absorb off. 19591f8 = its revert.
+Commands: commands.txt. Tooling: dev/sp-P6b. Fresh extension dirs: tip /cache/te-INT-speed-b44da3e-p6b, unit /cache/te-SP-P6b-e375f73 and
+/cache/te-SP-P6b-b81e853; every run's mapped tensorfold_* .so paths are recorded and load only from that arm's dir.
+
+1. Tests
+   CPU after the merge (54 deepseek/dsv41/dsml files): 449 passed, 57 skipped (cpu2/). On b81e853: 449 passed, 57 skipped (default/cpu_family.txt;
+   tests/test_deepseek_v41_admission.py expects 82.56 GiB at 4 lanes: +8.81 MiB block scratch; 82.55 with BATCHED_DRAFTS=0, checked).
+   GPU on e375f73: new tests + multi, multi_tp, lanes, dspark, proposals, golden 151 passed 2 skipped; family suite knobs unset 863 passed 40 skipped
+   (head); family suite with BATCHED_DRAFTS=1 SETUP=late 863 passed 40 skipped (spark2); real-checkpoint dspark/moe/real_layers/reference_real
+   49 passed (spark2). GPU on b81e853: family default (on, late) 863/40 head; family BATCHED_DRAFTS=0 863/40 spark2 (default/gpu/).
+   dsv41_tp_check: NCCL == --pair, unit lines == tip lines on both ranks, at e375f73 (tp/) and b81e853 (default/tp/).
+
+2. Exactness
+   Solo p0 profile (131072-token prompt): logits_sha R=1..6 tip == unit b81e853 on both ranks (r0 00da0fa1 de53e574 db7103d8 7b4fd03d 521c461f
+   244375c8; r1 319aafa0 ede733a1 24205af9 28239c43 352f2af1 305adf05, = sp-P1 receipts), state_sha, rounds 68, accepted 131, keeps equal.
+   Lanes profile: verify[T=1..6] logits shas and every c=1/2/4 stream's tokens and (drafted, accepted, rounds) equal across all 20 boots
+   (tip, off, early, late, lazy, late+absorb, default) on both ranks (profile/table1.txt, table2.txt, table_default.txt: TOKENS_EQUAL).
+   Served: SHAS_EQUAL in both ABBAs (278 replies a boot, same multiset of (prompt, tokens, sha, rounds, accepted); diverse SHA_CHECK 16/16 PASS).
+
+3. Layout check (profile/layout_*.txt). Device addresses differ between any two boots, tip vs tip included (253/255 tensors), so the absolute
+   comparison says nothing. Relative layout (offset in a same-size segment) of all 255 tip decoder tensors is identical in every arm, early
+   included; segment-size multisets vary boot to boot for every arm (tip vs tip too).
+
+4. c=1 timing (lanes engine, 7 runs a phase; profile/table1.txt). Verify graph ms T=1..6 equal across arms within boot noise (31.1-31.5,
+   35.3-35.7, 38.7-39.2, 41.9-42.4, 41.1-41.6, 43.4-44.3; a few single-boot spikes in random arms). c=1 wall ms/round pre 54.6-55.5 in every
+   arm, no arm-ordered difference (tip 55.32/55.08, off 55.44/55.52, early 55.34/54.60, late 55.24/55.14, lazy 54.84/55.03).
+   Served c=1 stage split (stages/, one boot an arm, 15 replies before and after a c=2/4 burst): tok/s pre A 58.91, off 59.47, early 58.43
+   (device 49.64 ms vs 48.55-48.71 in the others), late 59.64, lazy 59.31, A 59.65; post 58.89 / 59.02 / 58.86 / 59.43 / 59.03 / 59.24.
+   Only early shows a c=1 device cost. Pick: late (no lone-lane cost; lazy captures on the first concurrent round: c=2 run 0 at 79-81 vs 92 tok/s).
+   Absorb (profile/table2.txt): c=4 wall ms/round late 90.81/91.18 vs absorb 90.79/91.54, c=2 65.47/65.14 vs 65.30/65.30; host time outside
+   the rounds 0.37-0.40 -> 0.96-1.02 ms at c=4. It does not shrink the round: absorb stays off.
+
+5. ABBA 1 (abba/abba_table.txt), A = int/dsv41-speed b44da3e, B = unit b81e853, no knob env (TF_DSV41_STAGES=1 both), order 1A 2B 3B 4A,
+   WARM=1, MODE=speed, --context 1048576 --parallel 4 --decode-share 0.5 --mtp-drafts 5 --mtp-confidence 0.15 --top-p 1.0.
+   1A stalled: diverse c=1 runs 5-7% under the same waves in 4A (code c=1 1A 77.69 vs 4A 81.26; prose 40.38 vs 42.23). Hence rep2.
+   Same-prompt cells: c=1 prose +0.96 (noise 0.43), prose_long +0.87, structured +1.27; c=2 +6.3..+7.7; c=4 +13.9..+18.6.
+
+6. ABBA 2 = rep2, of record (abba/rep2/abba_table.txt). No stalled run: stalls.py flags only diverse c=4 in 1A and 4A, an artifact of its
+   cross-boot median when the arms differ by 14% (1A and 4A agree within 0.36%).
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   58.99   58.74   58.61   59.54   59.26   58.68   -0.99    0.92   <- below noise by 0.07 pt
+   same     prose       2   88.61   95.17   94.74   89.06   88.84   94.95   +6.89    0.50
+   same     prose       4  127.26  147.50  147.66  127.20  127.23  147.58  +16.00    0.05
+   same     prose_long  1   43.06   43.08   43.05   42.72   42.89   43.06   +0.41    0.79
+   same     prose_long  2   65.11   70.24   70.15   64.90   65.01   70.20   +7.99    0.33
+   same     prose_long  4   94.82  112.20  112.05   95.09   94.96  112.12  +18.08    0.29
+   same     structured  1  104.35  103.96  105.32  104.04  104.19  104.64   +0.43    0.30
+   same     structured  2  156.67  164.29  167.23  155.79  156.23  165.76   +6.10    0.56
+   same     structured  4  222.20  245.46  253.06  222.83  222.52  249.26  +12.02    0.28
+   diverse  code        1   81.40   81.83   82.00   83.01   82.21   81.91   -0.36    1.97
+   diverse  code        2  107.76  112.94  112.29  108.24  108.00  112.61   +4.27    0.44
+   diverse  code        4  140.33  152.67  153.91  139.59  139.96  153.29   +9.53    0.53
+   diverse  prose       1   42.75   42.47   41.99   42.06   42.40   42.23   -0.40    1.63
+   diverse  prose       2   63.34   67.59   67.26   63.27   63.30   67.42   +6.51    0.11
+   diverse  prose       4   86.34   98.55   98.70   86.65   86.49   98.62  +14.02    0.36
+   Diverse ms/round A -> B: prose c=2 65.06/65.02 -> 60.28/60.46, c=4 96.50/96.68 -> 83.14/82.89; code c=2 80.44/80.19 -> 77.18/77.12,
+   c=4 128.27/127.48 -> 115.15/116.06; tokens/round equal. Matched sets (rep2/diverse_matched.txt): prose -0.10/+7.12/+14.77, code -0.44/+4.04/+9.08.
+
+7. Pooled 8 boots (abba/pooled_table.txt): same prose c=1 +0.02 (B above every A 0/4), prose_long c=1 +0.91, structured c=1 +1.06,
+   diverse code c=1 +0.63, prose c=1 +0.12; c=2 +4.27..+7.98 and c=4 +9.18..+18.39, 4/4 on every c>=2 cell.
+   Matched diverse pooled: code c=1 -0.32, prose c=1 +0.20 (noise 5-6% from ABBA 1's 1A), c=2 +4.59/+6.83, c=4 +9.40/+14.79.
+   c=1 prose per run is steady inside each boot (no stall): ABBA 1 has every B boot above every A boot (59.37, 59.05 vs 58.52, 58.77), rep2 every
+   B boot below every A boot (58.74, 58.61 vs 58.99, 59.54). The sign flips between ABBAs; boot level, not the arm, sets it.
+
+8. Keep rule on rep2: >= +1% on a targeted cell YES (c=2 +4.3..+8.0, c=4 +9.5..+18.1). Shas equal YES. M2 half rule YES (prose c=2 6.51 vs
+   3.45, c=4 14.02 vs 8.00; code c=2 4.27 vs 3.05, c=4 9.53 vs 6.01; pooled too). No cell below noise NO: same prose c=1 -0.99% vs 0.92%,
+   not a stall artifact, so the written exception does not apply, although the pooled cell is flat (+0.02%).
+   Decision: needs-user. The trade: c=1 same prose -0.99% (rep2) / +0.96% (ABBA 1) / +0.02% (pooled); other c=1 cells -0.40..+1.27 within
+   noise; for c=2 +6.1..+8.0% same-prompt and +4.3..+6.5% diverse; c=4 +12.0..+18.1% same-prompt and +9.5..+14.0% diverse (rep2).
+   To take it: git revert 19591f8 on unit/SP-P6b (or TF_DSV41_BATCHED_DRAFTS=1 TF_DSV41_BATCHED_SETUP=late), then the merge step.
+GPUs: both idle at the end (final_state.txt: conduit only on the head, nothing on spark2). Not pushed. int/dsv41-speed untouched (b44da3e).
