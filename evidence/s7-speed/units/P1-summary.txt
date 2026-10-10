@@ -1,0 +1,83 @@
+SP-P1 follow-up GPU step (2026-10-09/10). Verdict: KEEP, merged. int/dsv41-speed 378cea7 -> b44da3e (merge of unit/SP-P1 d00ef46, --no-ff).
+Unit: unit/SP-P1 d00ef46 (3b14eae = merge of 378cea7; d00ef46 = TUNED qmmf decode tiles on by default, TF_DSV41_QMMF unset).
+wo_a stays on P4's grouped launch. Decided on the ABBA keep rule only (the microbench kill was overridden, plan note).
+Commands: commands.txt, abba/cmd_abba.txt, abba/rep2/cmd_abba.txt, merge/cmd.txt. Tooling: dev/sp-P1/followup.
+
+0. Isolation. Fresh extension dir a tree and sha: unit /cache/te-SP-P1-d00ef46, tip /cache/te-INT-speed-378cea7-p1fu
+   (te-INT-speed-378cea7 already existed, so it was not reused). Mapped tensorfold_* .so paths recorded in every run:
+   tip runs load only the tip dir (tensorfold_nvfp4_v3, no gemv); unit runs load only the unit dir (tensorfold_nvfp4_v4 and
+   tensorfold_dsv41_gemv_v2), both ranks (gpu/*.txt [ext] lines, tp/exts.txt, profile/*/rank*.log, abba/*/exts.txt, abba/rep2/*/exts.txt).
+   Same-trees guard (dev/sp-P8/same_trees.sh) before every two-rank step and before each boot: src/tests equal on both hosts.
+
+1. GPU tests (pinned nvcr.io/nvidia/pytorch:26.07-py3, unit tree)
+   Shared-kernel files (dsv41_gemv, dsv41_mx8, qmm, qmm_group, nvfp4_linear, nvfp4_experts, nvfp4_lane_tiles), knob unset, head:
+     136 passed, 11 skipped (gpu/shared.txt). Skips: real-checkpoint mx8 cases, the 27B qmm_group case.
+   Family suite tests/cuda/test_dsv41_*.py:
+     knob unset (default-on), head:  802 passed, 40 skipped (gpu/family_default.txt)
+     TF_DSV41_QMMF=0, spark2:         802 passed, 40 skipped (gpu/family_off.txt)
+   Real-checkpoint files (mx8, moe, norms, real_layers, reference_real), TF_DSV41_MODEL set, knob unset, spark2: 103 passed (gpu/real.txt).
+   dsv41_tp_check (tp/compare.txt): NCCL == --pair on both trees; unit lines == tip lines on rank 0 and rank 1; pair lines equal.
+
+2. Bit check (p0/profile_p0.py solo, 131072-token prompt, --context 131584; order tip, unit, unit2, tip2; profile/graph_table.txt)
+   logits_sha R=1..6 identical in all 4 runs on both ranks (r0 00da0fa1 de53e574 db7103d8 7b4fd03d 521c461f 244375c8;
+   r1 319aafa0 ede733a1 24205af9 28239c43 352f2af1 305adf05), equal to the sp-P1/check receipts. state_sha, serial tokens,
+   DSpark tokens, rounds (68), accepted (131), keeps and depths equal in all 8 rank-runs.
+   Graph ms a replay, median of 2 runs x 2 ranks, tip -> unit:
+     R=1 32.73 -> 31.94 (-0.79)  R=2 38.70 -> 37.54 (-1.16)  R=3 44.12 -> 42.60 (-1.52)
+     R=4 48.37 -> 47.31 (-1.05)  R=5 47.96 -> 47.31 (-0.65)  R=6 50.82 -> 50.05 (-0.77)
+   Plain serial decode: 33.26 -> 32.32 ms a round (-2.8%). DSpark ms/round 59.82 -> 59.10 (noisy; tip runs 60.75 / 58.88).
+
+3. ABBA 1 (abba/abba_table.txt), A = int/dsv41-speed 378cea7, B = unit/SP-P1 d00ef46, order 1A 2B 3B 4A, WARM=1, MODE=speed,
+   --context 1048576 --parallel 4 --decode-share 0.5 --mtp-drafts 5 --mtp-confidence 0.15 --top-p 1.0, TF_DSV41_STAGES=1 both arms.
+   1A stalled: 5 same-prompt runs 5-8% under their cell median and its diverse waves 5-12% under the same waves in the other
+   boots (abba/stalls.txt; 2B, 3B, 4A: 0). Hence rep2. ABBA 1 still gains on all 15 cells (+1.58 .. +5.06%), every B boot above
+   both A boots, shas equal.
+
+4. ABBA 2 = rep2, of record (abba/rep2/abba_table.txt). 0 stalled runs in all 4 boots (rep2/stalls.txt). Aggregate tok/s:
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   57.63   58.99   59.53   57.85   57.74   59.26   +2.63    0.37
+   same     prose       2   86.81   88.71   89.09   87.63   87.22   88.90   +1.93    0.93
+   same     prose       4  125.41  127.90  128.53  125.44  125.43  128.22   +2.23    0.02
+   same     prose_long  1   42.34   43.16   42.56   42.21   42.27   42.86   +1.39    0.32
+   same     prose_long  2   64.56   65.51   65.02   64.41   64.49   65.26   +1.21    0.23
+   same     prose_long  4   94.07   95.59   95.86   93.87   93.97   95.73   +1.87    0.22
+   same     structured  1  102.61  105.90  104.34  102.26  102.43  105.12   +2.63    0.34
+   same     structured  2  153.42  157.04  156.97  155.30  154.36  157.01   +1.71    1.22
+   same     structured  4  218.14  223.27  223.53  218.41  218.28  223.40   +2.35    0.12
+   diverse  code        1   80.81   82.11   82.08   80.68   80.74   82.10   +1.67    0.17
+   diverse  code        2  106.26  108.31  108.85  106.63  106.44  108.58   +2.01    0.35
+   diverse  code        4  136.88  141.09  142.43  138.18  137.53  141.76   +3.08    0.94
+   diverse  prose       1   41.52   42.50   42.64   41.41   41.47   42.57   +2.66    0.28
+   diverse  prose       2   62.49   63.66   64.00   62.57   62.53   63.83   +2.08    0.13
+   diverse  prose       4   85.61   87.49   87.48   85.84   85.73   87.49   +2.05    0.28
+   Every B boot is above both A boots in all 15 cells. Diverse tokens/round equal across arms (4.76/4.95 code, 2.05-2.06 prose);
+   diverse ms/round A -> B: prose c=1 49.48/49.54 -> 48.27/48.14, c=4 97.28/97.28 -> 95.62/95.10; code c=1 58.04/58.61 -> 57.00/56.54,
+   c=4 129.25/128.39 -> 126.50/126.11. Matched prompt sets (rep2/diverse_matched.txt): prose +2.39/+1.76/+1.85, code +2.30/+1.85/+2.70.
+   Shas: rank 0 done lines 278 replies a boot, 21 distinct (prompt, tokens, sha, rounds, accepted), same multiset in all 8 boots
+   (rounds and accepted equal). Stream == solo: each ruler prompt has one
+   (sha, rounds, accepted) over all its replies at c=1, 2 and 4 in each boot: prose b819a030b2cc 66/133 (49 replies), structured
+   608709a2ada9 34/165 (51), prose_long d9f74497fa72 93/106 (36), the sp-P0 shas (rep2/2B/serve_rank0.log). bench_diverse SHA_CHECK 16/16 PASS
+   in every boot (one sha a prompt across c), per-prompt shas equal across boots. SHAS_EQUAL in both tables.
+   Drafted == plain: dsv41_tp_check on the unit, draft:false and drafted replies equal for greedy and keyed at 300 and 2100
+   prompt tokens (tp/unit_rank0.log), and the family suite (golden, multi, multi_tp, sample_lanes) passed in both knob modes.
+
+5. Pooled 8 boots (abba/pooled_table.txt): +1.48 .. +3.18% on all 15 cells, B above every A boot 4/4 on all 15.
+   same prose +2.77/+2.26/+2.06, prose_long +2.28/+1.48/+1.82, structured +2.27/+1.95/+2.43; diverse code +2.01/+1.80/+3.18,
+   prose +2.66/+1.94/+1.83 (c=1/2/4). Matched diverse pooled (diverse_matched_pooled.txt): +1.58 .. +2.46%.
+
+6. Keep rule (on rep2, the clean ABBA):
+   >= +1% on a targeted cell: YES. c=1 prose +2.63, structured +2.63, prose_long +1.39 (also >= +1.5% on c=1 prose/structured).
+   No cell below noise: YES. No negative cell; every delta exceeds its |1A-4A|/A noise. Same in ABBA 1 and pooled.
+   Shas equal: YES (all 8 boots).
+   M2 half rule (c>=2): YES. diverse prose c=2 +2.08 vs same prose +1.93; c=4 +2.05 vs +2.23; code c=2 +2.01 vs structured +1.71;
+   code c=4 +3.08 vs structured +2.35. Pooled: YES on all four too.
+   Decision: KEEP.
+
+7. MERGE (merge/): in wt/INT-speed, git merge --no-ff --no-edit unit/SP-P1 -> b44da3e969d812bda7d6c698c7f21e5f463b9178, no conflicts;
+   its tree equals d00ef46 (git diff empty). CPU tests on the merged tree (venv .venv-tf, CUDA_VISIBLE_DEVICES=, PYTHONPATH=wt/INT-speed/src),
+   all 52 deepseek/dsml/dsv41 test files: 436 passed, 56 skipped, rc=0 (merge/int_cpu_after_merge.txt). Extra qmm/nvfp4 files:
+   14 passed, 10 skipped (merge/int_cpu_qmm_after_merge.txt). Not pushed. To undo: revert b44da3e, or TF_DSV41_QMMF=0.
+
+GPUs idle at the end: docker ps shows conduit only on the head and nothing on spark2 (final_state.txt).
+Note: spark2's receipts/sp-P1/followup dir was created by docker as root (the tp containers' /out mount); the profile ranks wrote
+into it as root and the JSON was rsynced back, nothing lost.

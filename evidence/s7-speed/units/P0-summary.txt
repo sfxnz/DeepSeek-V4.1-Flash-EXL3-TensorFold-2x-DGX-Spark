@@ -1,0 +1,38 @@
+P0: merge origin/python-0.6 (ed78d6f) into int/dsv41-speed cut from b86514a.
+
+Git (worktree /home/sfxnz/projects/code/wt/INT-speed, branch int/dsv41-speed, not pushed):
+  dc971a2  Merge origin/python-0.6 into int/dsv41-speed (--no-ff; one conflict, docs/recipes/README.md:
+           kept our DeepSeek-V4.1-Flash row, took upstream's Qwen3.6 row "MLX with MTP drafts, one-GPU CUDA")
+  f9dd67b  fix(server): thinking_notes OFF hint names {"thinking": false} beside {"enable_thinking": false}
+           (both are heard by request_options.thinking_fields); test_thinking_notes asserts both
+           (2 failed before the fix, 7 passed / 2 skipped after).
+  Tip = f9dd67b7367be9a30d6126c78b0a8d039ca8574e. tensorfold reports 0.6.6.
+
+CPU (venv-tf, CUDA hidden), merged tip vs b86514a (git archive in scratch):
+  full suite: int 127 failed / 4457 passed / 322 skipped / 11 errors; base 127 / 4290 / 318 / 11.
+    Failure+error sets identical (138 ids each, cpu/int.fails.txt == cpu/base.fails.txt): no new failures.
+    tests/test_cancellation.py::test_streaming_socket_disconnect_during_decode_releases_the_active_row spins
+    forever on this host on BOTH trees (cpu/*_hung_test_cancellation.txt); deselected in the rerun.
+  family files (deepseek/dsv41/dsml/app_hooks/server/thinking_notes): int 11 failed / 700 passed / 44 skipped;
+    base 11 / 693 / 42. Same 11 (all tests/test_lane_server.py, pre-existing).
+GPU family suite (pinned image, head GPU, tests/cuda/test_dsv41_*.py incl. golden, multi, multi_tp, sample_lanes):
+  752 passed, 40 skipped in 996.83 s (skips: TF_DSV41_MODEL real-checkpoint tests and one float4 torch limit;
+  golden/multi/multi_tp/sample_lanes ran, none skipped). gpu/family.txt.
+Serve: two boots of dev/n10/serve_pair.sh at the recipe flags + --parallel 4 --decode-share 0.5, TF_DSV41_STAGES=1
+  (same as receipts/p0-profile/serve). Rank 0: startup estimate 82.55 GiB, window 1048576.
+  Reply shas (stats_client 42 replies per boot, c=1/2/4) all equal p0-profile/serve:
+    prose b819a030b2cc, structured 608709a2ada9, prose_long d9f74497fa72 (natural probe a90365d26a09 as base).
+  bench_decode.py median decode tok/s at c=1 (base p0-profile/serve -> boot / boot2):
+    prose      55.22 -> 56.26 / 55.87
+    structured 98.16 -> 96.48 / 96.72
+    prose_long 34.64 (cold first run; warm 39.61, stats 40.97) -> 41.24 / 41.47
+  c=2 / c=4 aggregate (base -> boot2): prose 82.2/102.7 -> 82.1/115.7; structured 145.3/193.8 -> 142.4/199.1;
+    prose_long 61.0/84.5 -> 60.8/86.7.
+  stats_client c=1 ms/round (base -> boot2): prose 54.38,54.51 -> 54.48,54.39; structured 60.29,59.96 ->
+    60.41,60.07; prose_long 52.1,52.37 -> 52.58,52.5. In boot 1 the stats_client prose c=1 pair alone ran at
+    64.8/62.8 ms/round (device 62 vs 51 ms); the same prompt ran 56.2 tok/s earlier in that boot and 55.4 in
+    boot2, so it is read as a transient, not the merge (no decode-path file changed).
+  Structured c=1 bench is 1.5% under base in both boots; its ms/round from the engine stats equals base.
+  Expected decode gain 0: none measured beyond noise.
+Both GPUs idle after each boot (docker ps: conduit only here, nothing on spark2).
+Not done here: recipe image rebuild / run.sh boot (recipe repo, outside this unit's spec).

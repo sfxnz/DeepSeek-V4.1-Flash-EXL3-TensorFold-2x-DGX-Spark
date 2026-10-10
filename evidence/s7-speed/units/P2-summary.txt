@@ -1,0 +1,89 @@
+SP-P2 served ABBA (2026-10-09). Verdict: KEEP. Knob now on by default: unit/SP-P2 2b1ce87 (TF_DSV41_L2WARM unset = 200 GB/s, 8 MB a gather).
+Shas equal in all 8 boots. One strict-rule miss (structured c=4 in rep2, -0.18% vs 0.11% noise); see 4. The orchestrator may overrule it.
+
+0. Merge. int/dsv41-speed moved 6917173..2987c8a (P4, P10). Merged into unit/SP-P2: c257079, no conflicts (merge/cmd.txt).
+   CPU family files after the merge: 475 passed, 18 skipped; ruff clean (merge/unit_cpu_after_merge.txt).
+
+Arms: A = int/dsv41-speed 2987c8a (wt/INT-speed). B = unit/SP-P2 c257079 (wt/SP-P2) with TF_DSV41_L2WARM=200 on both ranks
+(best rate, ../check/knob.txt). Both arms TF_DSV41_STAGES=1, each with a fresh extension dir. Flags (dev/n10/serve_pair.sh):
+--tp 2 --no-thinking --context 1048576 --mtp-drafts 5 --mtp-confidence 0.15 --top-p 1.0 --parallel 4 --decode-share 0.5.
+Order 1A 2B 3B 4A, WARM=1, cells.sh MODE=speed (bench_decode --phase both and prose_long, c=1 2 4, --runs 5; M2 bench_diverse
+prose+code, c=1 2 4, 9 waves). Two ABBAs: ./ and rep2/ (cmd_abba.txt in each). Every cell rc=0. commit.txt per boot matches the arm.
+src hashes are equal on both nodes before and after (src_hash.txt, src_hash_after.txt). Tool hashes: tool_sha256.txt.
+Tables: abba_table.txt, rep2/abba_table.txt (dev/sp-p6/abba_table.py), pooled_table.txt (dev/sp-p7/pooled_table.py),
+diverse_matched.txt, rep2/diverse_matched.txt, diverse_matched_pooled.txt (dev/sp-p10/diverse_matched.py).
+
+1. ABBA 1 (abba_table.txt). Aggregate tok/s, per-boot medians; arm = median of per-boot medians; noise = |1A-4A|/A.
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   57.13   56.71   57.72   56.98   57.05   57.22   +0.29    0.26
+   same     prose       2   85.66   85.67   87.08   85.67   85.67   86.37   +0.82    0.01
+   same     prose       4  123.71  124.95  125.52  123.97  123.84  125.23   +1.13    0.21
+   same     prose_long  1   39.99   42.20   42.35   41.68   40.83   42.27   +3.53    4.14
+   same     prose_long  2   62.73   64.29   64.74   63.10   62.91   64.51   +2.55    0.60
+   same     prose_long  4   92.30   93.16   93.88   92.34   92.32   93.52   +1.30    0.04
+   same     structured  1   99.64  102.38  104.21  100.07   99.85  103.30   +3.45    0.44
+   same     structured  2  151.94  154.50  154.02  151.30  151.62  154.26   +1.74    0.42
+   same     structured  4  198.09  216.65  217.72  216.54  207.32  217.18   +4.76    8.90
+   diverse  code        1   70.13   80.11   79.86   78.02   74.07   79.99   +7.98   10.65
+   diverse  code        2  104.45  105.33  106.02  105.16  104.81  105.67   +0.83    0.68
+   diverse  code        4  129.69  131.36  137.87  137.97  133.83  134.62   +0.58    6.19
+   diverse  prose       1   39.81   41.80   41.79   41.07   40.44   41.80   +3.37    3.12
+   diverse  prose       2   58.16   59.74   62.34   61.43   59.80   61.04   +2.08    5.46
+   diverse  prose       4   75.61   78.97   85.85   84.70   80.15   82.41   +2.82   11.33
+   Stalled runs: 1A structured c=4 runs 1 and 3 (181.5, 179.9 vs 217-218), 1A prose_long c=1 run 4 (30.6), 2B structured c=4
+   runs 1 and 3 (186.0, 175.9), 2B structured c=1 run 1 (74.9). The large noise% values come from these. Hence rep2.
+
+2. ABBA 2 (rep2/abba_table.txt). Same arms, commits, env and ext dirs. No stalled runs.
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   57.48   57.74   57.67   57.11   57.29   57.70   +0.72    0.65
+   same     prose       2   85.40   86.97   87.20   86.03   85.71   87.09   +1.60    0.74
+   same     prose       4  123.86  125.40  125.23  124.36  124.11  125.32   +0.97    0.40
+   same     prose_long  1   41.71   42.29   41.56   41.59   41.65   41.92   +0.66    0.29
+   same     prose_long  2   62.69   64.32   64.36   63.09   62.89   64.34   +2.31    0.64
+   same     prose_long  4   92.54   93.93   93.47   93.13   92.83   93.70   +0.94    0.64
+   same     structured  1  100.84  101.77  103.16   99.96  100.40  102.46   +2.06    0.87
+   same     structured  2  151.94  153.82  154.15  152.52  152.23  153.99   +1.16    0.38
+   same     structured  4  217.89  217.53  217.23  217.64  217.76  217.38   -0.18    0.11   <- below noise as written
+   diverse  code        1   78.81   79.87   81.12   79.07   78.94   80.50   +1.97    0.33
+   diverse  code        2  104.53  106.22  106.42  104.92  104.72  106.32   +1.53    0.37
+   diverse  code        4  134.46  137.45  138.86  138.54  136.50  138.16   +1.21    2.99
+   diverse  prose       1   40.63   41.38   41.54   40.77   40.70   41.46   +1.86    0.35
+   diverse  prose       2   61.35   62.33   62.50   61.27   61.31   62.42   +1.80    0.13
+   diverse  prose       4   84.44   85.61   85.79   84.97   84.71   85.70   +1.17    0.62
+   Per-stream structured c=4: A 55.02/54.89, B 54.80/54.34 (-0.70%, noise 0.25).
+   Diverse ms/round, A -> B (median per boot): prose c=1 50.38/50.31 -> 49.58/49.38; c=4 98.73/98.62 -> 97.33/97.20;
+     code c=1 60.11/59.23 -> 58.64/58.00; c=4 130.27/128.35 -> 129.67/128.50. Tokens per round equal (2.06, 4.95).
+   Matched prompt sets (rep2/diverse_matched.txt): prose +1.43 / +2.04 / +1.29, code +2.04 / +1.69 / +0.93 at c=1 / 2 / 4.
+     Every B boot is above both A boots in all 6.
+
+3. Pooled over 8 boots (pooled_table.txt): same prose +1.02 / +1.58 / +1.13, prose_long +1.46 / +2.28 / +1.34,
+   structured +2.75 / +1.41 / +0.13; diverse code +2.01 / +1.33 / +1.06, prose +2.37 / +1.67 / +1.34 (c=1 / 2 / 4).
+   Structured c=4 unstalled boots: A 216.54, 217.89, 217.64; B 216.65, 217.72, 217.53, 217.23. Flat.
+
+4. Keep rule (plan):
+   +1% on a targeted cell (P2 targets c=1; kill is "under +1% at c=1"): YES. structured c=1 +3.45 / +2.06 (every B boot above
+     every A boot, 4/4 pooled), diverse code c=1 +1.97 and prose c=1 +1.86 in rep2. Ruler prose c=1 is +0.29 / +0.72 (+1.02 pooled).
+   Shas equal: YES. Rank 0 done lines: 278 replies a boot, 21 distinct (prompt, tokens, sha, rounds, accepted), same multiset
+     in all 8 boots (rounds and accepted equal, so drafting matches). bench_diverse SHA_CHECK 16/16 PASS in every boot;
+     per-prompt shas equal across boots. SHAS_EQUAL in both tables.
+   No cell below noise: ABBA 1 YES (no negative cell). rep2 NOT MET as written on one cell: structured c=4 -0.18% against a
+     0.11% 1A-4A spread (per-stream -0.70 vs 0.25). Across the 7 unstalled boots this cell is flat (B inside the A range).
+     Consistent with ../check: the R=4 verify graph gained nothing at any rate; c=4 structured runs the widest windows.
+   M2 half rule (c>=2 claim): rep2 YES on all four pairs (prose c=2 +1.80 vs +1.60, c=4 +1.17 vs +0.97; code c=2 +1.53 vs
+     structured +1.16; c=4 +1.21 vs -0.18). Pooled YES on all four. ABBA 1 misses code c=2 by 0.04 pp on aggregate medians
+     (+0.83 vs half of +1.74) but meets it on matched sets (+1.46); its structured c=4 +4.76 is the 1A stall.
+   Decision: KEEP. Exact (all shas, rounds and accepted counts equal), 14 of 15 cells gain in the clean ABBA, and the one miss
+     is 0.07 pp past a two-boot noise estimate on a cell the mechanism is not expected to move. Same kind of judgement call as
+     sp-P10. To undo: revert 2b1ce87, or set TF_DSV41_L2WARM=0.
+
+5. Default ON (unit/SP-P2 2b1ce87, perf(deepseek_v41): warm the next dense weights into L2 by default):
+   l2warm.wanted(): unset -> (200 GB/s, 8 MB); "0" -> off. Docs paragraph added. The admission tests build rank 0 on fake
+   weights, so their fixture sets TF_DSV41_L2WARM=0.
+   Changed tests fail before, pass after (default_on/cpu_l2warm_test_before.txt: l2warm + admission files 6 failed -> 31 passed).
+   CPU family files: 475 passed, 18 skipped; ruff clean (default_on/cpu_family_after.txt).
+   GPU, head, knob unset, the default-on tree: tests/cuda/test_dsv41_*.py 788 passed, 40 skipped (default_on/gpu_family_default.txt,
+     gpu_cmd.txt). Skips are the real-checkpoint tests and one torch float4 limit.
+   Not pushed. int/dsv41-speed not touched.
+
+GPUs: idle after every boot and at the end (docker ps: conduit only here, nothing on spark2). MemAvailable 113 GiB head,
+117 GiB spark2. vmstat samplers stopped (vmstat_head.txt, vmstat_spark2.txt cover both ABBAs).

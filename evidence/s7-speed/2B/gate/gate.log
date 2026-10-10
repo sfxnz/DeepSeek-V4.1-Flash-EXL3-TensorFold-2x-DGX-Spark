@@ -1,0 +1,33 @@
+2026-10-10T11:52:48.743Z session_gate: evidence dir /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/2B/gate
+2026-10-10T11:52:49.809Z session_gate: start smoke-chat
+2026-10-10T11:52:50.091Z session_gate: end smoke-chat rc=0
+2026-10-10T11:52:50.094Z session_gate: start smoke-count
+2026-10-10T11:52:56.406Z session_gate: end smoke-count rc=0
+2026-10-10T11:52:56.408Z session_gate: start bench-frozen
+2026-10-10T11:53:48.534Z session_gate: end bench-frozen rc=0
+2026-10-10T11:53:48.536Z session_gate: start bench-prose-long
+2026-10-10T11:54:35.615Z session_gate: end bench-prose-long rc=0
+2026-10-10T11:54:35.617Z session_gate: start bench-frozen-conc
+2026-10-10T11:57:01.563Z session_gate: end bench-frozen-conc rc=0
+2026-10-10T11:57:01.565Z session_gate: start bench-prose-long-conc
+2026-10-10T11:59:04.178Z session_gate: end bench-prose-long-conc rc=0
+2026-10-10T11:59:04.180Z session_gate: start bench-concurrent
+2026-10-10T12:05:06.362Z session_gate: end bench-concurrent rc=0
+2026-10-10T12:05:06.364Z session_gate: start bench-concurrent-mixed
+2026-10-10T12:06:30.343Z session_gate: end bench-concurrent-mixed rc=0
+2026-10-10T12:06:30.345Z session_gate: start conc-check
+2026-10-10T12:06:30.369Z session_gate: end conc-check rc=0
+2026-10-10T12:06:30.371Z session_gate: start pairs-concurrent
+2026-10-10T12:07:06.516Z session_gate: end pairs-concurrent rc=0
+finished_at=2026-10-10T12:07:07.204Z
+smoke-chat=0
+smoke-count=0
+bench-frozen=0
+bench-prose-long=0
+bench-frozen-conc=0
+bench-prose-long-conc=0
+bench-concurrent=0
+bench-concurrent-mixed=0
+conc-check=0
+pairs-concurrent=0
+GATE=PASS

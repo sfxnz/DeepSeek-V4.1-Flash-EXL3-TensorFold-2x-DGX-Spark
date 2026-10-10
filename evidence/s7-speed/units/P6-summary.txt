@@ -1,0 +1,65 @@
+SP-P6 served ABBA (2026-10-09). Verdict: shas equal, c=2/c=4 gains far above +1% and the M2 rule holds on prose,
+but c=1 prose is below noise in both ABBAs -> keep rule NOT met as written. Knob left default OFF (no commit).
+Not killed: c=4 prose +13.4% (kill < +4%), M2 c=4 prose +7.8% / code +5.3% (kill < +2%), drafts == solo.
+
+Arms: A = int/dsv41-speed f9dd67b (wt/INT-speed, did not move, so no merge into the unit), B = unit/SP-P6 b650023
+(wt/SP-P6) with TF_DSV41_BATCHED_DRAFTS=1 on both ranks. Both arms TF_DSV41_STAGES=1 (as sp-P0 and M2).
+Flags (dev/n10/serve_pair.sh): --tp 2 --no-thinking --context 1048576 --mtp-drafts 5 --mtp-confidence 0.15 --top-p 1.0
+--parallel 4 --decode-share 0.5. Order 1A 2B 3B 4A, WARM=1 (one discarded cells.sh abba pass per boot). Commands: cmd_abba.txt.
+Tooling: dev/n10/cells.sh gained MODE=speed (bench_decode.py --phase both and --phase prose_long at c=1 2 4, --runs 5,
+then dev/m2/bench_diverse.py --phase both at c=1 2 4, 9 waves); dev/n10/abba.sh gained per-arm A_ENV/B_ENV.
+Existing modes unchanged. Hashes: tool_sha256.txt. Tables: dev/sp-p6/abba_table.py -> abba_table.txt.
+
+1. Speed ABBA (abba_table.txt). Aggregate tok/s, per-boot medians 1A 2B 3B 4A; arm = median of per-boot medians;
+   noise = |1A-4A| / A.
+   cell     phase       c      1A      2B      3B      4A       A       B  delta%  noise%
+   same     prose       1   56.55   55.53   56.34   56.53   56.54   55.94   -1.06    0.03   <- below noise
+   same     prose       2   82.47   87.20   88.02   82.20   82.33   87.61   +6.41    0.33
+   same     prose       4  116.78  132.66  132.67  117.18  116.98  132.67  +13.41    0.34
+   same     prose_long  1   41.08   41.83   40.04   41.55   41.31   40.94   -0.91    1.15
+   same     prose_long  2   60.89   64.15   64.81   61.18   61.03   64.48   +5.65    0.47
+   same     prose_long  4   87.69  101.94   99.85   87.38   87.53  100.90  +15.27    0.35
+   same     structured  1   98.17   97.57   97.88   97.04   97.60   97.72   +0.12    1.17
+   same     structured  2  145.10  152.21  154.23  145.01  145.05  153.22   +5.63    0.07
+   same     structured  4  200.02  224.87  225.30  201.30  200.66  225.08  +12.17    0.64
+   diverse  code        1   73.00   78.33   67.51   77.17   75.09   72.92   -2.88    5.55
+   diverse  code        2  102.33  104.85  104.22  100.40  101.36  104.54   +3.13    1.91
+   diverse  code        4  130.80  137.73  133.19  126.60  128.70  135.46   +5.25    3.27
+   diverse  prose       1   38.86   40.49   38.84   41.12   39.99   39.67   -0.81    5.66
+   diverse  prose       2   59.50   63.13   63.00   58.65   59.08   63.07   +6.75    1.45
+   diverse  prose       4   81.38   90.86   84.36   81.17   81.27   87.61   +7.79    0.27
+   Per-stream tok/s table and diverse ms/round in abba_table.txt. Diverse ms/round at c=4: prose 103.62/103.38 (A) ->
+   89.91/92.86 (B); code 137.24/138.63 -> 127.26/128.43; tokens/round identical (2.06, 4.95).
+   M2 rule (diverse gain >= half the same-prompt gain): c=2 prose 6.75 >= 3.21 yes; c=4 prose 7.79 >= 6.71 yes;
+   code vs structured c=2 3.13 >= 2.82 yes; c=4 5.25 < 6.09 on aggregate (per-stream 7.76 >= 6.09; ms/round -7.3%).
+
+2. Reply shas: SHAS_EQUAL. Rank 0 done lines (prompt, tokens, sha, rounds, accepted): 278 replies a boot, the same
+   multiset in all 4 boots (rounds and accepted equal too, so drafts equal solo). bench_diverse SHA_CHECK 16/16 PASS
+   every boot, per-prompt shas equal across boots.
+
+3. c=1 follow-up ABBA (lone/, cells.sh MODE=lone: 9 runs at c=1, prose_long 5, LAIL 10; lone/lone_table.txt):
+   phase          1A      2B      3B      4A       A       B  delta%  noise%
+   prose       56.99   55.88   56.04   56.80   56.90   55.96   -1.65    0.32   <- below noise
+   structured  98.36   97.92   97.60   97.41   97.88   97.76   -0.12    0.97
+   prose_long  41.55   40.96   41.04   41.38   41.46   41.00   -1.12    0.40   <- below noise
+   lail_prose  41.62   41.70   42.04   41.43   41.53   41.87   +0.83    0.47
+   Shas: 81 replies a boot, same multiset in all 4 (SHAS_EQUAL).
+   Over both ABBAs every B boot's c=1 prose median (55.53, 56.34, 55.88, 56.04) is below every A boot's (56.55, 56.53,
+   56.99, 56.80).
+
+4. c=1 stage split (stages_c1/, one boot per arm, 4 warm + 15 sequential ruler prose replies, stats stages_ms):
+   arm                 tok/s  device  engram  launch  markov  sampling  round sum ms
+   1A  int tip         56.36  51.047   0.306   0.320   0.045     0.456   52.235
+   2on unit, knob on   56.06  50.991   0.366   0.323   0.047     0.497   52.289
+   3off unit, knob off 56.72  50.657   0.352   0.338   0.049     0.488   51.927
+   4A  int tip         56.48  50.816   0.345   0.336   0.044     0.476   52.037
+   The knob-off unit is not slower; the knob-on boot is 0.6% slower than the A mean with no stage standing out
+   (round sum within the A range; ~10-15 ms a reply more outside the round clocks). Single boots: not conclusive.
+   At c=1 the code path is the solo one (one drafting lane never batches); what differs with the knob on is the
+   Batch scratch (8.81 MiB) and 60 more captured graphs. Cause not identified.
+
+Keep rule: +1% on a targeted cell yes (c=4 +12-15%, c=2 +5.6-6.4%); shas equal yes; M2 half rule yes on prose (code c=4
+aggregate short of half the structured gain); no cell below noise NO (c=1 prose -1.06% vs 0.03%, -1.65% vs 0.32%;
+c=1 prose_long -1.12% vs 0.40% in the follow-up). Default left OFF; decision needed: accept ~1-1.6% at c=1 for +13%
+at c=4, or find the knob-on c=1 cost first (e.g. build the batched graphs lazily or check the 60-graph pool).
+GPUs: both idle after every step (docker ps: conduit only here, nothing on spark2).

@@ -1,0 +1,12 @@
+TAG=1A ARM=A PLAN=C RECIPE=/home/sfxnz/projects/data/tf-dsv41/s7-old-recipe IMAGE=tf-dsv41-flash:0.6.4-b86514a TF_SHA=b86514a5ac8700b32e7b24f1095349df4ce2b922
+38a06077281ba7f022d4fd5889ca703dc52ca3ef
+env knobs: none
+4b729d60fabf05dc40aa973753d30e93a54ca0434782422b5d1882b098e5d537  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/bench_diverse.py
+816a0c91d0cd89058aeb01052c87513b1e71e83fd1659ffc3c31c32d15c92b6d  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/needle_lanes.py
+a6f344637e4031288017f05ab1e27583a211bdd2a491791097ca07f4aa32eceb  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/prefill_cold.py
+506fcdf0db66749f7c88d5c0b2b74707a7e7d307fd5a7adced4f2880348a3919  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/sampled_conc.py
+63eb9537d02b513babeb1e5e6a24ffcf93e8ce38b483860f5ad839d79ed8794e  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/table.py
+3d7789d3ef0603b55d90d2d17f385db146d20920f1c1de35954bb19d82885054  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/boot.sh
+b41f52568ce6391c222cffa6e0a4f8618b4a809a5e7cb79c68b9be00b8d3a218  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/memwatch.sh
+fd4949c8eb80f939a8d2ada938c5438de453b977787410a5d9e37028dfe11a42  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/session.sh
+5515552bb819d32b54200513bbc6aa3dc64ce57c0459e7a9cd5ecf47ae756cb9  /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/vllm.sh

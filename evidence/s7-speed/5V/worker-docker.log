@@ -1,0 +1,1052 @@
+dsv41: dense GEMV hooks patched into /usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/mxfp8/flashinfer.py
+dsv41: dense GEMV hooks patched into /usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4/nvidia/ops/o_proj.py
+dsv41-indexer-workspace: already applied
+[dsv41-drop-page-cache] armed (fadvise DONTNEED on shards after weight load)
+[dsv41-prefill-empty-cache] armed (threshold 8192 tokens, release when MemAvailable < 2.5 GiB)
+dsv41: g8 stream feed installed
+dsv41: mhc det armed (DSV41_MHC_DET_SPLITS=16): packs and self-tests mHC weights after load
+dsv41: DSpark sparse Markov (gathered top-k) k=1024
+dsv41: engram native stage: EngramDiskStager wrapped (max_tokens=64, verify=8); early hash armed (verify=8)
+dsv41: attention t2r dedup: CommonAttentionMetadata.token_to_req_indices wrapped (verify=8)
+dsv41: moe prep fused: vllm_exl3 _apply_native_fused_moe glue fused, p2b output cast once (verify=16)
+dsv41: candidate mask bounded: sparse_attn_indexer._apply_candidate_mask wrapped (decode calls, verify=4)
+dsv41: indexer weights_proj: DeepseekV4Indexer.weights_proj GEMV armed (2<=m<=8, verify=8)
+dsv41: swa metadata fused: DeepseekSparseSWAMetadataBuilder.build fused decode path (verify=8)
+WARNING 10-10 13:47:42 [envs.py:2282] Unknown vLLM environment variable detected: VLLM_EXL3_MOE_KERNEL
+INFO 10-10 13:47:48 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 10-10 13:47:48 [model.py:2034] Using max model len 1048576
+INFO 10-10 13:47:50 [cache.py:348] Using fp8 data type to store kv cache. It reduces the GPU memory footprint and boosts the performance. Meanwhile, it may cause accuracy drop without a proper scaling factor
+INFO 10-10 13:47:50 [arg_utils.py:2232] Inferred data_parallel_rank 0 from node_rank 1
+INFO 10-10 13:47:50 [model.py:692] Resolved architecture: DeepseekV41ForCausalLM
+INFO 10-10 13:47:50 [model.py:2034] Using max model len 1048576
+INFO 10-10 13:47:57 [scheduler.py:277] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-10 13:47:57 [kernel.py:373] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+WARNING 10-10 13:47:57 [cuda.py:336] Forcing --disable_chunked_mm_input for models with multimodal-bidirectional attention.
+INFO 10-10 13:47:57 [compilation.py:329] Enabled custom fusions: norm_quant, act_quant
+INFO 10-10 13:47:57 [serve.py:217] Launching vLLM (v0.1.dev20904+g179dd0fa9) headless multiproc executor, with head node address 10.100.8.1:29524 for torch.distributed process group.
+dsv41-indexer-workspace: already applied
+dsv41-indexer-workspace: already applied
+[dsv41-drop-page-cache] armed (fadvise DONTNEED on shards after weight load)
+[dsv41-prefill-empty-cache] armed (threshold 8192 tokens, release when MemAvailable < 2.5 GiB)
+[dsv41-drop-page-cache] armed (fadvise DONTNEED on shards after weight load)
+[dsv41-prefill-empty-cache] armed (threshold 8192 tokens, release when MemAvailable < 2.5 GiB)
+dsv41: g8 stream feed already present
+dsv41: mhc det armed (DSV41_MHC_DET_SPLITS=16): packs and self-tests mHC weights after load
+dsv41: DSpark sparse Markov (gathered top-k) k=1024
+dsv41: engram native stage: EngramDiskStager wrapped (max_tokens=64, verify=8); early hash armed (verify=8)
+dsv41: attention t2r dedup: CommonAttentionMetadata.token_to_req_indices wrapped (verify=8)
+dsv41: moe prep fused: vllm_exl3 _apply_native_fused_moe glue fused, p2b output cast once (verify=16)
+dsv41: candidate mask bounded: sparse_attn_indexer._apply_candidate_mask wrapped (decode calls, verify=4)
+dsv41: indexer weights_proj: DeepseekV4Indexer.weights_proj GEMV armed (2<=m<=8, verify=8)
+dsv41: swa metadata fused: DeepseekSparseSWAMetadataBuilder.build fused decode path (verify=8)
+dsv41-patch skip g8_load_tracer: DSV41_LOAD_PF_G8 is not 1
+dsv41-patch ok prefer_b12x_mxfp8
+dsv41-patch skip mla_tile32_workspace: image kernel has no DSV4_CAND_WINDOW = 32
+dsv41-patch ok persistent_topk: already applied
+dsv41-patch ok kpool_persistent_topk: already applied
+dsv41-patch ok load_general_plugins
+dsv41-patch ok exl3_weight_block_size
+dsv41-patch ok warmup_stubs
+dsv41-patch skip cudagraph_worker_stub: DSV41_ALLOW_CUDA_GRAPHS=1
+dsv41-patch ok swa_page_coerce
+dsv41-patch ok kernel_block_sizes
+dsv41-patch ok extra_page_bump
+dsv41-patch ok v41_config_vision
+dsv41-patch ok swa_image_width: already applied
+dsv41-patch ok attention_image_width: already applied
+dsv41-patch ok native_indexer_decode: already applied
+dsv41-patch ok indexer_adaptive: already applied
+dsv41-patch ok indexer_short_context: already applied
+dsv41-patch skip dspark_markov_scale: DSV41_DSPARK_MARKOV_SCALE=1
+dsv41-patch skip step_census: DSV41_STEP_CENSUS is not 1
+dsv41-patch skip mhc_decode_splits: DSV41_MHC_DECODE_SPLITS=0: this block only collapses at =1 (N >= 2 is decode_levers)
+dsv41-patch skip engram_row_cache: DSV41_ENGRAM_CACHE is not 1
+dsv41-patch skip mhc_no_deepgemm: DSV41_MHC_NO_DEEPGEMM is not 1
+dsv41-patch skip ar_l2_prefetch: DSV41_AR_L2_PREFETCH is not 1
+dsv41-patch skip pm_qos: DSV41_PM_QOS_US is not set
+dsv41-patch skip nccl_eager_twin: DSV41_NCCL_EAGER_TWIN is not 1
+dsv41-patch ok decode_levers
+dsv41-patch skip g8_load_tracer: DSV41_LOAD_PF_G8 is not 1
+dsv41-patch skip g8_load_tracer: DSV41_LOAD_PF_G8 is not 1
+dsv41-patch ok prefer_b12x_mxfp8
+dsv41-patch ok prefer_b12x_mxfp8
+dsv41-patch skip mla_tile32_workspace: image kernel has no DSV4_CAND_WINDOW = 32
+dsv41-patch skip mla_tile32_workspace: image kernel has no DSV4_CAND_WINDOW = 32
+dsv41-patch ok persistent_topk: already applied
+dsv41-patch ok kpool_persistent_topk: already applied
+dsv41-patch ok persistent_topk: already applied
+dsv41-patch ok kpool_persistent_topk: already applied
+dsv41-patch ok load_general_plugins
+dsv41-patch ok exl3_weight_block_size
+dsv41-patch ok load_general_plugins
+dsv41-patch ok exl3_weight_block_size
+dsv41-patch ok warmup_stubs
+dsv41-patch skip cudagraph_worker_stub: DSV41_ALLOW_CUDA_GRAPHS=1
+dsv41-patch ok swa_page_coerce
+dsv41-patch ok warmup_stubs
+dsv41-patch skip cudagraph_worker_stub: DSV41_ALLOW_CUDA_GRAPHS=1
+dsv41-patch ok swa_page_coerce
+dsv41-patch ok kernel_block_sizes
+dsv41-patch ok extra_page_bump
+dsv41-patch ok v41_config_vision
+dsv41-patch ok swa_image_width: already applied
+dsv41-patch ok attention_image_width: already applied
+dsv41-patch ok native_indexer_decode: already applied
+dsv41-patch ok indexer_adaptive: already applied
+dsv41-patch ok indexer_short_context: already applied
+dsv41-patch skip dspark_markov_scale: DSV41_DSPARK_MARKOV_SCALE=1
+dsv41-patch skip step_census: DSV41_STEP_CENSUS is not 1
+dsv41-patch skip mhc_decode_splits: DSV41_MHC_DECODE_SPLITS=0: this block only collapses at =1 (N >= 2 is decode_levers)
+dsv41-patch skip engram_row_cache: DSV41_ENGRAM_CACHE is not 1
+dsv41-patch skip mhc_no_deepgemm: DSV41_MHC_NO_DEEPGEMM is not 1
+dsv41-patch skip ar_l2_prefetch: DSV41_AR_L2_PREFETCH is not 1
+dsv41-patch skip pm_qos: DSV41_PM_QOS_US is not set
+dsv41-patch skip nccl_eager_twin: DSV41_NCCL_EAGER_TWIN is not 1
+dsv41-patch ok decode_levers
+dsv41-patch ok kernel_block_sizes
+dsv41-patch ok extra_page_bump
+dsv41-patch ok v41_config_vision
+dsv41-patch ok swa_image_width: already applied
+dsv41-patch ok attention_image_width: already applied
+dsv41: g8 stream feed already present
+dsv41: mhc det armed (DSV41_MHC_DET_SPLITS=16): packs and self-tests mHC weights after load
+dsv41: DSpark sparse Markov (gathered top-k) k=1024
+dsv41: engram native stage: EngramDiskStager wrapped (max_tokens=64, verify=8); early hash armed (verify=8)
+dsv41: attention t2r dedup: CommonAttentionMetadata.token_to_req_indices wrapped (verify=8)
+dsv41: moe prep fused: vllm_exl3 _apply_native_fused_moe glue fused, p2b output cast once (verify=16)
+dsv41: candidate mask bounded: sparse_attn_indexer._apply_candidate_mask wrapped (decode calls, verify=4)
+dsv41: indexer weights_proj: DeepseekV4Indexer.weights_proj GEMV armed (2<=m<=8, verify=8)
+dsv41: swa metadata fused: DeepseekSparseSWAMetadataBuilder.build fused decode path (verify=8)
+(Worker pid=464) INFO 10-10 13:48:02 [parallel_state.py:1817] world_size=2 rank=1 local_rank=0 distributed_init_method=tcp://10.100.8.1:29524 backend=nccl
+(Worker pid=464) WARNING 10-10 13:49:01 [symm_mem.py:67] SymmMemCommunicator: Device capability 12.1 not supported, communicator is not available.
+(Worker pid=464) WARNING 10-10 13:49:01 [flashinfer_all_reduce.py:383] FlashInfer All Reduce is disabled because it is not supported for world_size=2.
+(Worker pid=464) WARNING 10-10 13:49:01 [custom_all_reduce.py:201] Custom collectives are disabled because this multi-node group does not have MNNVL-capable GPUs on every rank.
+(Worker pid=464) INFO 10-10 13:49:01 [parallel_state.py:2234] rank 1 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 1, EP rank 1, EPLB rank N/A
+(Worker pid=464) INFO 10-10 13:49:01 [gpu_worker.py:436] Using V2 Model Runner
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [model_runner.py:383] Loading model from scratch...
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [cuda.py:581] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [quant_config.py:79] DeepSeek V4 expert_dtype resolved to 'fp4'
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [__init__.py:889] Using FlashInferCutlassMxfp8LinearKernel for MXFP8 GEMM
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [attention.py:140] Using DeepSeek's fp8_ds_mla KV cache format.
+(Worker_TP1 pid=464) INFO 10-10 13:49:02 [attention.py:1062] Using FP8 indexer cache for Lightning Indexer.
+(Worker_TP1 pid=464) INFO 10-10 13:49:06 [engram.py:442] Built engram token map (129280 -> 99092 ids) for layers (1, 14)
+(Worker_TP1 pid=464) dsv41: lm_head mxfp8 enabled (b12x, (64640, 5120))
+(Worker_TP1 pid=464) WARNING 10-10 13:49:06 [compilation.py:1354] Op 'quant_fp8' not present in model, enabling with '+quant_fp8' has no effect
+(Worker_TP1 pid=464) INFO 10-10 13:49:06 [weight_utils.py:863] Filesystem type for checkpoints: EXT4. Checkpoint size: 332.92 GiB. Available RAM: 38.73 GiB.
+(Worker_TP1 pid=464) INFO 10-10 13:49:06 [weight_utils.py:893] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre) and the checkpoint size (332.92 GiB) exceeds 90% of available RAM (38.73 GiB).
+(Worker_TP1 pid=464) INFO 10-10 13:51:31 [deep_gemm.py:191] deep_gemm not found in site-packages, trying vendored vllm.third_party.deep_gemm
+(Worker_TP1 pid=464) INFO 10-10 13:51:31 [deep_gemm.py:218] DeepGEMM PDL enabled on vllm.third_party.deep_gemm.
+(Worker_TP1 pid=464) 2026-10-10 13:51:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:51:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) 2026-10-10 13:51:51  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:51:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) 2026-10-10 13:51:58  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:52:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) 2026-10-10 13:52:03  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_post_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:52:04  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_post_tilelang`
+(Worker_TP1 pid=464) dsv41: mhc det engaged: target: 81 fn packed (94.0 MiB); det GEMM, fused norm and post bitwise equal to stock on 82 pre self-tests (DeepGEMM 16-split, TileLang); T <= 16
+(Worker_TP1 pid=464) INFO 10-10 13:52:09 [default_loader.py:430] Loading weights took 183.10 seconds
+(Worker_TP1 pid=464) [dense-gemv] rank1 K5120xN1792 (qkv_a) dense GEMV armed: KC512 M<=4 W4 S2 MR4 grid28, M<=8 W3 S2 MR8 grid38; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) [dense-gemv] rank1 K1280xN16384 (wq_b) dense GEMV armed: KC640 M<=8 W2 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) INFO 10-10 13:52:41 [__init__.py:889] Using EmulationMxfp8LinearKernel for MXFP8 GEMM
+(Worker_TP1 pid=464) [dense-gemv] rank1 K4096xN5120 (wo_b) dense GEMV armed: KC512 M<=4 W4 S2 MR4 grid48, M<=8 W4 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) [dense-gemv] rank1 K5120xN2304 (shared_gate_up) dense GEMV armed: KC512 M<=4 W2 S2 MR4 grid48, M<=8 W2 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) [dense-gemv] rank1 K1152xN5120 (shared_down) dense GEMV armed: KC384 M<=8 W4 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) [dense-gemv] rank1 K6144xN25600 (engram_wkv) dense GEMV armed: KC512 M<=4 W2 S2 MR4 grid48, M<=8 W2 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:42 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:43 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:44 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:45 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [exl3.py:2087] EXL3 MCG trellis engaged for routed experts: bits=2 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=6 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=464) [dense-gemv] rank1 K5120xN64640 (lm_head) dense GEMV armed: KC512 M<=8 W3 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [eagle3_utils.py:28] Using Eagle3 auxiliary layers from config: (37, 38, 39)
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [kernel.py:373] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'])
+(Worker_TP1 pid=464) INFO 10-10 13:52:46 [mxfp4.py:715] Using 'DEEPGEMM_MXFP4' Mxfp4 MoE backend.
+(Worker_TP1 pid=464) INFO 10-10 13:52:48 [weight_utils.py:863] Filesystem type for checkpoints: EXT4. Checkpoint size: 332.92 GiB. Available RAM: 35.13 GiB.
+(Worker_TP1 pid=464) INFO 10-10 13:52:48 [weight_utils.py:893] Auto-prefetch is disabled because the filesystem (EXT4) is not a recognized network FS (NFS/Lustre) and the checkpoint size (332.92 GiB) exceeds 90% of available RAM (35.13 GiB).
+(Worker_TP1 pid=464) INFO 10-10 13:53:12 [dspark.py:515] DSpark draft model loaded: 97 params
+(Worker_TP1 pid=464) dsv41: mhc det engaged: draft: 6 fn packed (7.0 MiB); det GEMM, fused norm and post bitwise equal to stock on 7 pre self-tests (DeepGEMM 16-split, TileLang); T <= 16
+(Worker_TP1 pid=464) INFO 10-10 13:53:13 [default_loader.py:430] Loading weights took 24.94 seconds
+(Worker_TP1 pid=464) [dense-gemv] rank1 K15360xN5120 (main_proj) dense GEMV armed: KC512 M<=4 W2 S2 MR4 grid48; self-test M=1..4 x 3 dist bitwise, graph replay ok
+(Worker_TP1 pid=464) INFO 10-10 13:53:14 [deep_gemm.py:136] DeepGEMM E8M0 enabled on current platform.
+(Worker_TP1 pid=464) INFO 10-10 13:53:15 [mxfp4.py:1973] Using MoEPrepareAndFinalizeNoDPEPModular
+(Worker_TP1 pid=464) INFO 10-10 13:53:15 [mxfp4.py:1974] Using DeepGemmFP4Experts
+(Worker_TP1 pid=464) WARNING 10-10 13:53:16 [speculator.py:203] Draft model DSparkDeepseekV4ForCausalLM does not support external multimodal embeddings. Embeddings from the target model will not be passed to the drafter; using text-only draft inputs instead.
+(Worker_TP1 pid=464) INFO 10-10 13:53:27 [model_runner.py:408] Model loading took 75.58 GiB memory and 265.482522 seconds
+(Worker_TP1 pid=464) dsv41: engram prefetch v3 armed (ngram=4 heads=8 depth=3 layers=[0, 1] mult=(2, 4) primes=(2, 3, 8) offsets=(2, 24))
+(Worker_TP1 pid=464) dsv41: engram native stage armed (2 tables, max_tokens=64, verify=8)
+(Worker_TP1 pid=464) [dsv41-drop-page-cache] dropped page cache of 48 shard files: MemFree 3.14GiB -> 36.65GiB
+INFO 10-10 13:56:00 [torch_utils.py:280] Reducing Torch threads from 20 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(Worker_TP1 pid=464) INFO 10-10 13:56:01 [encoder_runner.py:131] Encoder cache will be initialized with a budget of 8192 tokens, and profiled with 7 image items of the maximum feature size.
+(Worker_TP1 pid=464) 2026-10-10 13:56:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:56:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) [wo_a-probe] wo_a.dtype=torch.bfloat16 wo_a.shape=(4096, 4096) use_fp8=False wo_b.dtype=torch.float8_e4m3fn n_groups=4
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) 2026-10-10 13:56:24  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:56:29  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) dsv41: moe prep fused self-check bit-exact (synthetic, m=1..8)
+(Worker_TP1 pid=464) INFO 10-10 13:56:30 [exl3.py:1224] EXL3 fat-chunk slicing ACTIVE (tokens=8192)
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) dsv41: indexer weights_proj GEMV self-check bit-exact (m=2..8, n=32, k=5120)
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+dsv41-patch ok native_indexer_decode: already applied
+dsv41-patch ok indexer_adaptive: already applied
+dsv41-patch ok indexer_short_context: already applied
+dsv41-patch skip dspark_markov_scale: DSV41_DSPARK_MARKOV_SCALE=1
+dsv41-patch skip step_census: DSV41_STEP_CENSUS is not 1
+dsv41-patch skip mhc_decode_splits: DSV41_MHC_DECODE_SPLITS=0: this block only collapses at =1 (N >= 2 is decode_levers)
+dsv41-patch skip engram_row_cache: DSV41_ENGRAM_CACHE is not 1
+dsv41-patch skip mhc_no_deepgemm: DSV41_MHC_NO_DEEPGEMM is not 1
+dsv41-patch skip ar_l2_prefetch: DSV41_AR_L2_PREFETCH is not 1
+dsv41-patch skip pm_qos: DSV41_PM_QOS_US is not set
+dsv41-patch skip nccl_eager_twin: DSV41_NCCL_EAGER_TWIN is not 1
+dsv41-patch ok decode_levers
+[13:52:03] : Warning: T.vectorized loop over `i_hci` with extent 4 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [dense-gemv] rank1 K1280xN16384 (wq_b) pre-quantized input checked bitwise vs b12x (M=6)
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [dense-gemv] rank1 wo_a (4x1024x4096) dense GEMV armed: KC512 M<=4 W4 S2 MR4 grid48, M<=8 W4 S2 MR8 grid48; self-test M=1..8 x 3 dist bitwise vs fp8_einsum; in-situ bitwise (M=6)
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) [woa-requant] fp8 einsum engaged: (4, 1024, 4096)
+(Worker_TP1 pid=464) [woa-prepack] packed ue8m0 scale engaged: (4, 1024, 32) stride=(32768, 1, 1024) dtype=torch.int32
+(Worker_TP1 pid=464) INFO 10-10 13:56:46 [gpu_worker.py:551] Initial free memory 112.97 GiB, reserved 8.0 GiB memory for KV Cache as specified by kv_cache_memory_bytes config and skipped memory profiling. This does not respect the gpu_memory_utilization config. Only use kv_cache_memory_bytes config when you want manual control of KV cache memory size. If OOM'ed, check the difference of initial free memory between the current run and the previous run where kv_cache_memory_bytes is suggested and update it correspondingly.
+(Worker_TP1 pid=464) INFO 10-10 13:56:47 [indexer.py:741] DSA indexer decode path: use_flattening=False supports_varlen=False (next_n=4, use_fp4_cache=False)
+(Worker_TP1 pid=464) [dsv41-drop-page-cache] dropped page cache of 48 shard files: MemFree 26.94GiB -> 26.94GiB
+(Worker_TP1 pid=464) INFO 10-10 13:56:48 [breakable_cudagraph.py:290] Breakable CUDA graph enabled
+(Worker_TP1 pid=464) dsv41: swa metadata fused self-check bit-exact (decode tokens 8, width 128)
+(Worker_TP1 pid=464) dsv41: attention t2r dedup reuse bit-exact (tokens 8; 1 computes, 1 reuses so far)
+(Worker_TP1 pid=464) [t2r-census] verified computes=1 reuses=8 reuses/compute=8.00
+(Worker_TP1 pid=464) dsv41: candidate mask bounded self-check bit-exact (rows 1/4/8, width 65536)
+(Worker_TP1 pid=464) INFO 10-10 13:56:52 [speculator.py:141] Capturing model for DSpark speculator...
+(Worker_TP1 pid=464) INFO 10-10 13:56:52 [model_runner.py:974] Graph capturing finished in 5 secs, took 1.42 GiB
+(Worker_TP1 pid=464) dsv41: engram early hash matches the stock hash (n=10)
+(Worker_TP1 pid=464) dsv41: engram gather v2 self-check bit-exact (r=120)
+(Worker_TP1 pid=464) dsv41: engram native stage self-check bit-exact (2 tables, n=10, max_tokens=64)
+(Worker_TP1 pid=464) INFO 10-10 13:57:01 [jit_monitor.py:85] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(Worker_TP1 pid=464) INFO 10-10 13:57:01 [torch_utils.py:280] Reducing Torch threads from 20 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:30 [jit_monitor.py:141] Triton kernel JIT compilation during inference: ComputePrefillMetadataKernel.kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:31 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _prepare_dflash_inputs_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:31 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _compute_local_logits_stats_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:31 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _rejection_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:31 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _resample_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:32 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _gumbel_sample_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) dsv41: engram fast stage self-check bit-exact (2 tables, n=3738)
+(Worker_TP1 pid=464) WARNING 10-10 13:57:34 [jit_monitor.py:141] CuTeDSL JIT compilation during inference: MXFP8QuantizeSwizzledKernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) INFO 10-10 13:57:36 [exl3.py:1224] EXL3 fat-chunk slicing ACTIVE (tokens=3738)
+(Worker_TP1 pid=464) WARNING 10-10 13:57:37 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _block_scores_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:38 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _candidate_flags_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:38 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _mask_candidates_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:42 [jit_monitor.py:141] Triton kernel JIT compilation during inference: BuildPrefillChunkMetadataKernel.kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:42 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _ring_slot_mapping_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 13:57:43 [jit_monitor.py:141] TileLang JIT compilation during inference: mhc_pre_big_fuse_with_norm_tilelang. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) 2026-10-10 13:57:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:57:48  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) 2026-10-10 13:57:49  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+(Worker_TP1 pid=464) 2026-10-10 13:57:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=142.5 miss/call=76.94 syscalls/call=592.8 us/call=3102.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=65.94 syscalls/call=493.2 us/call=1797.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=48.88 syscalls/call=387.5 us/call=1194.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=4.22 syscalls/call=246.4 us/call=766.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=5.00 syscalls/call=212.0 us/call=1037.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=4.34 syscalls/call=246.9 us/call=776.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=36.53 syscalls/call=338.1 us/call=1252.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=16.78 syscalls/call=296.6 us/call=1288.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=30.91 syscalls/call=315.6 us/call=1491.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=36.91 syscalls/call=377.1 us/call=1025.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=5.06 syscalls/call=212.2 us/call=1330.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=17.66 syscalls/call=262.6 us/call=1686.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=18.22 syscalls/call=302.4 us/call=1040.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=9.00 syscalls/call=228.0 us/call=1767.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=24.19 syscalls/call=288.8 us/call=1445.1
+(Worker_TP1 pid=464) [t2r-census] steady computes=1024 reuses=9801 reuses/compute=9.57
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=0.00 syscalls/call=229.5 us/call=348.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=4.34 syscalls/call=209.4 us/call=1028.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=3.62 syscalls/call=244.0 us/call=1387.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=2.88 syscalls/call=203.5 us/call=705.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=10.03 syscalls/call=232.1 us/call=810.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=15.25 syscalls/call=290.5 us/call=1211.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=11.50 syscalls/call=238.0 us/call=1077.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=20.78 syscalls/call=275.1 us/call=1692.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=16.78 syscalls/call=296.6 us/call=1602.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=25.78 syscalls/call=295.1 us/call=1407.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=18.03 syscalls/call=301.6 us/call=688.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=2.12 syscalls/call=200.5 us/call=625.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=4.94 syscalls/call=211.8 us/call=646.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=13.66 syscalls/call=284.1 us/call=1564.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=23.28 syscalls/call=285.1 us/call=1381.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=139.5 miss/call=24.53 syscalls/call=377.1 us/call=1130.2
+(Worker_TP1 pid=464) [t2r-census] steady computes=2048 reuses=19529 reuses/compute=9.54
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=22.59 syscalls/call=474.4 us/call=1066.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=17.19 syscalls/call=452.8 us/call=2028.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=31.88 syscalls/call=562.5 us/call=1255.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=31.66 syscalls/call=510.6 us/call=1936.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=15.62 syscalls/call=446.5 us/call=1554.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=202.5 miss/call=14.25 syscalls/call=462.0 us/call=1326.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=26.97 syscalls/call=491.9 us/call=1414.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=17.56 syscalls/call=454.2 us/call=2662.9
+(Worker_TP1 pid=464) WARNING 10-10 13:59:05 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _compute_global_topk_indices_and_lens_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=10.00 syscalls/call=463.0 us/call=961.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=4.62 syscalls/call=402.5 us/call=1787.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=9.62 syscalls/call=416.5 us/call=2189.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=31.75 syscalls/call=574.0 us/call=1622.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=14.88 syscalls/call=443.5 us/call=2025.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=22.66 syscalls/call=537.6 us/call=1163.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=36.59 syscalls/call=530.4 us/call=2002.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=51.19 syscalls/call=588.8 us/call=1172.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=220.5 miss/call=36.25 syscalls/call=586.0 us/call=1037.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=35.41 syscalls/call=525.6 us/call=1281.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=184.5 miss/call=12.81 syscalls/call=420.2 us/call=2175.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=2.59 syscalls/call=394.4 us/call=1885.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=4.22 syscalls/call=400.9 us/call=1581.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=2.94 syscalls/call=458.8 us/call=1477.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=16.69 syscalls/call=450.8 us/call=1964.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.06 syscalls/call=416.2 us/call=2152.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=220.5 miss/call=9.03 syscalls/call=477.1 us/call=1367.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=25.88 syscalls/call=487.5 us/call=1428.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=17.88 syscalls/call=493.0 us/call=1756.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=7.47 syscalls/call=451.4 us/call=1613.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.50 syscalls/call=410.0 us/call=2057.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=214.5 miss/call=7.19 syscalls/call=457.8 us/call=1308.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=24.06 syscalls/call=480.2 us/call=2724.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=13.66 syscalls/call=476.1 us/call=1393.1
+(Worker_TP1 pid=464) [t2r-census] steady computes=4096 reuses=38985 reuses/compute=9.52
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=9.91 syscalls/call=461.1 us/call=1596.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.06 syscalls/call=396.2 us/call=1738.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=150.0 miss/call=14.97 syscalls/call=359.9 us/call=1575.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=10.38 syscalls/call=488.5 us/call=924.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=35.56 syscalls/call=526.2 us/call=1629.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=33.84 syscalls/call=588.4 us/call=1953.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.75 syscalls/call=387.0 us/call=841.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.88 syscalls/call=415.5 us/call=1301.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=7.31 syscalls/call=464.2 us/call=1625.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=27.53 syscalls/call=494.1 us/call=1565.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=20.03 syscalls/call=464.1 us/call=2055.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=7.91 syscalls/call=484.6 us/call=735.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.62 syscalls/call=406.5 us/call=2226.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=12.09 syscalls/call=372.4 us/call=2033.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=0.00 syscalls/call=435.0 us/call=428.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=2.00 syscalls/call=392.0 us/call=1071.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=2.09 syscalls/call=461.4 us/call=1458.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.75 syscalls/call=387.0 us/call=741.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=2.72 syscalls/call=394.9 us/call=1296.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=2.12 syscalls/call=461.5 us/call=1387.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.78 syscalls/call=411.1 us/call=1884.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=229.5 miss/call=9.91 syscalls/call=498.6 us/call=1459.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.34 syscalls/call=405.4 us/call=2091.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=13.53 syscalls/call=438.1 us/call=1697.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=13.28 syscalls/call=488.1 us/call=1396.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.28 syscalls/call=409.1 us/call=2120.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=4.88 syscalls/call=403.5 us/call=1815.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=229.5 miss/call=2.47 syscalls/call=468.9 us/call=898.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.81 syscalls/call=419.2 us/call=1188.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=10.75 syscalls/call=478.0 us/call=1282.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.31 syscalls/call=409.2 us/call=2645.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.06 syscalls/call=408.2 us/call=1501.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=0.62 syscalls/call=455.5 us/call=1133.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.38 syscalls/call=389.5 us/call=1333.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=198.8 miss/call=4.38 syscalls/call=415.0 us/call=1579.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=6.22 syscalls/call=440.4 us/call=1603.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=21.91 syscalls/call=471.6 us/call=1786.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=229.5 miss/call=15.22 syscalls/call=519.9 us/call=1798.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.38 syscalls/call=385.5 us/call=783.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=4.41 syscalls/call=401.6 us/call=820.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=129.8 miss/call=7.03 syscalls/call=287.6 us/call=1036.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=34.56 syscalls/call=363.2 us/call=1307.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=48.50 syscalls/call=386.0 us/call=1074.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=16.22 syscalls/call=289.9 us/call=544.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=328.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=0.00 syscalls/call=192.0 us/call=277.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=313.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=0.00 syscalls/call=192.0 us/call=255.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=293.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=309.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=0.00 syscalls/call=192.0 us/call=266.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=307.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=0.00 syscalls/call=192.0 us/call=263.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=312.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=112.5 miss/call=0.00 syscalls/call=225.0 us/call=320.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=0.00 syscalls/call=192.0 us/call=271.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=195.0 miss/call=0.00 syscalls/call=390.0 us/call=373.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=392.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=338.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=384.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=323.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=387.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=396.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=341.7
+(Worker_TP1 pid=464) [t2r-census] steady computes=8192 reuses=77897 reuses/compute=9.51
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=399.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=320.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=395.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=397.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=337.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=342.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=384.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=346.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=394.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=333.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=404.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=390.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=333.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=398.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=325.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=384.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=404.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=339.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=388.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=375.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=330.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=337.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=267.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=321.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=326.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=272.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=356.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=285.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=366.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=356.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=287.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=357.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=350.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=298.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=0.00 syscalls/call=450.0 us/call=351.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=292.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=130.5 miss/call=0.00 syscalls/call=261.0 us/call=309.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=29.19 syscalls/call=365.8 us/call=1124.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.97 syscalls/call=383.9 us/call=1183.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.66 syscalls/call=382.6 us/call=1064.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=40.44 syscalls/call=410.8 us/call=1341.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=21.03 syscalls/call=276.1 us/call=1281.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.09 syscalls/call=328.4 us/call=1005.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=31.72 syscalls/call=375.9 us/call=1524.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.72 syscalls/call=378.9 us/call=981.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.06 syscalls/call=328.2 us/call=827.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=33.44 syscalls/call=382.8 us/call=821.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=10.03 syscalls/call=232.1 us/call=2037.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=22.31 syscalls/call=281.2 us/call=1309.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=37.88 syscalls/call=400.5 us/call=1377.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=25.12 syscalls/call=292.5 us/call=1415.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=42.91 syscalls/call=363.6 us/call=1045.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=22.25 syscalls/call=338.0 us/call=1061.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=22.50 syscalls/call=282.0 us/call=1463.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=38.56 syscalls/call=346.2 us/call=1313.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=14.88 syscalls/call=308.5 us/call=973.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=26.38 syscalls/call=297.5 us/call=1802.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=38.88 syscalls/call=404.5 us/call=1307.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=15.25 syscalls/call=253.0 us/call=928.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=20.34 syscalls/call=273.4 us/call=1921.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=124.5 miss/call=42.41 syscalls/call=418.6 us/call=993.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=18.41 syscalls/call=265.6 us/call=1273.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=36.03 syscalls/call=336.1 us/call=1273.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=30.28 syscalls/call=487.1 us/call=1929.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=43.72 syscalls/call=558.9 us/call=1531.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=53.59 syscalls/call=598.4 us/call=1316.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=36.47 syscalls/call=469.9 us/call=928.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=32.31 syscalls/call=513.2 us/call=2326.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=47.25 syscalls/call=573.0 us/call=1886.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=180.0 miss/call=34.59 syscalls/call=498.4 us/call=1819.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=43.19 syscalls/call=556.8 us/call=1312.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=41.16 syscalls/call=548.6 us/call=1603.3
+(Worker_TP1 pid=464) [gv2-census] calls=32 rows/call=7293 runs/call=11860.8 preads/call=11860.8 read=72.967ms fadv/call=11063.2 pf_hit=22%(28)
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=13.31 syscalls/call=431.2 us/call=2106.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=13.88 syscalls/call=439.5 us/call=2050.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=19.09 syscalls/call=460.4 us/call=2957.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=12.69 syscalls/call=416.8 us/call=1561.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=15.38 syscalls/call=445.5 us/call=2933.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=59.94 syscalls/call=623.8 us/call=1169.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=9.84 syscalls/call=417.4 us/call=559.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.84 syscalls/call=391.4 us/call=1093.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=32.53 syscalls/call=514.1 us/call=2171.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=17.72 syscalls/call=448.9 us/call=1673.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=35.66 syscalls/call=526.6 us/call=2566.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=246.0 miss/call=69.94 syscalls/call=771.8 us/call=1379.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.00 syscalls/call=420.0 us/call=1221.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=42.94 syscalls/call=555.8 us/call=1802.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=186.0 miss/call=37.31 syscalls/call=521.2 us/call=1945.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.81 syscalls/call=423.2 us/call=870.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=83.41 syscalls/call=717.6 us/call=1420.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=165.0 miss/call=63.88 syscalls/call=585.5 us/call=1475.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=243.0 miss/call=7.75 syscalls/call=517.0 us/call=1732.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=22.31 syscalls/call=473.2 us/call=2755.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=220.5 miss/call=42.41 syscalls/call=610.6 us/call=2514.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=220.5 miss/call=19.31 syscalls/call=518.2 us/call=1969.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=35.56 syscalls/call=526.2 us/call=2003.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=165.0 miss/call=44.28 syscalls/call=507.1 us/call=1209.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=22.38 syscalls/call=473.5 us/call=1659.2
+dsv41: p2b coop dataflow kernel engaged (DSV41_P2B_COOP=2)
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=50.09 syscalls/call=584.4 us/call=1376.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=246.0 miss/call=63.88 syscalls/call=747.5 us/call=1112.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.72 syscalls/call=398.9 us/call=942.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=39.31 syscalls/call=541.2 us/call=1438.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=234.0 miss/call=23.03 syscalls/call=560.1 us/call=1054.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.78 syscalls/call=399.1 us/call=2007.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=26.16 syscalls/call=488.6 us/call=2452.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=249.0 miss/call=22.25 syscalls/call=587.0 us/call=2223.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.72 syscalls/call=422.9 us/call=2111.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=58.97 syscalls/call=619.9 us/call=1173.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=30.81 syscalls/call=447.2 us/call=809.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.75 syscalls/call=387.0 us/call=1060.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=32.94 syscalls/call=515.8 us/call=1742.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=243.0 miss/call=22.53 syscalls/call=576.1 us/call=1522.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.59 syscalls/call=418.4 us/call=2239.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=26.38 syscalls/call=489.5 us/call=1344.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=231.0 miss/call=36.62 syscalls/call=608.5 us/call=1383.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.84 syscalls/call=399.4 us/call=1361.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=23.50 syscalls/call=478.0 us/call=2205.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=243.0 miss/call=20.06 syscalls/call=566.2 us/call=2527.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.94 syscalls/call=399.8 us/call=1588.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=11.91 syscalls/call=431.6 us/call=2321.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=111.0 miss/call=17.09 syscalls/call=290.4 us/call=1972.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=237.0 miss/call=0.97 syscalls/call=477.9 us/call=1587.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.91 syscalls/call=391.6 us/call=1539.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=20.69 syscalls/call=466.8 us/call=1670.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.81 syscalls/call=407.2 us/call=862.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=16.12 syscalls/call=448.5 us/call=1714.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=27.56 syscalls/call=488.2 us/call=2125.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=180.0 miss/call=4.62 syscalls/call=378.5 us/call=406.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.38 syscalls/call=397.5 us/call=1894.1
+(Worker_TP1 pid=464) [t2r-census] steady computes=16384 reuses=155721 reuses/compute=9.50
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.91 syscalls/call=407.6 us/call=1799.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.72 syscalls/call=386.9 us/call=741.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=10.34 syscalls/call=425.4 us/call=1285.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=231.0 miss/call=43.44 syscalls/call=635.8 us/call=1594.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.38 syscalls/call=389.5 us/call=1378.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=15.28 syscalls/call=445.1 us/call=2609.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=249.0 miss/call=24.53 syscalls/call=596.1 us/call=2455.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.38 syscalls/call=389.5 us/call=815.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=11.50 syscalls/call=430.0 us/call=2462.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=153.0 miss/call=40.03 syscalls/call=466.1 us/call=1202.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.66 syscalls/call=418.6 us/call=1817.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=30.88 syscalls/call=507.5 us/call=1336.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=246.0 miss/call=24.50 syscalls/call=590.0 us/call=1925.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.75 syscalls/call=387.0 us/call=866.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.78 syscalls/call=415.1 us/call=1707.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=184.5 miss/call=25.44 syscalls/call=470.8 us/call=1357.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=1.38 syscalls/call=197.5 us/call=935.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=1.34 syscalls/call=197.4 us/call=966.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=8.59 syscalls/call=263.9 us/call=1183.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=29.78 syscalls/call=311.1 us/call=1607.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=15.22 syscalls/call=252.9 us/call=1214.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=22.94 syscalls/call=321.2 us/call=1100.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=41.81 syscalls/call=359.2 us/call=1087.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=37.44 syscalls/call=379.2 us/call=902.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=35.28 syscalls/call=333.1 us/call=1535.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=38.53 syscalls/call=346.1 us/call=1307.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=11.06 syscalls/call=273.8 us/call=1790.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=36.19 syscalls/call=336.8 us/call=1293.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=43.47 syscalls/call=365.9 us/call=1140.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=22.66 syscalls/call=320.1 us/call=1650.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=31.66 syscalls/call=318.6 us/call=1723.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=44.34 syscalls/call=369.4 us/call=1138.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=21.19 syscalls/call=314.2 us/call=2086.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=20.62 syscalls/call=274.5 us/call=996.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=28.19 syscalls/call=342.2 us/call=1124.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=30.81 syscalls/call=315.2 us/call=1502.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=36.81 syscalls/call=339.2 us/call=1352.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=13.38 syscalls/call=283.0 us/call=1156.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=42.84 syscalls/call=363.4 us/call=1002.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.84 syscalls/call=331.4 us/call=757.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=2.75 syscalls/call=240.5 us/call=1482.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.53 syscalls/call=330.1 us/call=1242.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=16.09 syscalls/call=256.4 us/call=1588.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=190.5 miss/call=27.31 syscalls/call=490.2 us/call=1214.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=68.69 syscalls/call=658.8 us/call=1621.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=168.0 miss/call=84.59 syscalls/call=674.4 us/call=1332.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=205.5 miss/call=21.81 syscalls/call=498.2 us/call=1117.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=59.31 syscalls/call=621.2 us/call=1352.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=180.0 miss/call=52.44 syscalls/call=569.8 us/call=1376.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=229.5 miss/call=24.03 syscalls/call=555.1 us/call=1475.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=56.19 syscalls/call=608.8 us/call=1122.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=174.0 miss/call=69.75 syscalls/call=627.0 us/call=1225.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=40.03 syscalls/call=607.1 us/call=1368.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=81.81 syscalls/call=711.2 us/call=1355.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=180.0 miss/call=83.78 syscalls/call=695.1 us/call=1288.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=199.5 miss/call=32.88 syscalls/call=530.5 us/call=1455.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=84.12 syscalls/call=720.5 us/call=1233.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=96.75 syscalls/call=771.0 us/call=1231.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=18.78 syscalls/call=498.1 us/call=1317.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=59.66 syscalls/call=622.6 us/call=1537.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=168.0 miss/call=67.78 syscalls/call=607.1 us/call=1116.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=190.5 miss/call=28.78 syscalls/call=496.1 us/call=1566.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=63.19 syscalls/call=636.8 us/call=1226.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=66.47 syscalls/call=649.9 us/call=1248.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=169.5 miss/call=32.62 syscalls/call=469.5 us/call=1411.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=66.91 syscalls/call=651.6 us/call=1952.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=81.75 syscalls/call=711.0 us/call=1315.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=187.5 miss/call=41.66 syscalls/call=541.6 us/call=991.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=50.03 syscalls/call=584.1 us/call=1445.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=70.38 syscalls/call=665.5 us/call=1067.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=44.75 syscalls/call=602.0 us/call=1274.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=61.78 syscalls/call=631.1 us/call=1098.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=74.38 syscalls/call=681.5 us/call=1158.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=54.31 syscalls/call=638.8 us/call=1681.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=20.00 syscalls/call=495.5 us/call=1792.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=177.0 miss/call=62.81 syscalls/call=605.2 us/call=1692.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=39.59 syscalls/call=350.4 us/call=915.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=196.5 miss/call=37.44 syscalls/call=542.8 us/call=1423.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=55.06 syscalls/call=604.2 us/call=1501.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=55.03 syscalls/call=641.6 us/call=1583.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=49.84 syscalls/call=620.9 us/call=1919.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=79.78 syscalls/call=703.1 us/call=1265.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=47.31 syscalls/call=573.2 us/call=1041.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=190.5 miss/call=18.56 syscalls/call=455.2 us/call=1065.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=59.00 syscalls/call=620.0 us/call=1226.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=76.59 syscalls/call=690.4 us/call=1365.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=57.75 syscalls/call=646.5 us/call=1552.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=45.59 syscalls/call=597.9 us/call=1631.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.38 syscalls/call=577.5 us/call=1338.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=39.91 syscalls/call=351.6 us/call=1098.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=199.5 miss/call=11.19 syscalls/call=443.8 us/call=1884.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=45.31 syscalls/call=565.2 us/call=1404.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=63.75 syscalls/call=670.5 us/call=1517.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=41.84 syscalls/call=588.9 us/call=1729.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=62.59 syscalls/call=634.4 us/call=1248.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=111.0 miss/call=56.44 syscalls/call=447.8 us/call=1174.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=27.56 syscalls/call=302.2 us/call=1251.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=229.5 miss/call=14.09 syscalls/call=515.4 us/call=1746.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=55.25 syscalls/call=605.0 us/call=1473.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=75.84 syscalls/call=718.9 us/call=1779.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=54.81 syscalls/call=640.8 us/call=1801.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=90.53 syscalls/call=746.1 us/call=1303.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=117.0 miss/call=58.38 syscalls/call=467.5 us/call=1144.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=199.5 miss/call=18.56 syscalls/call=473.2 us/call=1427.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=69.38 syscalls/call=661.5 us/call=1156.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=59.66 syscalls/call=660.1 us/call=1173.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=34.78 syscalls/call=554.6 us/call=1240.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=25.91 syscalls/call=487.6 us/call=1580.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=144.0 miss/call=60.69 syscalls/call=530.8 us/call=1059.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=49.94 syscalls/call=391.8 us/call=1016.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=190.5 miss/call=18.38 syscalls/call=454.5 us/call=1457.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=46.97 syscalls/call=571.9 us/call=2197.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=69.72 syscalls/call=662.9 us/call=1209.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=39.91 syscalls/call=612.6 us/call=1262.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=40.28 syscalls/call=545.1 us/call=2284.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=66.22 syscalls/call=648.9 us/call=1263.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=59.28 syscalls/call=660.1 us/call=1126.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=20.75 syscalls/call=467.0 us/call=1777.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=73.44 syscalls/call=677.8 us/call=1209.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=73.56 syscalls/call=715.8 us/call=1500.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=44.56 syscalls/call=593.8 us/call=1477.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=82.97 syscalls/call=715.9 us/call=1275.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=168.0 miss/call=83.47 syscalls/call=669.9 us/call=1186.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=184.5 miss/call=27.84 syscalls/call=480.4 us/call=1664.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=33.47 syscalls/call=517.9 us/call=1516.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=55.31 syscalls/call=642.8 us/call=1694.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=32.19 syscalls/call=550.2 us/call=1910.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=53.09 syscalls/call=596.4 us/call=1413.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=132.0 miss/call=48.91 syscalls/call=459.6 us/call=999.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=46.81 syscalls/call=416.8 us/call=1138.9
+(Worker_TP1 pid=464) WARNING 10-10 14:10:02 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_stats_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 14:10:02 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_step_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) WARNING 10-10 14:10:03 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_mask_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=11.50 syscalls/call=238.0 us/call=1176.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=37.50 syscalls/call=342.0 us/call=922.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=42.31 syscalls/call=361.2 us/call=919.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=22.62 syscalls/call=320.0 us/call=1299.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=21.56 syscalls/call=278.2 us/call=1340.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=41.81 syscalls/call=359.2 us/call=1027.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=12.22 syscalls/call=278.4 us/call=1257.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=22.78 syscalls/call=283.1 us/call=1811.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.53 syscalls/call=330.1 us/call=889.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=9.38 syscalls/call=267.0 us/call=867.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=36.06 syscalls/call=336.2 us/call=1172.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=45.56 syscalls/call=374.2 us/call=949.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=5.19 syscalls/call=250.2 us/call=1090.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=38.03 syscalls/call=344.1 us/call=865.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=34.41 syscalls/call=329.6 us/call=878.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=42.75 syscalls/call=363.0 us/call=1021.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=5.34 syscalls/call=250.9 us/call=738.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=16.09 syscalls/call=256.4 us/call=1226.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=16.94 syscalls/call=297.2 us/call=1276.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=12.69 syscalls/call=242.8 us/call=1556.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=38.22 syscalls/call=344.9 us/call=1121.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=45.91 syscalls/call=375.6 us/call=1072.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=9.06 syscalls/call=265.8 us/call=1086.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=16.03 syscalls/call=256.1 us/call=1197.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.8 miss/call=30.22 syscalls/call=350.4 us/call=1492.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=11.56 syscalls/call=238.2 us/call=1273.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=38.22 syscalls/call=344.9 us/call=1288.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=44.19 syscalls/call=368.8 us/call=1178.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=15.78 syscalls/call=498.1 us/call=1824.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=57.25 syscalls/call=613.0 us/call=1241.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=159.0 miss/call=54.75 syscalls/call=537.0 us/call=1183.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=184.5 miss/call=21.84 syscalls/call=456.4 us/call=656.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=39.78 syscalls/call=543.1 us/call=1744.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=186.0 miss/call=51.66 syscalls/call=578.6 us/call=1532.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=196.5 miss/call=12.44 syscalls/call=442.8 us/call=1046.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=67.16 syscalls/call=652.6 us/call=1426.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=168.0 miss/call=67.78 syscalls/call=607.1 us/call=1013.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=205.5 miss/call=10.53 syscalls/call=453.1 us/call=1627.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=54.62 syscalls/call=602.5 us/call=1031.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=60.84 syscalls/call=567.4 us/call=1126.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=169.5 miss/call=17.56 syscalls/call=409.2 us/call=842.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=41.84 syscalls/call=551.4 us/call=2666.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=99.78 syscalls/call=783.1 us/call=1486.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=100.25 syscalls/call=785.0 us/call=1351.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=157.5 miss/call=48.88 syscalls/call=510.5 us/call=1094.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=18.44 syscalls/call=457.8 us/call=1734.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=82.59 syscalls/call=714.4 us/call=1664.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=91.50 syscalls/call=750.0 us/call=1425.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=193.5 miss/call=20.31 syscalls/call=468.2 us/call=1556.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=28.78 syscalls/call=499.1 us/call=2459.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=159.0 miss/call=32.28 syscalls/call=447.1 us/call=1647.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=214.5 miss/call=13.56 syscalls/call=483.2 us/call=1988.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=71.81 syscalls/call=671.2 us/call=1373.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=135.0 miss/call=67.06 syscalls/call=538.2 us/call=1207.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=14.44 syscalls/call=480.8 us/call=2304.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=68.84 syscalls/call=659.4 us/call=1641.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=186.0 miss/call=75.00 syscalls/call=672.0 us/call=1353.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=193.5 miss/call=9.19 syscalls/call=423.8 us/call=1736.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=60.59 syscalls/call=626.4 us/call=1495.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=52.81 syscalls/call=632.8 us/call=1308.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=15.84 syscalls/call=484.9 us/call=1922.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=73.62 syscalls/call=678.5 us/call=1636.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=156.0 miss/call=57.06 syscalls/call=540.2 us/call=1306.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=2.75 syscalls/call=434.0 us/call=1227.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=58.53 syscalls/call=618.1 us/call=1874.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=52.41 syscalls/call=631.1 us/call=1495.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=27.69 syscalls/call=532.2 us/call=2324.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=68.62 syscalls/call=658.5 us/call=1234.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=117.0 miss/call=48.09 syscalls/call=426.4 us/call=1057.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=163.5 miss/call=31.16 syscalls/call=451.6 us/call=964.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=35.47 syscalls/call=525.9 us/call=1869.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=65.44 syscalls/call=645.8 us/call=1531.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=32.50 syscalls/call=583.0 us/call=2469.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=29.72 syscalls/call=502.9 us/call=1728.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=42.53 syscalls/call=554.1 us/call=1606.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=13.75 syscalls/call=490.0 us/call=1239.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.22 syscalls/call=576.9 us/call=1078.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=50.31 syscalls/call=616.8 us/call=1567.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=25.06 syscalls/call=521.8 us/call=1752.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=72.16 syscalls/call=672.6 us/call=1312.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=80.75 syscalls/call=707.0 us/call=1398.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=214.5 miss/call=23.62 syscalls/call=523.5 us/call=1504.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=60.84 syscalls/call=627.4 us/call=1307.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=78.50 syscalls/call=698.0 us/call=1523.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=32.12 syscalls/call=575.5 us/call=2337.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=47.47 syscalls/call=573.9 us/call=2045.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=174.0 miss/call=36.38 syscalls/call=493.5 us/call=1093.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=10.00 syscalls/call=487.0 us/call=1618.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=70.97 syscalls/call=667.9 us/call=1372.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=71.94 syscalls/call=709.2 us/call=1454.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=210.8 miss/call=33.72 syscalls/call=556.4 us/call=1500.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=37.38 syscalls/call=533.5 us/call=2221.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=141.0 miss/call=41.53 syscalls/call=448.1 us/call=888.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=17.78 syscalls/call=524.1 us/call=1343.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=31.88 syscalls/call=511.5 us/call=1749.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=24.59 syscalls/call=551.4 us/call=1890.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=38.53 syscalls/call=538.1 us/call=2218.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=63.16 syscalls/call=636.6 us/call=1063.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=102.0 miss/call=36.25 syscalls/call=349.0 us/call=1177.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=9.69 syscalls/call=485.8 us/call=656.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=66.94 syscalls/call=651.8 us/call=1652.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=77.09 syscalls/call=692.4 us/call=1120.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=32.38 syscalls/call=582.5 us/call=1627.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=30.91 syscalls/call=507.6 us/call=1888.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=58.56 syscalls/call=558.2 us/call=1677.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=217.5 miss/call=8.94 syscalls/call=470.8 us/call=1643.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=29.12 syscalls/call=500.5 us/call=1687.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=33.75 syscalls/call=588.0 us/call=2242.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=32.34 syscalls/call=513.4 us/call=1542.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=66.69 syscalls/call=650.8 us/call=1354.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=166.5 miss/call=87.31 syscalls/call=682.2 us/call=1650.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.84 syscalls/call=383.4 us/call=1094.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.91 syscalls/call=379.6 us/call=1141.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.53 syscalls/call=382.1 us/call=1273.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.03 syscalls/call=380.1 us/call=945.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.88 syscalls/call=379.5 us/call=967.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=45.50 syscalls/call=374.0 us/call=1535.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=41.47 syscalls/call=357.9 us/call=1008.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.41 syscalls/call=381.6 us/call=1484.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.66 syscalls/call=382.6 us/call=1047.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.31 syscalls/call=377.2 us/call=977.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=127.5 miss/call=66.47 syscalls/call=520.9 us/call=1115.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=48.09 syscalls/call=384.4 us/call=887.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=48.59 syscalls/call=386.4 us/call=872.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.47 syscalls/call=377.9 us/call=1261.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.12 syscalls/call=376.5 us/call=892.5
+(Worker_TP1 pid=464) [t2r-census] steady computes=32768 reuses=311369 reuses/compute=9.50
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.28 syscalls/call=381.1 us/call=911.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=116.2 miss/call=52.34 syscalls/call=441.9 us/call=1263.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.81 syscalls/call=379.2 us/call=1196.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.81 syscalls/call=379.2 us/call=1148.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=47.19 syscalls/call=380.8 us/call=1040.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=128.2 miss/call=67.75 syscalls/call=527.5 us/call=1451.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.50 syscalls/call=378.0 us/call=1189.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=49.81 syscalls/call=391.2 us/call=1140.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=48.62 syscalls/call=386.5 us/call=1228.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=127.5 miss/call=19.78 syscalls/call=334.1 us/call=1645.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.34 syscalls/call=377.4 us/call=1114.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=46.56 syscalls/call=378.2 us/call=926.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=150.0 miss/call=25.03 syscalls/call=400.1 us/call=1395.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=17.31 syscalls/call=453.2 us/call=3027.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=15.62 syscalls/call=446.5 us/call=3070.4
+(Worker_TP1 pid=464) [gv2-census] calls=32 rows/call=1041 runs/call=1349.5 preads/call=1349.5 read=16.532ms fadv/call=1347.2 pf_hit=0%(32)
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=150.0 miss/call=13.16 syscalls/call=352.6 us/call=1927.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=19.16 syscalls/call=460.6 us/call=2444.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=12.72 syscalls/call=434.9 us/call=2078.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=214.5 miss/call=16.28 syscalls/call=494.1 us/call=2457.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=14.34 syscalls/call=441.4 us/call=2629.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=21.16 syscalls/call=468.6 us/call=1874.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=235.5 miss/call=25.53 syscalls/call=573.1 us/call=2647.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=57.72 syscalls/call=614.9 us/call=1025.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=57.28 syscalls/call=613.1 us/call=1078.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=180.0 miss/call=57.12 syscalls/call=588.5 us/call=1064.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=14.84 syscalls/call=506.4 us/call=2506.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=49.84 syscalls/call=583.4 us/call=1178.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.94 syscalls/call=579.8 us/call=1105.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=153.0 miss/call=20.94 syscalls/call=389.8 us/call=1671.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=12.25 syscalls/call=433.0 us/call=2620.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.31 syscalls/call=421.2 us/call=3102.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=8.50 syscalls/call=457.0 us/call=2421.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.00 syscalls/call=416.0 us/call=1978.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=11.50 syscalls/call=430.0 us/call=1883.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=23.97 syscalls/call=548.9 us/call=2148.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=55.69 syscalls/call=606.8 us/call=1035.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=57.06 syscalls/call=612.2 us/call=1024.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=50.78 syscalls/call=569.1 us/call=991.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=8.91 syscalls/call=401.6 us/call=2779.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=38.88 syscalls/call=539.5 us/call=1866.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=53.44 syscalls/call=597.8 us/call=1195.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=172.5 miss/call=34.03 syscalls/call=481.1 us/call=870.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=11.22 syscalls/call=428.9 us/call=3649.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=47.06 syscalls/call=572.2 us/call=1147.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=51.25 syscalls/call=589.0 us/call=1396.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=17.91 syscalls/call=455.6 us/call=1561.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.72 syscalls/call=422.9 us/call=2892.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=135.0 miss/call=5.47 syscalls/call=291.9 us/call=1852.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=214.5 miss/call=3.34 syscalls/call=442.4 us/call=1550.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.03 syscalls/call=408.1 us/call=2027.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.62 syscalls/call=410.5 us/call=2751.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=238.5 miss/call=26.38 syscalls/call=582.5 us/call=2770.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=46.41 syscalls/call=569.6 us/call=1105.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.09 syscalls/call=576.4 us/call=1161.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=30.44 syscalls/call=445.8 us/call=1194.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.59 syscalls/call=414.4 us/call=3092.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=21.09 syscalls/call=468.4 us/call=2337.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.66 syscalls/call=578.6 us/call=1097.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=39.53 syscalls/call=536.1 us/call=1773.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.12 syscalls/call=420.5 us/call=3361.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=165.0 miss/call=10.22 syscalls/call=370.9 us/call=1584.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=222.8 miss/call=13.19 syscalls/call=498.2 us/call=2913.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=42.03 syscalls/call=552.1 us/call=1636.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=49.28 syscalls/call=581.1 us/call=1390.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=218.2 miss/call=40.16 syscalls/call=597.1 us/call=1832.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=8.66 syscalls/call=418.6 us/call=2862.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.34 syscalls/call=413.4 us/call=2653.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=147.0 miss/call=7.78 syscalls/call=325.1 us/call=2987.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=150.0 miss/call=4.88 syscalls/call=319.5 us/call=919.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=34.66 syscalls/call=522.6 us/call=1908.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.25 syscalls/call=577.0 us/call=1394.5
+(Worker_TP1 pid=464) [gv2-census] calls=32 rows/call=984 runs/call=1787.5 preads/call=1787.5 read=16.600ms fadv/call=1783.8 pf_hit=45%(32)
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=41.56 syscalls/call=550.2 us/call=2001.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.31 syscalls/call=409.2 us/call=2491.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.03 syscalls/call=420.1 us/call=2378.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=167.2 miss/call=4.59 syscalls/call=352.9 us/call=1533.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=22.75 syscalls/call=475.0 us/call=2343.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=50.00 syscalls/call=584.0 us/call=1367.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=252.8 miss/call=38.34 syscalls/call=658.9 us/call=2311.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.75 syscalls/call=407.0 us/call=1631.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=4.62 syscalls/call=402.5 us/call=2124.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=165.0 miss/call=7.25 syscalls/call=359.0 us/call=2777.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=135.0 miss/call=3.28 syscalls/call=283.1 us/call=1666.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=17.03 syscalls/call=452.1 us/call=2029.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=45.06 syscalls/call=564.2 us/call=1152.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=186.0 miss/call=39.06 syscalls/call=528.2 us/call=1639.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.88 syscalls/call=407.5 us/call=1595.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=186.0 miss/call=5.03 syscalls/call=392.1 us/call=1491.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=105.0 miss/call=5.06 syscalls/call=230.2 us/call=1628.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=47.09 syscalls/call=572.4 us/call=1152.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=48.59 syscalls/call=578.4 us/call=1166.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=218.2 miss/call=44.94 syscalls/call=616.2 us/call=1548.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.97 syscalls/call=407.9 us/call=1587.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.34 syscalls/call=405.4 us/call=2117.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.28 syscalls/call=405.1 us/call=2730.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=150.0 miss/call=3.69 syscalls/call=314.8 us/call=1097.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.84 syscalls/call=399.4 us/call=1807.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.88 syscalls/call=407.5 us/call=2568.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=189.0 miss/call=5.06 syscalls/call=398.2 us/call=2149.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=9.16 syscalls/call=420.6 us/call=2268.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=6.28 syscalls/call=409.1 us/call=2131.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=120.0 miss/call=51.19 syscalls/call=444.8 us/call=1944.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=113.2 miss/call=47.56 syscalls/call=416.8 us/call=1385.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=33.88 syscalls/call=327.5 us/call=881.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=120.8 miss/call=28.34 syscalls/call=354.9 us/call=1464.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=32.16 syscalls/call=320.6 us/call=782.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=113.2 miss/call=31.41 syscalls/call=352.1 us/call=1221.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=44.72 syscalls/call=370.9 us/call=1041.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=115.5 miss/call=58.53 syscalls/call=465.1 us/call=1600.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=43.62 syscalls/call=366.5 us/call=1079.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=111.8 miss/call=41.56 syscalls/call=389.8 us/call=1544.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=11.88 syscalls/call=239.5 us/call=778.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=126.0 miss/call=49.50 syscalls/call=450.0 us/call=1667.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=25.75 syscalls/call=295.0 us/call=671.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=117.0 miss/call=45.81 syscalls/call=417.2 us/call=1465.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=96.0 miss/call=37.56 syscalls/call=342.2 us/call=895.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=114.0 miss/call=20.88 syscalls/call=311.5 us/call=1369.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=161.2 miss/call=13.25 syscalls/call=375.5 us/call=1304.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.41 syscalls/call=389.6 us/call=825.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=228.0 miss/call=16.41 syscalls/call=521.6 us/call=1415.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.44 syscalls/call=405.8 us/call=2119.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=224.2 miss/call=2.53 syscalls/call=458.6 us/call=1548.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=60.34 syscalls/call=625.4 us/call=1379.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=168.0 miss/call=50.59 syscalls/call=538.4 us/call=1317.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.41 syscalls/call=413.6 us/call=1853.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=206.2 miss/call=6.28 syscalls/call=437.6 us/call=1219.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.72 syscalls/call=390.9 us/call=778.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=216.0 miss/call=0.00 syscalls/call=432.0 us/call=550.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.34 syscalls/call=389.4 us/call=1141.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=215.2 miss/call=0.34 syscalls/call=431.9 us/call=903.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=30.44 syscalls/call=505.8 us/call=1974.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=225.0 miss/call=26.94 syscalls/call=557.8 us/call=992.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=5.81 syscalls/call=407.2 us/call=1201.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=215.2 miss/call=12.91 syscalls/call=482.1 us/call=1727.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.78 syscalls/call=415.1 us/call=1226.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=215.2 miss/call=7.19 syscalls/call=459.2 us/call=973.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=3.75 syscalls/call=399.0 us/call=2056.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=228.0 miss/call=0.00 syscalls/call=456.0 us/call=584.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=9.47 syscalls/call=403.9 us/call=1527.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=224.2 miss/call=1.94 syscalls/call=456.2 us/call=1188.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=222.0 miss/call=39.06 syscalls/call=600.2 us/call=1602.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=213.0 miss/call=14.19 syscalls/call=482.8 us/call=1033.0
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=174.0 miss/call=0.00 syscalls/call=348.0 us/call=455.2
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=209.2 miss/call=3.31 syscalls/call=431.8 us/call=1509.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=213.8 miss/call=22.31 syscalls/call=516.8 us/call=1771.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=206.2 miss/call=1.78 syscalls/call=419.6 us/call=1167.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=206.2 miss/call=0.00 syscalls/call=412.5 us/call=534.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=7.53 syscalls/call=414.1 us/call=1757.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=219.0 miss/call=41.28 syscalls/call=603.1 us/call=1342.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=213.0 miss/call=6.78 syscalls/call=453.1 us/call=1607.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=162.0 miss/call=0.00 syscalls/call=324.0 us/call=494.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=209.2 miss/call=0.34 syscalls/call=419.9 us/call=929.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=228.0 miss/call=1.34 syscalls/call=461.4 us/call=973.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.00 syscalls/call=384.0 us/call=516.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=200.2 miss/call=1.41 syscalls/call=406.1 us/call=1492.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=11.41 syscalls/call=429.6 us/call=910.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=243.0 miss/call=18.19 syscalls/call=558.8 us/call=1535.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.62 syscalls/call=390.5 us/call=824.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=174.0 miss/call=0.00 syscalls/call=348.0 us/call=450.6
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=1.22 syscalls/call=388.9 us/call=1166.9
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=223.5 miss/call=3.47 syscalls/call=460.9 us/call=1551.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=183.0 miss/call=19.06 syscalls/call=442.2 us/call=1280.3
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=207.8 miss/call=11.81 syscalls/call=462.8 us/call=1023.8
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=211.5 miss/call=4.94 syscalls/call=442.8 us/call=2195.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=219.0 miss/call=21.53 syscalls/call=524.1 us/call=1275.4
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=177.0 miss/call=14.25 syscalls/call=411.0 us/call=1611.5
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=153.0 miss/call=0.00 syscalls/call=306.0 us/call=431.1
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=192.0 miss/call=0.38 syscalls/call=385.5 us/call=831.7
+(Worker_TP1 pid=464) [native-census] calls=32 rows/call=226.5 miss/call=0.38 syscalls/call=454.5 us/call=898.8

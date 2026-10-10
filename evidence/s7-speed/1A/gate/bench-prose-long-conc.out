@@ -1,0 +1,72 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=9 concurrency=[2, 4] phases=['prose_long']
+phase=prose_long c=2 run=1 wall=6.63s agg=61.16 tok/s per_stream=[30.48,30.86] ttft=[0.067,0.185] acc=nan ms_step=[]
+phase=prose_long c=2 run=2 wall=6.61s agg=61.42 tok/s per_stream=[30.62,30.99] ttft=[0.067,0.184] acc=nan ms_step=[]
+phase=prose_long c=2 run=3 wall=6.64s agg=61.10 tok/s per_stream=[30.44,30.84] ttft=[0.071,0.190] acc=nan ms_step=[]
+phase=prose_long c=2 run=4 wall=6.88s agg=58.90 tok/s per_stream=[29.36,29.71] ttft=[0.066,0.182] acc=nan ms_step=[]
+phase=prose_long c=2 run=5 wall=6.63s agg=61.16 tok/s per_stream=[30.47,30.87] ttft=[0.067,0.186] acc=nan ms_step=[]
+phase=prose_long c=2 run=6 wall=6.64s agg=61.10 tok/s per_stream=[30.45,30.84] ttft=[0.070,0.189] acc=nan ms_step=[]
+phase=prose_long c=2 run=7 wall=6.61s agg=61.45 tok/s per_stream=[30.61,31.02] ttft=[0.068,0.188] acc=nan ms_step=[]
+phase=prose_long c=2 run=8 wall=6.68s agg=60.78 tok/s per_stream=[30.30,30.67] ttft=[0.068,0.187] acc=nan ms_step=[]
+phase=prose_long c=2 run=9 wall=6.90s agg=58.72 tok/s per_stream=[29.28,29.62] ttft=[0.067,0.186] acc=nan ms_step=[]
+phase=prose_long c=4 run=1 wall=9.63s agg=84.92 tok/s per_stream=[21.06,21.17,21.53,21.38] ttft=[0.076,0.194,0.388,0.326] acc=nan ms_step=[]
+phase=prose_long c=4 run=2 wall=9.60s agg=85.36 tok/s per_stream=[21.12,21.24,21.54,21.74] ttft=[0.069,0.186,0.355,0.441] acc=nan ms_step=[]
+phase=prose_long c=4 run=3 wall=9.36s agg=87.40 tok/s per_stream=[21.66,21.79,22.01,22.16] ttft=[0.069,0.188,0.319,0.379] acc=nan ms_step=[]
+phase=prose_long c=4 run=4 wall=9.32s agg=87.79 tok/s per_stream=[21.75,21.88,22.27,22.11] ttft=[0.070,0.186,0.383,0.316] acc=nan ms_step=[]
+phase=prose_long c=4 run=5 wall=9.59s agg=85.31 tok/s per_stream=[21.14,21.27,21.48,21.62] ttft=[0.075,0.197,0.326,0.389] acc=nan ms_step=[]
+phase=prose_long c=4 run=6 wall=9.30s agg=87.93 tok/s per_stream=[21.79,21.92,22.29,22.14] ttft=[0.069,0.187,0.377,0.317] acc=nan ms_step=[]
+phase=prose_long c=4 run=7 wall=9.58s agg=85.41 tok/s per_stream=[21.16,21.29,21.65,21.51] ttft=[0.071,0.191,0.387,0.327] acc=nan ms_step=[]
+phase=prose_long c=4 run=8 wall=9.30s agg=87.96 tok/s per_stream=[21.80,21.93,22.15,22.31] ttft=[0.071,0.186,0.318,0.382] acc=nan ms_step=[]
+phase=prose_long c=4 run=9 wall=9.63s agg=84.89 tok/s per_stream=[21.04,21.16,21.38,21.53] ttft=[0.069,0.187,0.325,0.387] acc=nan ms_step=[]
+natural phase=prose_long completion_tokens=200 finish_reason=length
+SUMMARY [
+  {
+    "phase": "prose_long",
+    "concurrency": 2,
+    "median_decode_tok_s": 30.544091236236994,
+    "median_ttft_s": 0.12618523952551186,
+    "median_agg_tok_s": 61.10389807316258,
+    "median_completion_tokens": 200.0,
+    "n": 18,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.12618523952551186,
+    "ttft_s_p90": 0.18847545213066041,
+    "ttft_s_p99": 0.19018022862961514,
+    "inter_chunk_ms_p50": 69.45228553377092,
+    "inter_chunk_ms_p90": 79.00510202161968,
+    "inter_chunk_ms_p99": 107.4235771992243,
+    "finish_reasons": {
+      "length": 18
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  },
+  {
+    "phase": "prose_long",
+    "concurrency": 4,
+    "median_decode_tok_s": 21.639079057853305,
+    "median_ttft_s": 0.2565247539896518,
+    "median_agg_tok_s": 85.40626608182079,
+    "median_completion_tokens": 200.0,
+    "n": 36,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.2565247539896518,
+    "ttft_s_p90": 0.38719306408893317,
+    "ttft_s_p99": 0.423040614882484,
+    "inter_chunk_ms_p50": 96.53906861785799,
+    "inter_chunk_ms_p90": 113.04079259280115,
+    "inter_chunk_ms_p99": 157.9222992691212,
+    "finish_reasons": {
+      "length": 36
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  }
+]

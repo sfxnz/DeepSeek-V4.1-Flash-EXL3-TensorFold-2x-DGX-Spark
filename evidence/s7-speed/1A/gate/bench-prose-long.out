@@ -1,0 +1,38 @@
+url=http://127.0.0.1:8000/v1/chat/completions model=deepseek-ai/DeepSeek-V4.1-Flash max_tokens=200 runs=9 concurrency=[1] phases=['prose_long']
+phase=prose_long c=1 run=1 wall=5.23s agg=39.47 tok/s per_stream=[39.48] ttft=[0.194] acc=nan ms_step=[]
+phase=prose_long c=1 run=2 wall=4.87s agg=41.46 tok/s per_stream=[41.47] ttft=[0.066] acc=nan ms_step=[]
+phase=prose_long c=1 run=3 wall=4.90s agg=41.14 tok/s per_stream=[41.15] ttft=[0.066] acc=nan ms_step=[]
+phase=prose_long c=1 run=4 wall=4.94s agg=40.83 tok/s per_stream=[40.84] ttft=[0.065] acc=nan ms_step=[]
+phase=prose_long c=1 run=5 wall=5.07s agg=39.78 tok/s per_stream=[39.79] ttft=[0.065] acc=nan ms_step=[]
+phase=prose_long c=1 run=6 wall=4.88s agg=41.33 tok/s per_stream=[41.33] ttft=[0.067] acc=nan ms_step=[]
+phase=prose_long c=1 run=7 wall=5.19s agg=38.91 tok/s per_stream=[38.92] ttft=[0.078] acc=nan ms_step=[]
+phase=prose_long c=1 run=8 wall=4.94s agg=40.86 tok/s per_stream=[40.86] ttft=[0.066] acc=nan ms_step=[]
+phase=prose_long c=1 run=9 wall=4.87s agg=41.43 tok/s per_stream=[41.44] ttft=[0.066] acc=nan ms_step=[]
+natural phase=prose_long completion_tokens=200 finish_reason=length
+SUMMARY [
+  {
+    "phase": "prose_long",
+    "concurrency": 1,
+    "median_decode_tok_s": 40.863608586275916,
+    "median_ttft_s": 0.06619167514145374,
+    "median_agg_tok_s": 40.860250498146456,
+    "median_completion_tokens": 200,
+    "n": 9,
+    "run_acceptance_len": [],
+    "median_run_acceptance_len": null,
+    "median_ms_per_step": null,
+    "ttft_s_p50": 0.06619167514145374,
+    "ttft_s_p90": 0.10074541112408045,
+    "ttft_s_p99": 0.184400587528944,
+    "inter_chunk_ms_p50": 51.88308795914054,
+    "inter_chunk_ms_p90": 60.321209114044905,
+    "inter_chunk_ms_p99": 72.11221440695226,
+    "finish_reasons": {
+      "length": 9
+    },
+    "natural_completion_tokens": 200,
+    "natural_finish_reason": "length",
+    "natural_covers_max": true,
+    "post_eos_fraction": 0.0
+  }
+]

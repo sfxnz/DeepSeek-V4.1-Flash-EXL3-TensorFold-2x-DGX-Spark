@@ -1,0 +1,59 @@
+SP-P5 GPU check (2026-10-08). Verdict: bits equal, tests pass, KILLED (graph saving at R=4 under 0.6 ms).
+
+Trees: base = int/dsv41-speed f9dd67b (wt/INT-speed; it did not move, so there was no merge).
+       unit = unit/SP-P5 06977a4 = 274a584 + one fix commit (below). The knob TF_DSV41_WIDE_GEMV=1 was on for every unit run.
+Tooling (dev/sp-p5): gpu_test.sh, run_rank.sh, profile.sh, tp_check.sh are copies of the n10/p0/c7 scripts
+  that pass P5_ENV as docker -e flags. bench_base.py = bench_gemv.py's glue lines alone, for the base tree.
+  kern.py = router/hc kernel ms from the graph traces.
+
+Fix committed: 06977a4 "perf(deepseek_v41): pick the wide hc_partial tiles by row count".
+  The bench showed the shipped defaults (RB=2 at 3-8 rows) slower than glue, -0.24 ms at R=4.
+  New defaults: RB=1 up to 8 rows, else 2. OUTS = 8 / 16 / 24 for <=4 / <=8 / more rows.
+  gemv tests were re-run after the change: 29 passed (gemv_test_defaults.txt).
+
+1. Tests (pinned image)
+  tests/cuda/test_dsv41_gemv.py on the head GPU: 29 passed (gemv_test.txt at 274a584; gemv_test_defaults.txt at the fix).
+  Family suite tests/cuda/test_dsv41_*.py at 06977a4:
+    knob off, head:   781 passed, 40 skipped (family_off.txt)
+    knob on, spark2:  781 passed, 40 skipped (family_on.txt)
+    golden, multi, multi_tp and sample_lanes ran. The skips are real-checkpoint tests and one torch float4 limit,
+    the same set as sp-P0.
+  Real-checkpoint files (moe, norms, real_layers, reference_real) with TF_DSV41_MODEL set:
+    knob off, head:   51 passed (real_off.txt)
+    knob on, spark2:  51 passed (real_on.txt)
+  CPU: int did not move. CUDA_VISIBLE_DEVICES= pytest on gemv/norms/moe: 3 skipped. ruff on gemv.py: clean.
+  Not run: dsv41_tp_check (skipped because the unit is killed).
+
+2. Microbench: 40 router gates (157 MB bf16) + 80 fn (157 MB fp32), graph replay, ms a forward
+  Before (bench_before.txt, base tree, glue):
+    router R=1/4/6/24: 0.836 / 0.841 / 0.851 / 0.849 ms (185-188 GB/s)
+    hc     R=1/4/6/24: 0.964 / 0.954 / 0.960 / 2.477 ms
+  After (bench_after.txt, unit tree): 240 cases, all bits=same as glue, including RB 2-4.
+    router: the best case at any R saves at most 0.042 ms (R=4, BLOCK_E 32 / 4 warps / 3 stages, which is glue's
+      own config, so it is noise). The router already runs at about 185 GB/s standalone.
+    hc best: R=1 +0.053 ms, R=4 +0.035, R=6 +0.025, R=24 +0.918 (RB=2 OUTS=24).
+  Best combined standalone saving at R=4: about 0.08 ms.
+
+3. Two-rank profile (dev/p0/profile_p0.py solo, 131072-token prompt; graph_table.txt)
+  Runs: base/unit at the default --context 131200, and base2/unit2 at --context 131584.
+  At 131200 the decode stage that follows the graph section raised "6 rows at 131202" on both trees, the same
+  failure as p0-profile/solo131k-failed-ctx131200. The graph section was complete in both runs.
+  logits_sha R=1..6: identical on both ranks in all 4 runs, and equal to the p0-profile receipts
+    (r0 00da0fa1.., de53e574.., db7103d8.., 7b4fd03d.., 521c461f.., 244375c8..).
+  state_sha, DSpark keeps and depths: equal between base2 and unit2 (decode_compare.txt).
+  Graph ms, median of 2 runs x 2 ranks, base -> unit:
+    R=1 33.58 -> 33.40, R=2 39.18 -> 38.91, R=3 44.40 -> 43.68, R=4 48.42 -> 48.89 (+0.47),
+    R=5 50.08 -> 49.89, R=6 53.12 ->53.07.
+  Kernel time a replay in the graph traces (kernels_graph.txt, base2 -> unit2, rank 0 / rank 1):
+    R=4 router      1.818 / 1.773 -> 1.581 / 1.577
+    R=4 hc_partial  1.297 / 1.326 -> 1.258 / 1.229
+    Combined saving about 0.27-0.29 ms.
+  DSpark ms/round, base2 -> unit2: 59.81 / 59.48 -> 61.01 / 61.01 (within run noise; tokens equal).
+
+Kill rule (speed-plan P5): combined graph saving at R=4 under 0.6 ms, or any sha change.
+  No sha changed. The R=4 graph saving is negative in wall time (+0.47 ms median) and about 0.28 ms in kernel time.
+  Both are under 0.6 ms, so the unit is KILLED. No ABBA was run.
+  Left on unit/SP-P5, unmerged, knob off by default.
+Note for later: hc_partial at T=24 (c=4 rounds) saves 0.92 ms standalone at RB=2 OUTS=24, bits same.
+  That is about 0.9% of a 100 ms c=4 round, under the 1% keep bar.
+GPUs: both idle after every step (docker ps: conduit only here, nothing on spark2).

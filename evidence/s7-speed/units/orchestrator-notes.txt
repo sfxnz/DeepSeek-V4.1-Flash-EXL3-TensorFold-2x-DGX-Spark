@@ -1,0 +1,55 @@
+## Orchestrator note (2026-10-09): P1 override
+
+P1 was killed at the GPU check by its kernel-sum criterion (0.83 ms at R=4 < 1.0 ms), but the graph replay wall
+improved 1.18-1.88 ms at R=1..6 and plain serial decode 34.7 -> 33.4 ms/round (-3.7%), bits equal
+(receipts/sp-P1/check). The criterion measured the wrong quantity; P1 goes to an ABBA in the follow-up wave with
+knob string from receipts/sp-P1/check/knob.txt. Decide keep/drop on the ABBA keep rule only.
+
+## Orchestrator note (2026-10-09): P6 follow-up (P6b)
+
+P6 ABBA (receipts/sp-P6/abba): c=4 +12.2..+15.3% same-prompt, diverse c=4 +5.3..+7.8% agg, c=2 +3..+7%, all shas
+equal, but c=1 prose -1.06% (ABBA) and -1.65% (lone follow-up), prose_long -1.12%: keep rule failed, knob left off.
+Diagnostic: knob-off refactor is not slower; knob-on c=1 rounds' stage clocks equal A, ~10-15 ms a reply falls
+outside the round clocks; knob-on adds Batch scratch (8.81 MiB) and 60 captured graphs, and a lone lane never batches.
+P6b: find and remove the c=1 cost (profile c=1 knob on vs off end to end incl. between-round host time; candidates:
+graph count/pool, scratch placement, per-round knob-path host work, lazy capture of batched graphs on first c>=2 use),
+then re-ABBA. Keep rule unchanged. If the c=1 cost cannot be removed, the user decides the trade.
+
+## Orchestrator note (2026-10-09): stale extension hazard, P4 kept
+
+dev/n10/run_rank.sh shares one TORCH_EXTENSIONS_DIR across trees; torch reuses a cached .so unless a source is
+newer, so an arm can import another tree's kernels (P4 try1: "no attribute 'qmmf_groups'"). EVERY GPU check and
+ABBA from now on must give each arm/tree its own fresh extension dir (e.g. TORCH_EXTENSIONS_DIR=/cache/te-<tree>-<sha>)
+and record the import path of each tensorfold_* extension it loaded. P4 merged as d139943 (KEEP; diverse prose c=2
+missed the half rule by 0.12 pt inside noise, passes per-stream/pooled: accepted by the orchestrator).
+
+## Orchestrator note (2026-10-09): P10 kept as a judgement call
+
+P10 merged as 2987c8a. Evidence is thin: tip rep2 (clean) +0.7..+1.5% on same-prompt c=2/4, -0.3..+0.9% at c=1,
+~0 on the diverse cell; the old-base pooled 8 boots read -0.3..-2.5% at higher noise. Each clean ABBA misses the
+written rule on one c=1 cell (tip: 2B stall; rep2: diverse prose c=1 -0.32 vs 0.16 noise). Accepted because it removes
+a host sync and D2H a round with bit-equal outputs; the stacked final ABBA against b86514a is the number of record.
+If the stacked run shows a c=1 regression, bisect P10 first.
+
+## Orchestrator note (2026-10-09): allocation-placement clue for P6b
+
+P9 (killed) found the verify graphs run 0.29-0.59 ms slower with its knob on although they hold no P9 code; a
+diagnostic showed only the stop's 3 small extra tensors per Work reproduce it (receipts/sp-P9/check). P6's c=1 loss
+(-1..-1.6%) also appears only when its knob allocates extra scratch (8.81 MiB) and graphs. Hypothesis for P6b: buffer
+placement (alignment, L2 set/partition or TLB effects on hot verify buffers) changes after extra allocations. P6b
+should first test this: allocate the batched scratch AFTER the verify buffers / graph pools (or from a separate pool),
+or pad to restore the base layout, and compare verify graph ms with logits_sha equal before any ABBA.
+
+## Orchestrator note (2026-10-09): P2 kept
+
+P2 merged as 378cea7 (default TF_DSV41_L2WARM=200, a cap; the warm runs ~89 GB/s). rep2: +0.7..+2.3% on 14 of 15
+cells incl. the diverse cell (every B boot above both A boots on matched diverse sets). structured c=4 -0.18% vs
+0.11% noise is flat across the 7 unstalled boots: accepted by the orchestrator.
+
+## Orchestrator note (2026-10-10): P1 kept, P6b merged by user decision
+
+P1 (override) kept: rep2 +1.2..+2.6% same-prompt, +1.7..+3.1% diverse, every B boot above both A boots; merged b44da3e.
+P6b (setup=late, absorb off, default on): c=2 +4.3..+8.0%, c=4 +9.5..+18.1% (diverse incl.), shas equal; c=1 prose
+flipped +0.96% (ABBA 1) / -0.99% (rep2, below 0.92% noise), pooled +0.02%; other c=1 cells within noise. Returned
+needs-user; the USER chose to merge it as the default (2026-10-10). Unit tree 5b1c87d == b81e853 (the ABBA'd tree).
+s7 re-measures c=1 against b86514a through run.sh.

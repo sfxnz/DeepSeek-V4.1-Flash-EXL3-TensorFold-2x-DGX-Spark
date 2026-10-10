@@ -1,0 +1,31 @@
+# 2026-10-10T12:11:50Z python3 /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label nofields --runs 9 --concurrency 1 2 4
+label=nofields url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1, 2, 4] sampling={}
+phase=nofields c=1 run=1 wall=4.75s agg=43.45 tok/s per_stream=[43.46] shas=4e0fa4daff89
+phase=nofields c=1 run=2 wall=4.53s agg=44.55 tok/s per_stream=[44.55] shas=4e0fa4daff89
+phase=nofields c=1 run=3 wall=4.53s agg=44.58 tok/s per_stream=[44.58] shas=4e0fa4daff89
+phase=nofields c=1 run=4 wall=4.50s agg=44.88 tok/s per_stream=[44.88] shas=4e0fa4daff89
+phase=nofields c=1 run=5 wall=4.52s agg=44.63 tok/s per_stream=[44.64] shas=4e0fa4daff89
+phase=nofields c=1 run=6 wall=4.54s agg=44.50 tok/s per_stream=[44.50] shas=4e0fa4daff89
+phase=nofields c=1 run=7 wall=4.49s agg=45.02 tok/s per_stream=[45.03] shas=4e0fa4daff89
+phase=nofields c=1 run=8 wall=4.48s agg=45.07 tok/s per_stream=[45.08] shas=4e0fa4daff89
+phase=nofields c=1 run=9 wall=4.53s agg=44.63 tok/s per_stream=[44.63] shas=4e0fa4daff89
+phase=nofields c=2 run=1 wall=5.57s agg=73.12 tok/s per_stream=[36.96,36.41] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=2 wall=5.60s agg=72.81 tok/s per_stream=[36.26,36.81] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=3 wall=5.58s agg=73.06 tok/s per_stream=[36.35,36.94] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=4 wall=5.57s agg=73.09 tok/s per_stream=[36.38,36.95] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=5 wall=5.59s agg=72.85 tok/s per_stream=[36.28,36.83] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=6 wall=5.58s agg=72.96 tok/s per_stream=[36.31,36.89] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=7 wall=5.60s agg=72.74 tok/s per_stream=[36.20,36.78] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=8 wall=5.57s agg=73.14 tok/s per_stream=[36.42,36.98] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=2 run=9 wall=5.58s agg=73.02 tok/s per_stream=[36.37,36.91] shas=4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=1 wall=7.33s agg=112.54 tok/s per_stream=[27.75,28.01,28.42,28.68] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=2 wall=7.16s agg=115.33 tok/s per_stream=[28.42,29.40,29.13,28.69] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=3 wall=7.16s agg=115.38 tok/s per_stream=[28.44,28.72,29.13,29.40] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=4 wall=7.10s agg=116.19 tok/s per_stream=[28.64,29.34,28.92,29.60] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=5 wall=7.13s agg=115.75 tok/s per_stream=[28.53,28.81,29.23,29.49] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=6 wall=7.14s agg=115.57 tok/s per_stream=[28.50,29.45,28.76,29.19] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=7 wall=7.11s agg=116.21 tok/s per_stream=[29.64,28.62,29.35,28.92] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=8 wall=7.13s agg=115.91 tok/s per_stream=[28.53,28.85,29.54,29.28] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+phase=nofields c=4 run=9 wall=7.12s agg=116.13 tok/s per_stream=[28.62,28.90,29.33,29.59] shas=4e0fa4daff89,4e0fa4daff89,4e0fa4daff89,4e0fa4daff89
+SUMMARY [{"phase": "nofields", "sampling": {}, "concurrency": 1, "n": 9, "median_agg_tok_s": 44.62735000984381, "median_decode_tok_s": 44.63074213195152, "ttft_s_p50": 0.06564293010160327, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 2, "n": 18, "median_agg_tok_s": 73.02212727675642, "median_decode_tok_s": 36.60233127267639, "ttft_s_p50": 0.12716395850293338, "token_shas": ["4e0fa4daff89"]}, {"phase": "nofields", "sampling": {}, "concurrency": 4, "n": 36, "median_agg_tok_s": 115.75039686633494, "median_decode_tok_s": 28.90888771671346, "ttft_s_p50": 0.2571988395648077, "token_shas": ["4e0fa4daff89"]}]
+rc=0

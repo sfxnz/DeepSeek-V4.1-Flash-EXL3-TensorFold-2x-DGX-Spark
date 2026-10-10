@@ -22,12 +22,12 @@ model:
 image:
   base: nvcr.io/nvidia/pytorch:26.07-py3
   digest: sha256:2140e699b3beaf7f96a0081fd9c9406bc3832b435cdb60dfa2d261f7d2f34a1c
-  local_tag: &image tf-dsv41-flash:0.6.4-b86514a
+  local_tag: &image tf-dsv41-flash:0.6.6-19f5478
   build: docker/Dockerfile (pip install git+TF_REPO@TF_SHA under docker/constraints.txt; the commit pip installed is checked; no installed package may change, so torch and triton stay the base's)
 
 engine:
   name: tensorfold
-  version: 0.6.4 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows + the speed units C1, C2, C3, C4, C5, C7, C8 + concurrent requests (--parallel 1 to 4, units N0-N10)
+  version: 0.6.6 + deepseek_v41 CUDA family (ashhart/TensorFold PR 390 and PR 391) + the device keyed draw for top_k-off rows + the speed units C1, C2, C3, C4, C5, C7, C8 + concurrent requests (--parallel 1 to 4, units N0-N10) + the decode units P4, P2, P10, P1, P6b
   # The fork's integration branch: release v0.6.4 (6ea5ade), the family (e174ee0 has PR 391's tip tree, 0d91389), the
   # device keyed draw (C6, C6b; db7f53e has 41306d5's tree), then the speed units, each merged after its own receipts
   # (lab data/tf-dsv41/receipts/c1..c8): C1 prompt decoder-row skip, C3 prompt-window EXL3 expert kernel, C2 decode
@@ -35,19 +35,26 @@ engine:
   # scale rows, C5 device-drawn drafts and the confidence draft policy (engine default: up to 5 drafts, stop under a
   # confidence product of 0.15), C8 prompt chunks in two row halves and the kept snapshot from inside its chunk; then
   # concurrent requests (lab data/tf-dsv41/receipts/n0..n10): up to 4 lanes, each holding a whole window, share one
-  # verify forward a round, prompts fill between rounds (--decode-share), and every reply equals its solo run.
-  # Upstream froze its Python engine at 0.6.5 (ashhart/TensorFold issue 286) and closed PRs 390, 391 and 408; the
-  # maintainer rewrites the useful parts in the Zig engine with credit. So the recipe pins the fork. A bump needs new
-  # evidence.
+  # verify forward a round, prompts fill between rounds (--decode-share), and every reply equals its solo run. That
+  # tip is b86514a. Then upstream's final Python line, origin/python-0.6 at ed78d6f (v0.6.6, cb2ebf0, and later:
+  # API keys, --name-priority, the tool-JSON rewrite), merged as dc971a2, with f9dd67b (the thinking-off hint names
+  # chat_template_kwargs.thinking); then five decode units, each kept on its own ABBA (lab
+  # data/tf-dsv41/receipts/sp-*): P4 one grouped launch for wo_a (d139943), P10 greedy target draws on the device
+  # (2987c8a), P2 a paced L2 warm of the next dense weights (378cea7), P1 shape-picked MXFP8 decode tiles (b44da3e),
+  # P6b DSpark proposals batched across lanes, built late (c57c10e). Each unit is bit-exact: replies equal
+  # b86514a's. They are the engine's defaults, so no recipe flag turns them on.
+  # Upstream's Python engine ends at 0.6.6 on its python-0.6 branch (ashhart/TensorFold issue 286); it closed PRs
+  # 390, 391 and 408. Its main is the Zig engine 1.0.x, which has no DeepSeek-V4 family (a port for 1.0.x, CHANGELOG
+  # 1.0.0) and serves CUDA for Nemotron only, single-host (two-rank --speed-up is two Macs). So the recipe pins the fork. A bump needs new evidence.
   repo: &tf_repo https://github.com/sfxnz/TensorFold.git
-  branch: dsv41-recipe-engine4
-  commit: &tf_sha b86514a5ac8700b32e7b24f1095349df4ce2b922
-  base_release: v0.6.4 (6ea5ade)
+  branch: dsv41-recipe-engine5
+  commit: &tf_sha 19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb
+  base_release: v0.6.6 (cb2ebf0; upstream's python-0.6 at ed78d6f merged as dc971a2), on v0.6.4 (6ea5ade)
   upstream_prs: [https://github.com/ashhart/TensorFold/pull/390, https://github.com/ashhart/TensorFold/pull/391, https://github.com/ashhart/TensorFold/pull/408]
-  upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine frozen at 0.6.5; PRs 390, 391 and 408 closed; new work goes to the Zig engine)
+  upstream_status: https://github.com/ashhart/TensorFold/issues/286 (Python engine ends at 0.6.6 on branch python-0.6; PRs 390, 391 and 408 closed; main is the Zig engine 1.0.x, with no DeepSeek-V4 family and CUDA for Nemotron only, single-host)
   family_tip: 0d91389b1fe738dd24c49cc045977e2ac5324ea4 (PR 391's tip; the same tree as e174ee0 on the fork's integration branch)
   keyed_draw: 0582d5f (C6) and 3ab53da (C6b), merged as 684e2eb and d663c34 (db7f53e has the tree of 41306d5, the s4 pin)
-  previous: 903a1e8af62c8f46eceee6b95481706ada30ae49 (fork branch dsv41-recipe-engine3; session s5), 41306d5e2acd5651fc0954609b3a651d2ef61d6e (dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
+  previous: b86514a5ac8700b32e7b24f1095349df4ce2b922 (fork branch dsv41-recipe-engine4; session s6), 903a1e8af62c8f46eceee6b95481706ada30ae49 (dsv41-recipe-engine3; session s5), 41306d5e2acd5651fc0954609b3a651d2ef61d6e (dsv41-recipe-engine2; session s4), ec28f35c7568986666dc996f3c8b01ea59b6d0ca (dsv41-recipe-engine; sessions s2 and s3)
 
 hardware:
   shape: 2x DGX Spark (GB10)
@@ -77,8 +84,9 @@ serve:
     # (evidence/s2-run-sh-ec28f35/ctx1m/needles.jsonl, evidence/s2-run-sh-ec28f35/ctx1m/memwatch.tsv); s3 booted it
     # twice more at the shipped defaults (evidence/s3-default-1m/decode.txt); s5 twice at 903a1e8, with the
     # 1,039,528-token needle again (evidence/s5-final/bootF/needle.jsonl, MemAvailable at least 15.0 / 23.7 GiB over
-    # that boot); s6 six times at TF_SHA, with that needle found while 3 other lanes decoded
-    # (evidence/s6-concurrent/2B/needle_lanes.jsonl).
+    # that boot); s6 six times at b86514a, with that needle found while 3 other lanes decoded
+    # (evidence/s6-concurrent/2B/needle_lanes.jsonl); s7 five times at b86514a and 19f5478, with that needle beside 3
+    # lanes again at 19f5478 (evidence/s7-speed/2B/needle_lanes.jsonl).
     CONTEXT: 1048576
     # Requests decoded together, 1 to 4 (the family's MAX_LANES); each lane holds a whole CONTEXT window, allocated
     # at startup. measured: s6 ran PARALLEL=1 and 4 ABBA through run.sh. At 4 x 1048576 MemAvailable stayed at least
@@ -102,7 +110,7 @@ serve:
     MAX_TOKENS: 4096
     # --top-p on both ranks: the server's top_p when a request sends none. DeepSeek's model card recommends
     # temperature 1.0 and top_p "0.95 or 1.0"; at ec28f35 a top_k-off row without a top_p cut (1.0) drew on the
-    # device and a cut (< 1) read each rank's vocabulary half to the host (evidence/decision.tsv TOPP1). At TF_SHA
+    # device and a cut (< 1) read each rank's vocabulary half to the host (evidence/decision.tsv TOPP1). From 41306d5 on
     # both draw on the device at the same cost a round (evidence/s4-device-nucleus/derived.txt); 1.0 stays the
     # default. Temperature is not passed: the engine's default, 1.0, applies.
     TOP_P: 1.0
@@ -133,7 +141,7 @@ serve:
 readme:
   # Rows of the README "Defaults" table. {NAME} is replaced by serve.env.NAME.
   defaults:
-    - Engine: "TensorFold `{TF_SHA}` (v0.6.4 + the deepseek_v41 CUDA family, its speed units and concurrent requests) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
+    - Engine: "TensorFold `{TF_SHA}` (v0.6.6 + the deepseek_v41 CUDA family, its speed units, concurrent requests and the decode units P4, P2, P10, P1, P6b) from `{TF_REPO}`, built into `{IMAGE}` from `docker/Dockerfile`"
     - Model: "`{MODEL}` at `{SNAPSHOT_SHA}`, served from the HF cache `{HF_CACHE}` (read-only) on each node"
     - Snapshot check: "`config.json` sha256 `{CONFIG_SHA256}`, index sha256 `{INDEX_SHA256}`, {SHARDS} shards, {SHARD_BYTES} shard bytes, every shard's header ending at its size"
     - Ranks: "`--tp {TP}`: rank 1 on `{WORKER_HOST}` first, then rank 0 (HTTP) on the head; rendezvous `{HEAD_IP}:{MASTER_PORT}`"
@@ -156,31 +164,31 @@ measured:
   # kit/render.py renders a row with evidence null as "not yet measured on this pair" and refuses a number without
   # evidence.
   decode:
-    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s6 boots 2B and 3B, 2026-10-08: TensorFold `b86514a`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`; the only env override, EXTRA_ENV, loaded a probe that logs memory around graph warm-up); each row is the median of the two per-boot medians (evidence/s6-concurrent/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s6-concurrent/scripts/sampled_conc.py). Before (s5 bootE and bootF, TensorFold `903a1e8`, one request at a time): prose 55.8, structured 97.3, prose_long 40.7 (evidence/s5-final/decode.txt)"
+    conditions: "frozen bench_decode.py (sha256 3172cbc4…), streamed, thinking off, ignore_eos, max_tokens 200, 9 runs, two boots at the shipped defaults (s7 boots 2B and 3B, 2026-10-10: TensorFold `19f5478`, `--context 1048576 --parallel 4 --decode-share 0.5`, `--top-p 1.0`, `--mtp-drafts 5 --mtp-confidence 0.15`, no env override); each row is the median of the two per-boot medians (evidence/s7-speed/decode.txt, which gives each boot's); TP=2 through `./run.sh`, `tools/session_gate.sh` with RUNS=9 RUNS_LONG=9. Concurrency N sends N streams at once, 9 waves: decode is the median stream's rate after its first token, aggregate the median wave's tokens over its wall time, TTFT p50 over every stream (runs 2 to 9 resume the kept prompt). prose, structured and prose_long are the ruler's greedy cells. The sampled rows send the ruler's prose prompt with no sampling field (the server's temperature 1.0, top_p 1.0, top-k off) or top_p 0.95, no seed, so every stream draws the same reply (evidence/s7-speed/scripts/sampled_conc.py). Every stream sends one prompt, which overstates what lanes gain on distinct prompts; the diverse cell below the table sends a different prompt to each stream. Before (s7 boots 1A and 4A, TensorFold `b86514a`, the same session; c=1 decode, c=2 and 4 aggregate): prose 56.12 / 82.35 / 116.01, structured 97.88 / 144.36 / 200.62, prose_long 40.93 / 60.81 / 86.56 (evidence/s7-speed/abba_table.txt)"
     units: {decode: tok/s per stream (median), aggregate: tok/s, ttft_p50: s}
     rows:
-      - {phase: prose, concurrency: 1, decode: 56.3, aggregate: 56.3, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt,
+      - {phase: prose, concurrency: 1, decode: 59.3, aggregate: 59.2, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt,
          note: "The prose reply ends at its end token after 74 tokens; ignore_eos decodes the other 126 (post_eos_fraction 0.63)."}
-      - {phase: prose, concurrency: 2, decode: 41.3, aggregate: 82.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose, concurrency: 4, decode: 29.1, aggregate: 115.7, ttft_p50: 0.28, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 1, decode: 97.7, aggregate: 97.7, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 2, decode: 72.5, aggregate: 144.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: structured, concurrency: 4, decode: 50.6, aggregate: 200.7, ttft_p50: 0.26, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 1, decode: 41.2, aggregate: 41.2, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 2, decode: 30.6, aggregate: 61.0, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: prose_long, concurrency: 4, decode: 21.8, aggregate: 87.1, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 1, decode: 43.0, aggregate: 43.0, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 2, decode: 31.6, aggregate: 63.3, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (no field)", concurrency: 4, decode: 22.4, aggregate: 89.8, ttft_p50: 0.27, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 1, decode: 37.9, aggregate: 37.9, ttft_p50: 0.07, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 2, decode: 28.6, aggregate: 57.2, ttft_p50: 0.13, evidence: evidence/s6-concurrent/decode.txt}
-      - {phase: "sampled (top_p 0.95)", concurrency: 4, decode: 20.5, aggregate: 82.4, ttft_p50: 0.29, evidence: evidence/s6-concurrent/decode.txt}
+      - {phase: prose, concurrency: 2, decode: 48.0, aggregate: 95.3, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose, concurrency: 4, decode: 37.3, aggregate: 148.7, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 1, decode: 105.1, aggregate: 105.1, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 2, decode: 84.5, aggregate: 167.6, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: structured, concurrency: 4, decode: 63.8, aggregate: 254.1, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 1, decode: 43.3, aggregate: 43.3, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 2, decode: 35.3, aggregate: 70.6, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: prose_long, concurrency: 4, decode: 28.0, aggregate: 111.3, ttft_p50: 0.25, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 1, decode: 44.6, aggregate: 44.6, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 2, decode: 36.5, aggregate: 73.0, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (no field)", concurrency: 4, decode: 28.9, aggregate: 115.8, ttft_p50: 0.26, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 1, decode: 39.5, aggregate: 39.5, ttft_p50: 0.07, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 2, decode: 33.0, aggregate: 65.8, ttft_p50: 0.13, evidence: evidence/s7-speed/decode.txt}
+      - {phase: "sampled (top_p 0.95)", concurrency: 4, decode: 26.5, aggregate: 106.0, ttft_p50: 0.26, evidence: evidence/s7-speed/decode.txt}
 
 links:
   model: https://huggingface.co/sfxnz/DeepSeek-V4.1-Flash-EXL3/tree/2.0bpw-mcg-viterbi-lmhead-mxfp8
   base_model: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
   engine: https://github.com/ashhart/TensorFold
-  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine4
+  engine_fork: https://github.com/sfxnz/TensorFold/tree/dsv41-recipe-engine5
   base_image: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
   repo: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-TensorFold-2x-DGX-Spark
   sibling_vllm: https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark

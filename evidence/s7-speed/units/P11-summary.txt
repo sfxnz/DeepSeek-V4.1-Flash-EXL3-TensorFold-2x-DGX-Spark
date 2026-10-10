@@ -1,0 +1,83 @@
+SP-P11 GPU check (2026-10-09). Verdict: bits equal, tests pass (after 2 test fixes and 1 bug fix), KILLED.
+The knob TF_DSV41_DRAFT_DEPTH stays off by default (not flipped). pass = false.
+
+Trees: base = int/dsv41-speed 378cea7 (wt/INT-speed). It moved from 2987c8a (P2 merged) during the check.
+       unit = unit/SP-P11 1f759f3 = bba53f1 + a9460d5 (tests) + 5e0db32 (fix) + merge of 378cea7.
+       Every number below is from 378cea7 vs 1f759f3, with both trees mirrored and checked equal on spark2 (guard.sh).
+       Earlier runs against a mixed base (rank 0 378cea7, rank 1 a stale 2987c8a mirror) are in invalid_mixed_base/
+       and are not used.
+
+0. Bugs found and fixed
+  5e0db32 fix(deepseek_v41): time the cost table's windows on distinct ids.
+    The startup timing staged R copies of the BOS id. Identical rows route to the same experts, so the timed window
+    grew by only 1.33 ms a row: 32.97/34.30/35.63/36.96/36.86/36.77 ms at 1..6 rows (invalid_mixed_base/try1_bench_unit),
+    against 32.7/38.5/43.9/48.1/47.7/50.5 for real windows (solo_table.txt). The rule then drafted far too deep:
+    prose_long 322 drafted for 110 accepted (base 214/106), c=1 -6.7% (invalid_mixed_base/try1_bench_table.txt).
+    Each timed row now holds its own id, spread over the vocabulary. New host test test_the_timed_windows_hold_distinct_ids
+    fails before, passes after (cpu/window_ids_test_*). Table after the fix, per boot:
+      31.83/37.54/42.97/48.40/50.43/52.46 (1.139 ms a draft), 31.93/37.68/43.00/48.31/50.11/51.91 (1.136),
+      solo path 32.09/37.95/43.81/48.85/50.87/52.89 (1.242), 32.41/37.71/43.01/48.32/50.35/52.39 (1.203).
+  a9460d5 test(deepseek_v41): three GPU-test faults in the implementer's tests (no source change).
+    - test_timing_the_costs_leaves_the_engine_as_it_was: the 1e-9 monotone check fails on Costs.measured's 4-decimal
+      rounding (e.g. rows 0.0614/0.0613/0.0614). Tolerance now 2e-4.
+    - test_streams_with_the_cost_rule_equal_their_solo_runs: its precondition "the rule drafts other depths than the
+      confidence stop" failed at c=2 and 4 (every table probed gave the same stats for the c=4 keyed streams; probe/).
+      Table now rows of 6 ms and samplings _sampling(2 + j, j), so a greedy stream drafts in both cases.
+    - test_four_threads_... and test_the_cost_depth_is_one_table_...: the module fixtures `ranks` and `mix` built
+      their engines under the ambient knob; with TF_DSV41_DRAFT_DEPTH=1 they got the cost rule. They now pin it off.
+
+1. Tests (1f759f3)
+  CPU: 431 passed, 53 skipped (cpu/unit_cpu_after_merge_378cea7.txt). ruff clean.
+  GPU family suite tests/cuda/test_dsv41_*.py (golden, multi, multi_tp, sample_lanes included):
+    head, knob on:      798 passed, 40 skipped (gpu/family_on_head_merged.txt)
+    spark2, knob unset: 798 passed, 40 skipped (gpu/family_unset_spark2_merged.txt)
+    (a9460d5: 787 passed both ways; bba53f1: 5 failed unset, 7 failed knob on, the faults above.)
+    The 40 skips are the real-checkpoint tests and the torch float4 cast limit, as in sp-P10.
+  dsv41_tp_check (tp/compare.txt):
+    base and unit knob off: NCCL == --pair on both ranks, digests c02c8cad.. / 0d0daff9.. (as sp-P7, sp-P10).
+    unit knob on: replies, prompt heads, caches and cached counts == base on both ranks; every drafted reply ==
+      serial (the script asserts it). NCCL != pair in 2 requests' verify-step hashes: each run times its own table
+      (NCCL 8.58/9.84/11.10/12.37/12.80/13.24 ms; pair, two threads on one GPU, 49.61 falling to 27.24 ms), so the
+      windows differ. This is the documented "stats can differ from one start to the next".
+
+2. Bits (two-rank solo profiles, --context 131584, 131072-token prompt; solo_table.txt)
+  logits_sha R=1..6 IDENTICAL in all 5 runs (base x2, unit knob on x2, unit knob off), both ranks, and equal to the
+    sp-P7/sp-P10 receipts: r0 00da0fa1 de53e574 db7103d8 7b4fd03d 521c461f 244375c8;
+                           r1 319aafa0 ede733a1 24205af9 28239c43 352f2af1 305adf05.
+  Equal in all runs: first token 400, state_sha 1d01205d.., DSpark tokens e1f7c725.., serial tokens 87e76848..,
+    profiled tokens 2df33482... With the knob on, DSpark took 70 rounds (219-220 drafted, 129 accepted) against 68
+    (224 drafted, 131 accepted).
+  Graph ms a replay, median of 2 runs x 2 ranks, base -> unit (knob on):
+    R=1 32.766 -> 32.653  R=2 38.453 -> 38.524  R=3 43.953 -> 43.951
+    R=4 48.103 -> 48.191  R=5 47.654 -> 47.791  R=6 50.533 -> 50.644
+    Unit knob off: 32.231 38.570 43.931 48.002 47.217 50.210. The verify graphs hold no P11 code. All within noise.
+  Microbench reply shas: one sha per prompt across both arms, every run, both ranks (bench_table.txt).
+  Concurrent == solo: every one of 68 streams a boot equals its solo run in the same boot (sha, rounds, drafted,
+    accepted), in all 4 boots, both ranks. The knob-on unit's per-stream depths do not change with concurrency.
+
+3. Microbench (bench_p11.py, served lane decoder, 4 lanes at 1048576, decode share 0.5, greedy, 200 tokens, EOS
+   ignored; ABBA boots base, unit, unit, base; median agg tok/s from the join; bench_table.txt)
+    cell                       base     unit    delta   drafted/accepted base -> unit
+    c=1 prose (n=10)           58.25    57.73   -0.90%  195/133 -> 174/130
+    c=1 structured (n=10)     102.57   102.59   +0.02%  169/165 -> 169/165
+    c=1 prose_long (n=10)      42.16    41.74   -1.00%  214/106 -> 202/103
+    c=2 prose (n=4)            99.05    97.99   -1.07%
+    c=4 prose (n=4)           151.44   151.15   -0.19%
+    c=2 structured            173.05   173.54   +0.28%
+    c=4 structured            251.86   252.36   +0.20%
+    c=2 prose_long             72.85    71.37   -2.04%
+    c=4 prose_long            113.27   110.75   -2.23%
+    diverse c=2 (M2-style)     70.79    69.86   -1.31%
+    diverse c=4 (M2-style)     97.74    96.65   -1.11%
+  Why: at the prior rate the measured table gives thresholds 0.281 / 0.281 / 0.105 / 0.105 for drafts 2..5, against
+  the flat 0.15. The higher cut on drafts 2-3 drops drafts that would have been accepted. Solo prose_long: 298 and 307
+  verify rows (base 307), but 103 accepted (base 106), so 96 rounds instead of 93. A round costs about 33 ms plus
+  the chain, a row about 5 ms, so the trade loses. The c=1 base-vs-base spread is about 0.3%
+  (prose_long 42.02-42.65 without the one 36.09 stall).
+
+Kill rule (speed-plan P11): prose_long c=1 under +1%, or any cell worse than noise, or a loss on M2.
+  prose_long c=1 -1.00%; c=2/c=4 prose_long -2.0%/-2.2%; both diverse cells -1.1% to -1.3%. KILLED.
+  No served ABBA run. The fix 5e0db32 and the test fixes stay on unit/SP-P11 in case the rule is revisited.
+
+GPUs: both idle at the end (docker ps: conduit only here, nothing on spark2). MemAvailable 114 / 116 GiB.
+Note: spark2's receipts/sp-P11/check/profile/<tag> dirs are root-owned (created by the container mounts).

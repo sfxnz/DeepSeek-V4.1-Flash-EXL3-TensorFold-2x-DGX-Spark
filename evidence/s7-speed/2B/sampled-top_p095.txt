@@ -1,0 +1,31 @@
+# 2026-10-10T12:14:26Z python3 /home/sfxnz/projects/ai-lab/recipes/Deepseek-v4.1-Flash-EXL3-TensorFold-2x-DGX-Sparks/evidence/s7-speed/scripts/sampled_conc.py --url http://127.0.0.1:8000/v1/chat/completions --label top_p095 --runs 9 --temperature 1.0 --top-p 0.95 --concurrency 1 2 4
+label=top_p095 url=http://127.0.0.1:8000/v1/chat/completions max_tokens=200 runs=9 concurrency=[1, 2, 4] sampling={"temperature": 1.0, "top_p": 0.95}
+phase=top_p095 c=1 run=1 wall=5.27s agg=38.43 tok/s per_stream=[38.43] shas=dae740142762
+phase=top_p095 c=1 run=2 wall=5.06s agg=39.84 tok/s per_stream=[39.84] shas=dae740142762
+phase=top_p095 c=1 run=3 wall=5.09s agg=39.58 tok/s per_stream=[39.59] shas=dae740142762
+phase=top_p095 c=1 run=4 wall=5.18s agg=38.98 tok/s per_stream=[38.98] shas=dae740142762
+phase=top_p095 c=1 run=5 wall=5.11s agg=39.49 tok/s per_stream=[39.50] shas=dae740142762
+phase=top_p095 c=1 run=6 wall=5.04s agg=40.04 tok/s per_stream=[40.05] shas=dae740142762
+phase=top_p095 c=1 run=7 wall=5.05s agg=39.94 tok/s per_stream=[39.94] shas=dae740142762
+phase=top_p095 c=1 run=8 wall=5.08s agg=39.72 tok/s per_stream=[39.72] shas=dae740142762
+phase=top_p095 c=1 run=9 wall=5.15s agg=39.17 tok/s per_stream=[39.17] shas=dae740142762
+phase=top_p095 c=2 run=1 wall=6.17s agg=65.85 tok/s per_stream=[32.79,33.25] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=2 wall=6.18s agg=65.75 tok/s per_stream=[32.74,33.22] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=3 wall=6.21s agg=65.44 tok/s per_stream=[32.59,33.06] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=4 wall=6.16s agg=65.99 tok/s per_stream=[32.87,33.34] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=5 wall=6.20s agg=65.60 tok/s per_stream=[32.66,33.14] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=6 wall=6.18s agg=65.78 tok/s per_stream=[32.76,33.21] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=7 wall=6.14s agg=66.22 tok/s per_stream=[33.44,32.98] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=8 wall=6.12s agg=66.39 tok/s per_stream=[33.06,33.53] shas=dae740142762,dae740142762
+phase=top_p095 c=2 run=9 wall=6.17s agg=65.86 tok/s per_stream=[32.81,33.26] shas=dae740142762,dae740142762
+phase=top_p095 c=4 run=1 wall=7.79s agg=105.65 tok/s per_stream=[26.07,26.91,26.30,26.67] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=2 wall=7.76s agg=106.10 tok/s per_stream=[26.42,26.19,26.77,27.00] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=3 wall=7.75s agg=106.16 tok/s per_stream=[26.21,26.43,26.79,27.01] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=4 wall=7.76s agg=106.14 tok/s per_stream=[26.43,26.19,26.78,27.01] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=5 wall=7.77s agg=105.94 tok/s per_stream=[26.15,26.37,26.74,26.98] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=6 wall=7.75s agg=106.24 tok/s per_stream=[26.45,26.22,26.81,27.03] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=7 wall=7.78s agg=105.80 tok/s per_stream=[26.14,26.92,26.35,26.70] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=8 wall=7.80s agg=105.58 tok/s per_stream=[26.07,26.30,26.86,26.64] shas=dae740142762,dae740142762,dae740142762,dae740142762
+phase=top_p095 c=4 run=9 wall=7.78s agg=105.92 tok/s per_stream=[26.11,26.36,26.96,26.74] shas=dae740142762,dae740142762,dae740142762,dae740142762
+SUMMARY [{"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 1, "n": 9, "median_agg_tok_s": 39.58276958468056, "median_decode_tok_s": 39.59206323644677, "ttft_s_p50": 0.0666532120667398, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 2, "n": 18, "median_agg_tok_s": 65.84885794069181, "median_decode_tok_s": 33.056838739110574, "ttft_s_p50": 0.12736059492453933, "token_shas": ["dae740142762"]}, {"phase": "top_p095", "sampling": {"temperature": 1.0, "top_p": 0.95}, "concurrency": 4, "n": 36, "median_agg_tok_s": 105.94407492613341, "median_decode_tok_s": 26.545951482641243, "ttft_s_p50": 0.26069216104224324, "token_shas": ["dae740142762"]}]
+rc=0

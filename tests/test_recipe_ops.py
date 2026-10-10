@@ -34,11 +34,11 @@ VERBATIM = {
     "smoke_chat.py": "e1516eb218e5b5e16aeaf65eea2fe7dd195bdbe4dc62d403cd3cb6a712685e96",
     "tests/test_bench_decode.py": "bab0efee6373df8f14a77d3aa50ecdc9a69fb07786f59d8559336ea01fe020e8",
     "tests/test_smoke_chat.py": "7dbd9d977db194c349e7b12992d986cbf758c203224412c5bc52334ed367d35f",
-    # TensorFold's tools/bench_concurrent.py at TF_SHA (sfxnz/TensorFold branch dsv41-recipe-engine4).
+    # TensorFold's tools/bench_concurrent.py at TF_SHA (sfxnz/TensorFold branch dsv41-recipe-engine5).
     "tools/bench_concurrent.py": "262e5323e3ba439056b2794f96edf85caf5a81ea2790dd2ac374069b7dbed501",
 }
 TF_REPO = "https://github.com/sfxnz/TensorFold.git"
-TF_SHA = "b86514a5ac8700b32e7b24f1095349df4ce2b922"
+TF_SHA = "19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb"
 SNAPSHOT_SHA = "982b70452f399814f56b46272fd30394ae10d58c"
 CONFIG_SHA256 = "6469adab394edead3eec148323e7471582d08acdf60a438bf0c9e815b69f36c5"
 INDEX_SHA256 = "91731e4af38696bd4c09e960f4b599d1d49f35d445e4f88a43cc355d9e139f03"
@@ -61,10 +61,11 @@ def _defaults() -> dict[str, str]:
 
 
 def _gate(parallel: int, context: int) -> int:
-    """run.sh's memory-gate floor (mp5): resident 75.99 + max(5.33, 3.71 + 0.95 (P - 1) CONTEXT / 1048576) + 12.1 GiB,
-    rounded up, in exact fractions."""
+    """run.sh's memory-gate floor (mp5, s7): resident 75.99 + max(5.33, 3.71 + 0.95 (P - 1) CONTEXT / 1048576 + 0.01 at
+    P >= 2) + 12.1 GiB, rounded up, in exact fractions."""
     from fractions import Fraction
     geometry = Fraction(371, 100) + Fraction(95, 100) * (parallel - 1) * Fraction(context, 1048576)
+    geometry += Fraction(1, 100) * (parallel > 1)   # s7: the batched proposals' scratch (8.81 MiB at 4 lanes)
     total = Fraction(7599, 100) + max(Fraction(533, 100), geometry) + Fraction(1210, 100)
     return -(-total.numerator // total.denominator)
 
