@@ -400,7 +400,9 @@ refuse_foreign_serve() {
   while IFS= read -r name; do
     [[ -z "$name" ]] && continue
     if [[ "$name" == "$CONTAINER_NAME" ]] && grep -Fqx "$name" <<<"$ours"; then continue; fi
-    devices="$(docker inspect -f '{{json .HostConfig.DeviceRequests}} {{json .HostConfig.Devices}} {{json .Config.Env}}' "$name" 2>/dev/null || true)"
+    # Only actual device allocation counts: DeviceRequests, Devices and the runtime. Config.Env is deliberately
+    # excluded: CPU-only images (e.g. the official ollama image) bake NVIDIA_* variables that allocate nothing.
+    devices="$(docker inspect -f '{{json .HostConfig.DeviceRequests}} {{json .HostConfig.Devices}} {{json .HostConfig.Runtime}}' "$name" 2>/dev/null || true)"
     if grep -Eqi 'gpu|nvidia|infiniband' <<<"$devices"; then
       die "$name is using GPUs or InfiniBand on $(host_short). This recipe needs exclusive GPUs on both Sparks. Stop that serve first (its own stop script). Do not docker rm it from this script."
     fi

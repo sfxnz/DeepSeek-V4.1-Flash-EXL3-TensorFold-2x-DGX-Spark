@@ -830,6 +830,26 @@ class RunOpsTests(unittest.TestCase):
             self.assertIn("vllm-dsv41 is using GPUs", proc.stderr)
             self.assertNotRegex(log.read_text(), r"^(rm|stop|kill)", log.read_text())
 
+    def test_cpu_only_image_env_is_not_refused(self) -> None:
+        # The official ollama image bakes NVIDIA_VISIBLE_DEVICES, NVIDIA_DRIVER_CAPABILITIES and an nvidia
+        # LD_LIBRARY_PATH into its config env, but with no DeviceRequests/Devices it allocates no GPU or HCA, so it
+        # must not be refused. Env alone is inert; the guard reads actual allocation only. This fails if
+        # .Config.Env is put back into the inspect.
+        run = _read("run.sh")
+        fns = _func_src(run, "die") + "host_short() { echo n; }\n" + _func_src(run, "ours_names") + _func_src(run, "refuse_foreign_serve")
+        baked = ('["LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64",'
+                 '"NVIDIA_DRIVER_CAPABILITIES=compute,utility","NVIDIA_VISIBLE_DEVICES=all"]')
+        with tempfile.TemporaryDirectory() as tmp:
+            log = Path(tmp) / "calls"
+            docker = ('echo "$*" >> "$STUB_LOG"\n'
+                      'case "$*" in ps\\ -a*) ;; ps*) echo gcidt-infra-ollama-1;; '
+                      f'*Config.Env*) echo \'{baked}\';; *inspect*) echo null null runc;; esac\n')
+            env = _stubs(Path(tmp), docker=docker)
+            env["STUB_LOG"] = str(log)
+            proc = _bash(fns + "RECIPE_LABEL=ai-lab.recipe=dsv41-tensorfold CONTAINER_NAME=tf-dsv41-flash\nrefuse_foreign_serve\n", env=env)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertNotRegex(log.read_text(), r"^(rm|stop|kill)", log.read_text())
+
     def test_stop_sh_fails_loudly_without_worker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             env = _stubs(Path(tmp), docker="exit 0\n", ssh="exit 255\n", hostname="echo spark1\n")

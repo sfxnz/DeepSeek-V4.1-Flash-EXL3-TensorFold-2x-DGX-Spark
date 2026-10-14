@@ -227,7 +227,9 @@ s5, boot F at `903a1e8` ([`quality_full.txt`](evidence/s5-final/bootF/quality_fu
 
 - Two DGX Sparks on the QSFP RoCE link (`10.100.8.1` / `10.100.8.2` in this lab), both RoCE ports `ACTIVE`.
 - Docker + NVIDIA Container Toolkit on both nodes. SSH from the head to the worker (`spark2` here).
-- Exclusive GPUs. Do not start this recipe while another `--gpus all` serve is up; `run.sh` refuses to.
+- Exclusive GPUs. Do not start this recipe while another `--gpus all` serve is up; `run.sh` refuses to. The check
+  reads actual device allocation (`DeviceRequests`, `Devices`, the runtime), not image environment: a CPU-only
+  container that merely carries the NGC `NVIDIA_*` variables, e.g. the official ollama image, is not refused.
 - Disk on each node: the whole revision, 333 GiB ([`pins.json`](evidence/s1-snapshot-pins/pins.json), [family page](https://github.com/sfxnz/TensorFold/blob/19f5478ba778531ffb9a1ebb9c1ca7e06b8ceacb/docs/recipes/deepseek-v4.1-flash.md#download-on-both-machines)), in the HF cache (`HF_CACHE`, default `~/.cache/huggingface`) on local NVMe, never NFS. Other revisions already in the same cache entry add to that. Plus the kernel cache under `TF_CACHE`.
 
 ## Weights
